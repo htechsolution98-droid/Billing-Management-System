@@ -16,17 +16,17 @@ const userSchema = new mongoose.Schema(
 
     gst: {
       type: String,
-      required: false, // optional
+      // required: false, // optional
     },
 
     pan: {
       type: String,
-      required: false, // optional
+      // required: false, // optional
     },
 
     firmLogo: {
       type: String, // store uploaded file path
-      required: false,
+      
     },
 
     aadhaar: {

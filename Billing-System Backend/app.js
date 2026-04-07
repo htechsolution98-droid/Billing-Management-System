@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 import registerroutes from "./routes/Authroutes/Register/register.routes.js";
 import loginroutes from "./routes/Authroutes/Login/login.routes.js";
 import Nuser from "./routes/User/User.routes.js";
+import Product from "./routes/User/Product.routes.js";
 
 // ── new protected routes ──────────────────────────────────────────────────────
 import Distributor from "./routes/Distributor/Distributor.route.js";
@@ -25,6 +26,7 @@ app.use("/api/register", registerroutes);
 app.use("/api/loginapi", loginroutes);
 app.use("/api/distributorapi", Distributor);
 app.use("/api/nuserapi", Nuser);
+app.use("/api/productapi", Product);
 
 //======================Swagger route===============================
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

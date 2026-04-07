@@ -36,7 +36,7 @@ router.post("/create", upload.single("corpo_certino"), createcontroller);
 
 /**
  * @swagger
- * /api/distributor/get:
+ * /api/distributorapi/get:
  *   get:
  *     summary: Get all distributors
  *     tags: [Distributor]

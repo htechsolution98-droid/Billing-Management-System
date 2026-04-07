@@ -15,10 +15,9 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter (only images allowed)
+// File filter (only images + pdf allowed)
 const fileFilter = (req, file, cb) => {
-  const allowedTypes =
-    /jpeg|jpg|png|pdf/;
+  const allowedTypes = /jpeg|jpg|png|pdf/;
 
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
@@ -27,13 +26,18 @@ const fileFilter = (req, file, cb) => {
   if (extname) {
     cb(null, true);
   } else {
-    cb("Only images and PDF allowed");
+    cb(new Error("Only JPG, PNG, JPEG, PDF allowed"));
   }
 };
 
+// Multer setup with LIMIT
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
+
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB limit
+  },
 });
 
 export default upload;
