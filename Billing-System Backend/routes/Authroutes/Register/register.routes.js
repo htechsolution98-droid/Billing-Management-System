@@ -14,7 +14,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/distributor/create:
+ * /api/register/createregister:
  *   post:
  *     summary: Create Distributor
  *     tags: [Distributor]
@@ -45,8 +45,8 @@ router.post("/createregister", Registercontroller);
 // 🔐 PROTECTED ROUTE ( superadmin)
 
 /**
- * @swagger
- * /api/distributor/get:
+  * @swagger
+ * /api/register/getregister:
  *   get:
  *     summary: Get all distributors
  *     tags: [Distributor]
@@ -63,8 +63,8 @@ router.get(
 );
 
 /**
- * @swagger
- * /api/distributor/create:
+* @swagger
+ * /api/register/create:
  *   post:
  *     summary: Create Distributor
  *     tags: [Distributor]
@@ -97,8 +97,8 @@ router.post(
 );
 
 /**
- * @swagger
- * /api/distributor/create:
+* @swagger
+ * /api/register/create-nuser:
  *   post:
  *     summary: Create Distributor
  *     tags: [Distributor]
@@ -132,7 +132,7 @@ router.post(
 
 /**
  * @swagger
- * /api/distributor/get:
+ * /api/register/dashboard:
  *   get:
  *     summary: Get all distributors
  *     tags: [Distributor]

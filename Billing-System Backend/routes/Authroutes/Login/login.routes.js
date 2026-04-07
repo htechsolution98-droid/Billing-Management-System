@@ -4,7 +4,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/distributor/create:
+ * /api/loginapi/login:
  *   post:
  *     summary: Create Distributor
  *     tags: [Distributor]

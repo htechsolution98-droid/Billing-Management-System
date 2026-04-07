@@ -13,8 +13,6 @@ app.get("/", (req, res) => {
   res.send("Server is running 🚀");
 });
 
-// Swagger route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // ── existing routes ───────────────────────────────────────────────────────────
 import registerroutes from "./routes/Authroutes/Register/register.routes.js";
 import loginroutes from "./routes/Authroutes/Login/login.routes.js";
@@ -28,4 +26,10 @@ app.use("/api/loginapi", loginroutes);
 app.use("/api/distributorapi", Distributor);
 app.use("/api/nuserapi", Nuser);
 
+//======================Swagger route===============================
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.get("/api-test", (req, res) => {
+  res.send("API working on Render");
+});
 export default app;

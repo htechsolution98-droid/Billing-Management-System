@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/distributor/create:
+ * /api/nuserapi/create:
  *   post:
  *     summary: Create Distributor
  *     tags: [Distributor]
@@ -35,7 +35,7 @@ router.post("/create", createUsercontroller);
 
 /**
  * @swagger
- * /api/distributor/get:
+ * /api/nuserapi/get:
  *   get:
  *     summary: Get all distributors
  *     tags: [Distributor]
