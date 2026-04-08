@@ -1,17 +1,17 @@
 import upload from "../../config/multer.js";
 import multer from "multer";
-import { createUsercontroller } from "../../controller/User/CreateUser.controller.js";
-import { GetuserController } from "../../controller/User/GetUser.controller.js";
+
+import { createProductcontroller } from "../../controller/User/Products/Createproduct.controller.js";
+import { GetProductController } from "../../controller/User/Products/Getproducts.controller.js";
 
 import express from "express";
 const router = express.Router();
-
 /**
  * @swagger
- * /api/nuserapi/create:
+ * /api/productapi/create:
  *   post:
- *     summary: Create Distributor
- *     tags: [Distributor]
+ *     summary: Create product
+ *     tags: [product]
  *     requestBody:
  *       required: true
  *       content:
@@ -21,22 +21,18 @@ const router = express.Router();
  *             properties:
  *               name:
  *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               corpo_certino:
+ *               productImage:
  *                 type: string
  *                 format: binary
  *     responses:
  *       201:
- *         description: Distributor created
+ *         description: product created
  */
 
 router.post(
   "/create",
   (req, res, next) => {
-    upload.single("firmLogo")(req, res, function (err) {
+    upload.single("productImage")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         return res.status(400).json({
           msg: "File too large. Max 2MB allowed",
@@ -52,20 +48,18 @@ router.post(
       next();
     });
   },
-  createUsercontroller,
+  createProductcontroller,
 );
-
 /**
  * @swagger
- * /api/nuserapi/get:
+ * /api/productapi/get:
  *   get:
- *     summary: Get all distributors
- *     tags: [Distributor]
+ *     summary: Get all product
+ *     tags: [product]
  *     responses:
  *       200:
- *         description: List of distributors fetched successfully
+ *         description: List of product fetched successfully
  */
-
-router.get("/get", GetuserController);
+router.get("/get", GetProductController);
 
 export default router;
