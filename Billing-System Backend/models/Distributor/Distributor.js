@@ -3,6 +3,11 @@ import bcrypt from "bcrypt";
 
 const distributorSchema = new mongoose.Schema(
   {
+    superAdminId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register",
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -38,29 +43,29 @@ const distributorSchema = new mongoose.Schema(
     aadhaar: {
       type: String,
     },
-    
+
     state: {
       type: String,
       required: true,
     },
-    
+
     district: {
       type: String,
       required: true,
     },
-    
+
     area: {
       type: String,
       required: true,
     },
-    
+
     firmName: String,
-    
+
     distributorCode: {
       type: String,
       unique: true,
     },
-    
+
     role: {
       type: String,
       enum: ["distributor"],
@@ -70,10 +75,10 @@ const distributorSchema = new mongoose.Schema(
       type: String,
     },
 
-    corpo_certino:{
+    corpo_certino: {
       type: String, // file path stored here
     },
-    
+
     isActive: {
       type: Boolean,
       default: true,

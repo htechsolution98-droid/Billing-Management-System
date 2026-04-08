@@ -7,7 +7,7 @@ const router = express.Router();
  * /api/loginapi/login:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
+ 
  *     requestBody:
  *       required: true
  *       content:

@@ -15,21 +15,6 @@ const options = {
         url: "https://billing-management-system-icwa.onrender.com",
       },
     ],
-
-    tags: [
-      {
-        name: "Distributor",
-        description: "Distributor APIs",
-      },
-      {
-        name: "Auth",
-        description: "Authentication APIs",
-      },
-      {
-        name: "User",
-        description: "User APIs",
-      },
-    ],
   },
 
   apis: ["./routes/**/*.js"]

@@ -3,11 +3,10 @@ import { CreateDistributorservice } from "../../service/Distributor/CreateDistri
 export const createcontroller = async (req, res, next) => {
   try {
     const { password, confirmPassword } = req.body;
-     const body = req.body;
-    console.log(password, confirmPassword);
-    console.log("Uploaded File",req.file);
-    console.log(body);
-    
+    const body = req.body;
+    // console.log(password, confirmPassword);
+    // console.log("Uploaded File", req.file);
+    // console.log(body);
 
     // Confirm Password Check
     if (password !== confirmPassword) {
@@ -16,15 +15,17 @@ export const createcontroller = async (req, res, next) => {
       });
     }
 
-    //Comapny corporate certino upload 
+    //Comapny corporate certino upload
     if (req.file) {
-      body.corpo_certino= req.file.filename;
+      body.corpo_certino = req.file.filename;
     }
 
+    // ✅ Take superAdminId from logged-in user
+    body.superAdminId = req.user.id;
     const data = await CreateDistributorservice(req.body);
 
-    res.status(201).json({message: "Distributor Added Successfully",data,});
+    res.status(201).json({ message: "Distributor Added Successfully", data });
   } catch (error) {
-    next(error); 
+    next(error);
   }
 };

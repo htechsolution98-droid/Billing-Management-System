@@ -21,7 +21,7 @@ const RegisterSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["superadmin", "distributor", "nuser"],
+      enum: [ "distributor", "nuser"],
       default: "nuser",
     },
 

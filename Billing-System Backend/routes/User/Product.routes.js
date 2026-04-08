@@ -11,7 +11,7 @@ const router = express.Router();
  * /api/productapi/create:
  *   post:
  *     summary: Create product
- *     tags: [product]
+ 
  *     requestBody:
  *       required: true
  *       content:
@@ -55,7 +55,7 @@ router.post(
  * /api/productapi/get:
  *   get:
  *     summary: Get all product
- *     tags: [product]
+
  *     responses:
  *       200:
  *         description: List of product fetched successfully
