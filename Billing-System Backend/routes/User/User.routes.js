@@ -11,7 +11,6 @@ const router = express.Router();
  * /api/nuserapi/create:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
  *     requestBody:
  *       required: true
  *       content:
@@ -60,7 +59,6 @@ router.post(
  * /api/nuserapi/get:
  *   get:
  *     summary: Get all distributors
- *     tags: [Distributor]
  *     responses:
  *       200:
  *         description: List of distributors fetched successfully

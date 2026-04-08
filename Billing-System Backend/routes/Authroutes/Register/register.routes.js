@@ -17,7 +17,7 @@ const router = express.Router();
  * /api/register/createregister:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
+ 
  *     requestBody:
  *       required: true
  *       content:
@@ -49,7 +49,7 @@ router.post("/createregister", Registercontroller);
  * /api/register/getregister:
  *   get:
  *     summary: Get all distributors
- *     tags: [Distributor]
+
  *     responses:
  *       200:
  *         description: List of distributors fetched successfully
@@ -67,7 +67,7 @@ router.get(
  * /api/register/create:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
+
  *     requestBody:
  *       required: true
  *       content:
@@ -101,7 +101,7 @@ router.post(
  * /api/register/create-nuser:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
+
  *     requestBody:
  *       required: true
  *       content:
@@ -135,7 +135,7 @@ router.post(
  * /api/register/dashboard:
  *   get:
  *     summary: Get all distributors
- *     tags: [Distributor]
+
  *     responses:
  *       200:
  *         description: List of distributors fetched successfully

@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+     distributorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Distributor",
+      required: true,
+    },
 
     bankName: {
       type: String,

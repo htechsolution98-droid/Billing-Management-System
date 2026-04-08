@@ -12,8 +12,10 @@ export const createUsercontroller = async (req, res) => {
     if (req.file) {
       body.firmLogo = req.file.filename;
     }
+
+    body.distributorId = req.user._id;
     const data = await CreateUserservice(req.body);
-    res.status(200).json({ msg: "Nuser Added", data });
+    res.status(200).json({ msg: "Produt Added", data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

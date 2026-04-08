@@ -10,7 +10,6 @@ const router = express.Router();
  * /api/distributorapi/create:
  *   post:
  *     summary: Create Distributor
- *     tags: [Distributor]
  *     requestBody:
  *       required: true
  *       content:
@@ -39,7 +38,7 @@ router.post("/create", upload.single("corpo_certino"), createcontroller);
  * /api/distributorapi/get:
  *   get:
  *     summary: Get all distributors
- *     tags: [Distributor]
+ 
  *     responses:
  *       200:
  *         description: List of distributors fetched successfully

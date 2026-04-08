@@ -34,13 +34,15 @@ const productSchema = new mongoose.Schema(
       required: false,
     },
 
-    productCategory: {
-      type: String,
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
 
-    productBrand: {
-      type: String,
+    brandId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
       required: true,
     },
 
