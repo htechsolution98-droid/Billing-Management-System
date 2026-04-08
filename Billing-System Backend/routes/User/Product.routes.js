@@ -6,10 +6,9 @@ import { GetProductController } from "../../controller/User/Products/Getproducts
 
 import express from "express";
 const router = express.Router();
-
 /**
  * @swagger
- * /api/product/create:
+ * /api/productapi/create:
  *   post:
  *     summary: Create product
  *     tags: [product]
@@ -22,11 +21,7 @@ const router = express.Router();
  *             properties:
  *               name:
  *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               corpo_certino:
+ *               productImage:
  *                 type: string
  *                 format: binary
  *     responses:
@@ -55,10 +50,9 @@ router.post(
   },
   createProductcontroller,
 );
-
 /**
  * @swagger
- * /api/product/get:
+ * /api/productapi/get:
  *   get:
  *     summary: Get all product
  *     tags: [product]
@@ -66,7 +60,6 @@ router.post(
  *       200:
  *         description: List of product fetched successfully
  */
-
 router.get("/get", GetProductController);
 
 export default router;

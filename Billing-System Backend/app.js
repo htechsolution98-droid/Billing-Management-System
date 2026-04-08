@@ -5,9 +5,9 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 
 const app = express();
+
 app.use(cors({
-  origin: "*",   // For testing allow all
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: "https://billing-management-system-icwa.onrender.com",
   credentials: true
 }));
 app.use(express.json());
