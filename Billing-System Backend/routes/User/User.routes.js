@@ -1,4 +1,5 @@
 import upload from "../../config/multer.js";
+import multer from "multer";
 import { createUsercontroller } from "../../controller/User/CreateUser.controller.js";
 import { GetuserController } from "../../controller/User/GetUser.controller.js";
 

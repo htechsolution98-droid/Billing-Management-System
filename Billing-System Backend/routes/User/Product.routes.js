@@ -1,4 +1,6 @@
 import upload from "../../config/multer.js";
+import multer from "multer";
+
 import { createProductcontroller } from "../../controller/User/Products/Createproduct.controller.js";
 import { GetProductController } from "../../controller/User/Products/Getproducts.controller.js";
 
@@ -9,8 +11,8 @@ const router = express.Router();
  * @swagger
  * /api/product/create:
  *   post:
- *     summary: Create Distributor
- *     tags: [Distributor]
+ *     summary: Create product
+ *     tags: [product]
  *     requestBody:
  *       required: true
  *       content:
@@ -29,7 +31,7 @@ const router = express.Router();
  *                 format: binary
  *     responses:
  *       201:
- *         description: Distributor created
+ *         description: product created
  */
 
 router.post(
@@ -58,11 +60,11 @@ router.post(
  * @swagger
  * /api/product/get:
  *   get:
- *     summary: Get all distributors
- *     tags: [Distributor]
+ *     summary: Get all product
+ *     tags: [product]
  *     responses:
  *       200:
- *         description: List of distributors fetched successfully
+ *         description: List of product fetched successfully
  */
 
 router.get("/get", GetProductController);

@@ -2,10 +2,10 @@ import { CreateProductservice } from "../../../service/User/Product/Createproduc
 export const createProductcontroller = async (req, res) => {
   try {
     const body = req.body;
-    // console.log("Uploaded File", req.file);
-    // console.log(body);
+    console.log("Uploaded File", req.file);
+    console.log(body);
 
-    //Firmlogoo upload
+    //productImage upload
     if (req.file) {
       body.productImage = req.file.filename;
     }
