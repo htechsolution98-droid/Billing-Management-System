@@ -1,33 +1,20 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-
 import Register from "./models/AuthModel/Registermodel/register.js";
 
-dotenv.config();
-
-const createSuperAdmin = async () => {
+export const createSuperAdmin = async () => {
 
   try {
 
-    // MongoDB connect
-    await mongoose.connect(process.env.MONGO_URI);
-
-    console.log("DB Connected");
-
-    // Check already exists
-    const existingAdmin =
-      await Register.findOne({
-        role: "superadmin"
-      });
+    const existingAdmin = await Register.findOne({
+      role: "superadmin"
+    });
 
     if (existingAdmin) {
 
-      console.log("Superadmin already exists");
-      process.exit();
+      console.log("Superadmin already exists ✅");
+      return;
 
     }
 
-    // Create superadmin
     await Register.create({
 
       name: "Sujal Gujar",
@@ -39,16 +26,10 @@ const createSuperAdmin = async () => {
 
     console.log("Superadmin created successfully ✅");
 
-    process.exit();
-
   } catch (error) {
 
-    console.log(error);
-
-    process.exit();
+    console.log("Superadmin creation error:", error);
 
   }
 
 };
-
-createSuperAdmin();

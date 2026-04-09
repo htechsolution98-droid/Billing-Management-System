@@ -29,7 +29,7 @@ const router = express.Router();
 router.post("/create",CreateBrandController);
 /**
  * @swagger
- * /api/brandapi/get:
+ * /api/barndapi/get:
  *   get:
  *     summary: Get all brand
 

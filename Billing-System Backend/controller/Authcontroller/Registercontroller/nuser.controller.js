@@ -8,7 +8,8 @@ export const createNUserController = async (req, res) => {
     const data = {
       ...req.body,
       role: "nuser",
-      distributorId: req.user.id
+      distributorId: req.user.id,
+      superAdminId: req.user.id,
     };
 
     const nuser = await createregister(data);

@@ -1,24 +1,38 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
 const options = {
-  definition: {
+  swaggerDefinition: {
     openapi: "3.0.0",
-
     info: {
-      title: "Billing Management API",
+      title: "My API",
       version: "1.0.0",
-      description: "API documentation for Billing Management System",
+      description: "API Documentation with JWT auth",
     },
-
     servers: [
       {
-        url: "https://billing-management-system-icwa.onrender.com",
+        url: "http://localhost:3000",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Enter your JWT token",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
-
+  // apis: ["./routes/*.js"], // Path to your route files for annotations
   apis: ["./routes/**/*.js"]
 };
+
 
 const swaggerSpec = swaggerJSDoc(options);
 

@@ -29,13 +29,12 @@ const router = express.Router();
 router.post("/create",CreateCategoryController);
 /**
  * @swagger
- * /api/Categoryapi/get:
+ * /api/cetegoryapi/get:
  *   get:
- *     summary: Get all Category
-
+ *     summary: Get all categories
  *     responses:
  *       200:
- *         description: List of Category fetched successfully
+ *         description: Category list
  */
 router.get("/get", GetCategoryController);
 
