@@ -5,7 +5,8 @@ import { GetuserController } from "../../controller/User/GetUser.controller.js";
 
 import express from "express";
 const router = express.Router();
-
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 /**
  * @swagger
  * /api/nuserapi/create:
@@ -34,6 +35,8 @@ const router = express.Router();
 
 router.post(
   "/create",
+  verifyToken,
+  authorizeRoles("distributor"),
   (req, res, next) => {
     upload.single("firmLogo")(req, res, function (err) {
       if (err instanceof multer.MulterError) {

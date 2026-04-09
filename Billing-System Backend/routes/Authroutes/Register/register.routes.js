@@ -40,28 +40,11 @@ const router = express.Router();
  */
 
 // PUBLIC ROUTE
-router.post("/createregister", Registercontroller);
+// router.post("/createregister", Registercontroller);
+// router.post("/createregister",verifyToken,authorizeRoles("superadmin"),Registercontroller);
+
 
 // 🔐 PROTECTED ROUTE ( superadmin)
-
-/**
-  * @swagger
- * /api/register/getregister:
- *   get:
- *     summary: Get all distributors
-
- *     responses:
- *       200:
- *         description: List of distributors fetched successfully
- */
-
-router.get(
-  "/getregister",
-  verifyToken,
-  authorizeRoles("superadmin"),
-  GetRegistercontroller,
-);
-
 /**
 * @swagger
  * /api/register/create:
@@ -89,11 +72,13 @@ router.get(
  *         description: Distributor created
  */
 
+// ✅ Create Distributor (SuperAdmin only)
+
 router.post(
   "/create-distributor",
   verifyToken,
   authorizeRoles("superadmin"),
-  createDistributorController,
+  createDistributorController
 );
 
 /**
@@ -123,13 +108,14 @@ router.post(
  *         description: Distributor created
  */
 
+// ✅ Create NUser (Distributor only)
+
 router.post(
   "/create-nuser",
   verifyToken,
-  authorizeRoles("distributor"),
-  createNUserController,
+  authorizeRoles("superadmin","distributor"),
+  createNUserController
 );
-
 /**
  * @swagger
  * /api/register/dashboard:
@@ -141,11 +127,37 @@ router.post(
  *         description: List of distributors fetched successfully
  */
 
+
+
+/**
+  * @swagger
+ * /api/register/getregister:
+ *   get:
+ *     summary: Get all distributors
+
+ *     responses:
+ *       200:
+ *         description: List of distributors fetched successfully
+ */
+
+
+// ✅ Get All Users (SuperAdmin only)
+
+router.get(
+  "/getregister",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  GetRegistercontroller
+);
+
+
+// ✅ Dashboard (SuperAdmin + Distributor)
+
 router.get(
   "/dashboard",
   verifyToken,
   authorizeRoles("superadmin", "distributor"),
-  dashboardController,
+  dashboardController
 );
 
 export default router;

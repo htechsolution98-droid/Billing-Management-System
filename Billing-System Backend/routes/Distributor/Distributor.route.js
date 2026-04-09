@@ -1,6 +1,8 @@
 import upload from "../../config/multer.js";
 import { createcontroller } from "../../controller/Distributor/CreateDistributor.controller.js";
 import { GetDistributorController } from "../../controller/Distributor/GetDistributor.controller.js";
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
 import express from "express";
 const router = express.Router();
@@ -31,7 +33,14 @@ const router = express.Router();
  *         description: Distributor created
  */
 
-router.post("/create", upload.single("corpo_certino"), createcontroller);
+// router.post("/create", upload.single("corpo_certino"), createcontroller);
+router.post(
+  "/create",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  upload.single("corpo_certino"),
+  createcontroller,
+);
 
 /**
  * @swagger

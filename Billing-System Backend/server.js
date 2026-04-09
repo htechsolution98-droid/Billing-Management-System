@@ -1,6 +1,7 @@
 ﻿import dotenv from "dotenv";
 import connectDB from "./config/database.js";
 import app from "./app.js";
+import  {createSuperAdmin}  from "./superadmin.js";
 
 dotenv.config();
 
@@ -26,8 +27,9 @@ const clearInvalidLocalProxy = () => {
 const startServer = async () => {
   try {
     clearInvalidLocalProxy();
-    await connectDB();
 
+    await connectDB();
+    await createSuperAdmin();
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
