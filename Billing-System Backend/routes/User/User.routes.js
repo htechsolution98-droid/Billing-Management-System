@@ -33,8 +33,7 @@ import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
  *         description: Distributor created
  */
 
-router.post(
-  "/create",
+router.post("/create",
   verifyToken,
   authorizeRoles("distributor"),
   (req, res, next) => {

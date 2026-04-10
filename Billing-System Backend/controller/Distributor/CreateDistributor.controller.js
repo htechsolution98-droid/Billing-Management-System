@@ -3,29 +3,25 @@ import { CreateDistributorservice } from "../../service/Distributor/CreateDistri
 export const createcontroller = async (req, res, next) => {
   try {
     const { password, confirmPassword } = req.body;
-    const body = req.body;
-    // console.log(password, confirmPassword);
-    // console.log("Uploaded File", req.file);
-    // console.log(body);
+    const body = { ...req.body };
 
-    // Confirm Password Check
     if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Password and Confirm Password do not match",
       });
     }
 
-    //Comapny corporate certino upload
     if (req.file) {
       body.corpo_certino = req.file.filename;
     }
 
-    // ✅ Take superAdminId from logged-in user
-    body.superAdminId = req.user.id;
-    const data = await CreateDistributorservice(req.body);
+    body.superAdminId = req.user._id;
+
+    const data = await CreateDistributorservice(body);
 
     res.status(201).json({ message: "Distributor Added Successfully", data });
   } catch (error) {
     next(error);
   }
 };
+

@@ -6,42 +6,33 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const loginService = async (data) => {
-
   const user = await Register.findOne({
-    email: data.email
+    email: data.email,
   });
 
   if (!user) {
     throw new Error("User not found");
   }
 
-  // 🔐 bcrypt password compare
-  const isMatch =
-    await bcrypt.compare(
-      data.password,
-      user.password
-    );
-    console.log(isMatch);
-    
+  const isMatch = await bcrypt.compare(data.password, user.password);
 
   if (!isMatch) {
     throw new Error("Invalid password");
   }
 
-  // JWT TOKEN
   const token = jwt.sign(
     {
-      id: user._id,
-      role: user.role
+      _id: user._id,
+      role: user.role,
+      superAdminId: user.superAdminId,
+      distributorId: user.distributorId,
     },
     process.env.JWT_SECRET,
-    {
-      expiresIn: "5d"
-    }
+    { expiresIn: "5d" },
   );
 
   return {
     token,
-    role: user.role
+    role: user.role,
   };
 };

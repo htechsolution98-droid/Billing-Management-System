@@ -4,15 +4,19 @@
 import { CreateUserservice } from "../../service/User/CreateUser.service.js";
 export const createUsercontroller = async (req, res, next) => {
   try {
-    const body = req.body;
+    if (!req.user?._id) {
+      return res.status(401).json({
+        message: "Unauthorized user",
+      });
+    }
 
-    // Save logo
+    const body = { ...req.body };
+
     if (req.file) {
       body.firmLogo = req.file.filename;
     }
 
-    // Very Important
-    body.distributorId = req.user.id;
+    body.distributorId = req.user._id;
 
     const data = await CreateUserservice(body);
 
@@ -24,3 +28,4 @@ export const createUsercontroller = async (req, res, next) => {
     next(error);
   }
 };
+
