@@ -26,6 +26,7 @@ import Nuser from "./routes/User/User.routes.js";
 import Product from "./routes/User/Product.routes.js";
 import Brand from "./routes/User/Brand.routes.js";
 import Category from "./routes/User/Category.routes.js";
+import Customer from "./routes/User/Customer.routes.js";
 
 // ── new protected routes ──────────────────────────────────────────────────────
 import Distributor from "./routes/Distributor/Distributor.route.js";
@@ -37,6 +38,7 @@ app.use("/api/nuserapi", Nuser);
 app.use("/api/productapi", Product);
 app.use("/api/barndapi", Brand);
 app.use("/api/cetegoryapi", Category);
+app.use("/api/customerapi", Customer);
 
 //======================Swagger route===============================
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

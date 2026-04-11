@@ -73,7 +73,7 @@ router.post(
 
 // Superadmin creates Distributor
 router.post(
-  "/nuser-create",
+  "/dist-create",
   verifyToken,
   authorizeRoles("superadmin"),
   createregisterController
@@ -109,7 +109,7 @@ router.post(
 
 // Distributor creates NUser
 router.post(
-  "/dist-create",
+  "/nuser-create",
   verifyToken,
   authorizeRoles("superadmin","distributor"),
   createregisterController

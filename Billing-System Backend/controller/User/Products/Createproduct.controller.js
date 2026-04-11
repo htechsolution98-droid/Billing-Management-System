@@ -9,8 +9,9 @@ export const createProductcontroller = async (req, res) => {
     if (req.file) {
       body.productImage = req.file.filename;
     }
+    const userId = req.user._id; // logged-in nuser
     const data = await CreateProductservice(req.body);
-    res.status(200).json({ msg: "Nuser Added", data });
+    res.status(200).json({ msg: "Nuser Added", data ,userId});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,7 +1,8 @@
 import Register from "../../../models/AuthModel/Registermodel/register.js";
 
 export const createregisterservice = async (data, creator = null) => {
-  const { name, email, password, role } = data;
+  const { name, password, role } = data;
+  const email = data.email?.trim().toLowerCase();
 
   const allowedRoles = ["superadmin", "distributor", "nuser"];
 

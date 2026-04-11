@@ -11,7 +11,11 @@ export const logincontroller = async (req,res) => {
     });
         
     } catch (error) {
-        
-        res.status(500).json({error:error.message })
+        const statusCode =
+          error.message === "User not found" || error.message === "Invalid password"
+            ? 401
+            : 500;
+
+        res.status(statusCode).json({error:error.message })
     }
 }

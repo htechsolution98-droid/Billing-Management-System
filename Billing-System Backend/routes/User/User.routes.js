@@ -35,7 +35,7 @@ import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
 router.post("/create",
   verifyToken,
-  authorizeRoles("distributor"),
+  authorizeRoles("superadmin","distributor"),
   (req, res, next) => {
     upload.single("firmLogo")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
