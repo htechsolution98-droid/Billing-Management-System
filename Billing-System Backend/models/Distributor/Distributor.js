@@ -6,7 +6,7 @@ const distributorSchema = new mongoose.Schema(
     superAdminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Register",
-      required: true,
+    
     },
     name: {
       type: String,

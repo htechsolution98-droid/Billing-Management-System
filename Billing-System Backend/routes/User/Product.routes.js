@@ -3,7 +3,8 @@ import multer from "multer";
 
 import { createProductcontroller } from "../../controller/User/Products/Createproduct.controller.js";
 import { GetProductController } from "../../controller/User/Products/Getproducts.controller.js";
-
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+ import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 import express from "express";
 const router = express.Router();
 /**
@@ -30,7 +31,8 @@ const router = express.Router();
  */
 
 router.post(
-  "/create",
+  "/create",verifyToken,
+    authorizeRoles("nuser"),
   (req, res, next) => {
     upload.single("productImage")(req, res, function (err) {
       if (err instanceof multer.MulterError) {

@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema(
 
     firmLogo: {
       type: String, // store uploaded file path
-      
     },
 
     aadhaar: {
@@ -42,6 +41,9 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
+    password: {
+      type: String,
+    },
     mobile: {
       type: String,
       required: true,
@@ -57,10 +59,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
-     distributorId: {
+    distributorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Distributor",
-      required: true,
+      ref: "Distributor", // <<-- THIS MUST BE HERE
+      // <<-- THIS MUST BE HERE
     },
 
     bankName: {

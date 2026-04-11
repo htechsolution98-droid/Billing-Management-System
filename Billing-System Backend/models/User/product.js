@@ -10,7 +10,6 @@ const productSchema = new mongoose.Schema(
 
     productImage: {
       type: String, // store image path
-     
     },
 
     productDescription: {
@@ -33,7 +32,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
-
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

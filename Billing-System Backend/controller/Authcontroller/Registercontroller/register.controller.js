@@ -1,56 +1,21 @@
-export const Registercontroller = async (req, res) => {
+import { createregisterservice } from "../../../service/Authservice/Register/register.service.js";
 
+export const createregisterController = async (req, res) => {
   try {
+    // If logged in
+    const creator = req.user || null;
+    console.log(creator, "creator");
 
-    let registerdata = {
-      ...req.body
-    };
+    const user = await createregisterservice(req.body, creator);
 
-    // 🚫 Only one SuperAdmin
-    if (req.body.role === "superadmin") {
+    res.status(201).json({
+      message: "Signup successful",
 
-      const existingAdmin = await register.findOne({
-        role: "superadmin"
-      });
-
-      if (existingAdmin) {
-
-        return res.status(400).json({
-          message: "Superadmin already exists ❌"
-        });
-
-      }
-
-    }
-
-    // ✅ Distributor created by SuperAdmin
-    if (req.body.role === "distributor") {
-
-      registerdata.superAdminId = req.user.id;
-
-    }
-
-    // ✅ NUser created by Distributor
-    if (req.body.role === "nuser") {
-
-      registerdata.distributorId = req.user.id;
-      registerdata.superAdminId = req.user.superAdminId;
-
-    }
-
-    const data = await createregister(registerdata);
-
-    res.status(200).json({
-      msg: "User Register",
-      data
+      user,
     });
-
   } catch (error) {
-
-    res.status(500).json({
-      error: error.message
+    res.status(400).json({
+      message: error.message,
     });
-
   }
-
 };
