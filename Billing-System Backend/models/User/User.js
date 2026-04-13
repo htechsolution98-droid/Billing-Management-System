@@ -57,12 +57,12 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      default: "user",
+      enum: ["nuser", "user"],
+      default: "nuser",
     },
     distributorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Distributor", // <<-- THIS MUST BE HERE
-      // <<-- THIS MUST BE HERE
+      ref: "Distributor", 
     },
 
     bankName: {

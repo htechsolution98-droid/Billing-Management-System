@@ -1,5 +1,6 @@
 import Register from "../../../models/AuthModel/Registermodel/register.js";
 import Distributor from "../../../models/Distributor/Distributor.js";
+import User from "../../../models/User/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -36,8 +37,9 @@ export const loginService = async (data) => {
 
   const registerUser = await Register.findOne({ email });
   const distributorUser = registerUser ? null : await Distributor.findOne({ email });
+  const appUser = registerUser || distributorUser ? null : await User.findOne({ email });
 
-  if (!registerUser && !distributorUser) {
+  if (!registerUser && !distributorUser && !appUser) {
     throw new Error("User not found");
   }
 
@@ -51,16 +53,25 @@ export const loginService = async (data) => {
     user = distributorUser;
   }
 
+  if (!user && appUser && (await verifyAndUpgradePassword(password, appUser))) {
+    user = appUser;
+  }
+
   if (!user) {
     throw new Error("Invalid password");
   }
 
+  const normalizedRole = user.role === "user" ? "nuser" : user.role;
+  const name = user.name || user.fullName;
+  const distributorId =
+    user.distributorId || (normalizedRole === "distributor" ? user._id : null);
+
   const token = jwt.sign(
     {
       _id: user._id,
-      role: user.role,
+      role: normalizedRole,
       superAdminId: user.superAdminId,
-      distributorId: user.distributorId || (user.role === "distributor" ? user._id : null),
+      distributorId,
     },
     process.env.JWT_SECRET,
     { expiresIn: "5d" },
@@ -70,11 +81,11 @@ export const loginService = async (data) => {
     token,
     user: {
       _id: user._id,
-      name: user.name,
+      name,
       email: user.email,
-      role: user.role,
+      role: normalizedRole,
       superAdminId: user.superAdminId,
-      distributorId: user.distributorId || (user.role === "distributor" ? user._id : null),
+      distributorId,
     },
   };
 };

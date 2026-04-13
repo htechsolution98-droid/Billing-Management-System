@@ -1,5 +1,7 @@
 import { CreateBrandController } from "../../controller/User/Brand/createbrand.controller.js";
 import { GetBrandController } from "../../controller/User/Brand/getbrand.controller.js";
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
 import express from "express";
 const router = express.Router();
@@ -26,7 +28,7 @@ const router = express.Router();
  *         description: brand created
  */
 
-router.post("/create",CreateBrandController);
+router.post("/create", verifyToken, authorizeRoles("nuser"), CreateBrandController);
 /**
  * @swagger
  * /api/barndapi/get:

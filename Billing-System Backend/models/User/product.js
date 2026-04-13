@@ -35,18 +35,18 @@ const productSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      
     },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
+      
     },
 
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
-      required: true,
+     
     },
 
     status: {

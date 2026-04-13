@@ -25,7 +25,7 @@ import Customer from "./routes/User/Customer.routes.js";
 // ── new protected routes ──────────────────────────────────────────────────────
 import Distributor from "./routes/Distributor/Distributor.route.js";
 
-app.use("/api/register", registerroutes);
+app.use("/api/registerapi", registerroutes);
 app.use("/api/loginapi", loginroutes);
 app.use("/api/distributorapi", Distributor);
 app.use("/api/nuserapi", Nuser);

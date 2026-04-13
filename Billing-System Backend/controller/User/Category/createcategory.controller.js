@@ -4,7 +4,11 @@ export const CreateCategoryController = async (req, res) => {
 
   try {
 
-    const data = await CreateCategoryService(req.body);
+    const body = {
+      ...req.body,
+      userId: req.user._id,
+    };
+    const data = await CreateCategoryService(body);
 
     res.status(200).json({
       msg: "Category Created",
