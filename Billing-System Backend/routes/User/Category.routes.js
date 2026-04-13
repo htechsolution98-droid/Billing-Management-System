@@ -1,5 +1,7 @@
 import { CreateCategoryController } from "../../controller/User/Category/createcategory.controller.js";
 import { GetCategoryController } from "../../controller/User/Category/getcategory.controller.js";
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
 import express from "express";
 const router = express.Router();
@@ -26,7 +28,7 @@ const router = express.Router();
  *         description: Category created
  */
 
-router.post("/create",CreateCategoryController);
+router.post("/create", verifyToken, authorizeRoles("nuser"), CreateCategoryController);
 /**
  * @swagger
  * /api/cetegoryapi/get:

@@ -1,10 +1,10 @@
 import upload from "../../config/multer.js";
 import multer from "multer";
-import { createUsercontroller } from "../../controller/User/CreateUser.controller.js";
-import { GetuserController } from "../../controller/User/GetUser.controller.js";
-
 import express from "express";
 const router = express.Router();
+import { createUsercontroller } from "../../controller/User/CreateUser.controller.js";
+import { GetuserController } from "../../controller/User/GetUser.controller.js";
+import { NuserDashController } from "../../controller/User/UserDashboard.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 /**
@@ -60,12 +60,25 @@ router.post("/create",
  * @swagger
  * /api/nuserapi/get:
  *   get:
- *     summary: Get all distributors
+ *     summary: Get all  nuser 
  *     responses:
  *       200:
- *         description: List of distributors fetched successfully
+ *         description: List of  nuser  fetched successfully
  */
 
 router.get("/get", GetuserController);
+
+/**
+ * @swagger
+ * /api/userdashget/get:
+ *   get:
+ *     summary: Get all nuser dashboard
+ *     responses:
+ *       200:
+ *         description: List of  nuser dashboard fetched successfully
+*/
+router.get("/userdashget",
+  verifyToken,
+  authorizeRoles("superadmin","distributor","nuser"),NuserDashController);
 
 export default router;

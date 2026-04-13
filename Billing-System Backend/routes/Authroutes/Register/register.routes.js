@@ -4,9 +4,9 @@ import { GetRegistercontroller } from "../../../controller/Authcontroller/Regist
 // 🔐 Middleware import
 import { verifyToken } from "../../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../../middlewares/rolemiddleware.js";
+import { dashboardController } from "../../../controller/Authcontroller/Registercontroller/saDashboard.controller.js";
 // import { createDistributorController } from "../../../controller/Authcontroller/Registercontroller/ditributor.controller.js";
 // import { createNUserController } from "../../../controller/Authcontroller/Registercontroller/nuser.controller.js";
-// import { dashboardController } from "../../../controller/Authcontroller/Registercontroller/dashboard.controller.js";
 const router = express.Router();
 
 // PUBLIC (self signup)
@@ -141,12 +141,12 @@ router.get(
  *         description: List of distributors fetched successfully
  */
 
-// router.get(
-//   "/dashboard",
-//   verifyToken,
-//   authorizeRoles("superadmin", "distributor"),
-//   dashboardController,
-// );
+router.get(
+  "/sadash",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  dashboardController,
+);
 
 export default router;
 

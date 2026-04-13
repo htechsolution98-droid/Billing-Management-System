@@ -8,7 +8,10 @@ const categorySchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],

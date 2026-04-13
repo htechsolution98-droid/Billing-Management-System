@@ -2,7 +2,10 @@ import { CreateBrandService } from "../../../service/User/Brand/createbrand.serv
 
 export const CreateBrandController = async (req, res) => {
   try {
-    const data = await CreateBrandService(req.body);
+    const body = {...req.body,userId: req.user._id,};
+    console.log(body,"barndcont");
+    
+    const data = await CreateBrandService(body);
 
     res.status(200).json({
       msg: "Brand Created",

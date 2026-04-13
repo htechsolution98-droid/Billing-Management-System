@@ -2,61 +2,6 @@ s:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWQ3NTgwZmVjZTgxYTA1OTE0NGNjO
 
 d:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWQ5ZGNjYTYyYjczM2Q1MTM3ZmQzY2EiLCJyb2xlIjoiZGlzdHJpYnV0b3IiLCJzdXBlckFkbWluSWQiOm51bGwsImRpc3RyaWJ1dG9ySWQiOiI2OWQ5ZGNjYTYyYjczM2Q1MTM3ZmQzY2EiLCJpYXQiOjE3NzU4ODU1NTIsImV4cCI6MTc3NjMxNzU1Mn0.EuRyE2FWwel5PWF5rVY0UsvTvVKKux9S_I7WbDJfdAw
 
-
-
-
-
-[
-  {
-    "superAdminId": "69d7580fece81a059144cc93",
-    "name": "Rohan Traders",
-    "mobile": "9876543210",
-    "email": "rohantraders@gmail.com",
-    "password": "123456",
-    "confirmPassword": "123456",
-    "gst": "24ABCDE1234F1Z5",
-    "pan": "ABCDE1234F",
-    "aadhaar": "987654321234",
-    "state": "Gujarat",
-    "district": "Ahmedabad",
-    "area": "Nikol",
-    "firmName": "Rohan Wholesale Traders",
-    "companypan": "ABCDE1234F"
-  },
-  {
-    "superAdminId": "69d7580fece81a059144cc93",
-    "name": "Mehta Distributors",
-    "mobile": "9876543211",
-    "email": "mehtadistributors@gmail.com",
-    "password": "123456",
-    "confirmPassword": "123456",
-    "gst": "24ABCDE1234F1Z6",
-    "pan": "ABCDE1234G",
-    "aadhaar": "987654321235",
-    "state": "Gujarat",
-    "district": "Ahmedabad",
-    "area": "Maninagar",
-    "firmName": "Mehta Supply Chain",
-    "companypan": "ABCDE1234G"
-  },
-  {
-    "superAdminId": "69d7580fece81a059144cc93",
-    "name": "Patel Agencies",
-    "mobile": "9876543212",
-    "email": "patelagencies@gmail.com",
-    "password": "123456",
-    "confirmPassword": "123456",
-    "gst": "24ABCDE1234F1Z7",
-    "pan": "ABCDE1234H",
-    "aadhaar": "987654321236",
-    "state": "Gujarat",
-    "district": "Ahmedabad",
-    "area": "Naroda",
-    "firmName": "Patel Wholesale Hub",
-    "companypan": "ABCDE1234H"
-  }
-]
-
 patelagenecis 123456:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWRhMjhlNTFjODExZGU3ZGJhMzFkYjgiLCJyb2xlIjoiZGlzdHJpYnV0b3IiLCJzdXBlckFkbWluSWQiOiI2OWQ3NTgwZmVjZTgxYTA1OTE0NGNjOTMiLCJkaXN0cmlidXRvcklkIjoiNjlkYTI4ZTUxYzgxMWRlN2RiYTMxZGI4IiwiaWF0IjoxNzc1OTA1MTAyLCJleHAiOjE3NzYzMzcxMDJ9.TRzHj5pD5be_RS9suVq36hc8hlzO2EQd87xoDRSoJaU
 
-  return await User.find().populate("distributorId", "name role distributorCode");
+nuser: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWRjOTA2MTI0YzdkY2NhMzQ2YzU5ODkiLCJyb2xlIjoibnVzZXIiLCJkaXN0cmlidXRvcklkIjoiNjlkOGVjODRkOWU4Yjc5ODY4OTI3Y2JiIiwiaWF0IjoxNzc2MDY0NzM1LCJleHAiOjE3NzY0OTY3MzV9.r7AkLB2W-lZBVRwSu0nB_oDPBjOV1e4M6dVv_RvSw94

@@ -1,6 +1,7 @@
 import upload from "../../config/multer.js";
 import { createcontroller } from "../../controller/Distributor/CreateDistributor.controller.js";
 import { GetDistributorController } from "../../controller/Distributor/GetDistributor.controller.js";
+import { DistributorDashController } from "../../controller/Distributor/DistDashboard.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
@@ -54,5 +55,20 @@ router.post(
  */
 
 router.get("/get", GetDistributorController);
+
+/**
+ * @swagger
+ * /api/distdashget/get:
+ *   get:
+ *     summary: Get all distributor Dashbaord
+
+ *     responses:
+*       200:
+*         description: List of distributors Dashboard fetched successfully
+*/
+
+router.get("/distdashget",
+  verifyToken,
+  authorizeRoles("superadmin","distributor"), DistributorDashController);
 
 export default router;
