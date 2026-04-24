@@ -91,7 +91,7 @@ router.get("/userdashget",
 router.put(
   "/nuser/update/:id",
   verifyToken,
-  authorizeRoles("superadmin"),
+  authorizeRoles("superadmin","distributor"),
   upload.single("firmLogo"),
   updateNusercontroller,
 );
@@ -100,7 +100,7 @@ router.put(
 router.delete(
   "/nuser/delete/:id",
   verifyToken,
-  authorizeRoles("superadmin"),
+  authorizeRoles("superadmin","distributor"),
   deleteNusercontroller,
 );
 

@@ -60,3 +60,19 @@ export const getcustocontroller = async (req, res) => {
     });
   }
 };
+
+export const getCustomersByNuserIdController = async (req, res) => {
+  try {
+    const { nuserId } = req.params;
+
+    if (!nuserId) {
+      return res.status(400).json({ message: "nuserId is required" });
+    }
+
+    const customers = await Customer.find({ nuserId });
+
+    return res.status(200).json({ data: customers });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};

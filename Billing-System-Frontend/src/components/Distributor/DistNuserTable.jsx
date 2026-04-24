@@ -32,7 +32,7 @@ const DistNuserTable = ({ distributorId }) => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this NUser?")) return;
     try {
-      await axiosInstance.delete(`/nuserapi/delete/${id}`);
+      await axiosInstance.delete(`/nuserapi/nuser/delete/${id}`);
       fetchNusers();
     } catch (error) {
       console.error("Delete NUser Error:", error);
@@ -43,7 +43,7 @@ const DistNuserTable = ({ distributorId }) => {
   const handleUpdate = async (updatedNuser) => {
     try {
       await axiosInstance.put(
-        `/nuserapi/update/${updatedNuser._id}`,
+        `/nuserapi/nuser/update/${updatedNuser._id}`,
         updatedNuser,
       );
       fetchNusers();
@@ -88,7 +88,7 @@ const DistNuserTable = ({ distributorId }) => {
           <table className="min-w-full table-fixed">
             <thead className="bg-gray-50">
               <tr>
-                {["Name", "Firm", "Mobile", "Email", "Status", "Actions"].map(
+                {["Name", "Firm", "Email", "Status", "Actions"].map(
                   (h) => (
                     <th
                       key={h}
@@ -138,9 +138,9 @@ const DistNuserTable = ({ distributorId }) => {
                       <td className="px-6 py-4 text-sm text-gray-600 truncate">
                         {nuser.firmName || "-"}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      {/* <td className="px-6 py-4 text-sm text-gray-600">
                         {nuser.mobile || "-"}
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 text-sm text-gray-600 truncate">
                         {nuser.email || "-"}
                       </td>

@@ -11,6 +11,7 @@ import QuickActions from "../components/Nuser/QuickActions";
 import DataTable from "../components/Nuser/DataTable";
 import WelcomeBanner from "../components/Nuser/WelcomeBanner";
 import LogoutModal from "../components/Nuser/LogoutModal";
+import CustomerSection from "../components/Nuser/CustomerSection";
 
 // Icons for StatCards and Tables
 import { Tag, Package, Users, FolderOpen } from "lucide-react";
@@ -277,7 +278,8 @@ const NuserDashboard = () => {
                 </div>
               </div>
 
-              {/* Tables Section - Row 1 */}
+              {/* Tables Section */}
+              <CustomerSection />
             </div>
           )}
         </main>

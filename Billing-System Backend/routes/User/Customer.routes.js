@@ -2,7 +2,10 @@ import { createcustocontroller } from "../../controller/User/Customer/create.cus
 import {
   getcustocontroller,
   getNUserCustomersController,
+  getCustomersByNuserIdController,
 } from "../../controller/User/Customer/get.customer.controller.js";
+import { updateCustomerController } from "../../controller/User/Customer/update.customer.controller.js";
+import { deleteCustomerController } from "../../controller/User/Customer/delete.customer.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles, checkRole } from "../../middlewares/rolemiddleware.js";
 import express from "express";
@@ -48,6 +51,30 @@ router.get(
   verifyToken,
   checkRole("nuser"),
   getNUserCustomersController,
+);
+
+// Distributor: fetch all customers for a specific NUser
+router.get(
+  "/nuser/:nuserId",
+  verifyToken,
+  authorizeRoles("superadmin", "distributor"),
+  getCustomersByNuserIdController,
+);
+
+// NUser / SuperAdmin: update a customer
+router.put(
+  "/update/:id",
+  verifyToken,
+  authorizeRoles("superadmin", "nuser"),
+  updateCustomerController,
+);
+
+// NUser / SuperAdmin: delete a customer
+router.delete(
+  "/delete/:id",
+  verifyToken,
+  authorizeRoles("superadmin", "nuser"),
+  deleteCustomerController,
 );
 
 export default router;

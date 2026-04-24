@@ -7,7 +7,10 @@ import {
   BadgeCheck,
   Landmark,
   Users,
-  Eye ,
+  ShoppingCart,
+  MapPin,
+  Phone,
+  AlertCircle,
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 
@@ -22,40 +25,41 @@ const InfoCard = ({ label, value }) => (
 
 const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
   const [customers, setCustomers] = useState([]);
-  const [loadingCustomers, setLoadingCustomers] = useState(false);
+  const [customersLoading, setCustomersLoading] = useState(false);
+  const [customersError, setCustomersError] = useState(null);
 
-  // Fetch customers belonging to this NUser when modal opens
   useEffect(() => {
     if (!isOpen || !nuser?._id) return;
 
     const fetchCustomers = async () => {
-      setLoadingCustomers(true);
+      setCustomersLoading(true);
+      setCustomersError(null);
       try {
         const res = await axiosInstance.get(
-          `/customerapi/get?nuserId=${nuser._id}`
+          `/customerapi/nuser/${nuser._id}`
         );
         setCustomers(res.data.data || []);
-      } catch (error) {
-        console.error("Failed to fetch customers:", error);
+      } catch (err) {
+        console.error("Fetch Customers Error:", err);
+        setCustomersError("Failed to load customers.");
         setCustomers([]);
       } finally {
-        setLoadingCustomers(false);
+        setCustomersLoading(false);
       }
     };
 
     fetchCustomers();
-
-    return () => setCustomers([]);
   }, [isOpen, nuser?._id]);
 
   if (!isOpen || !nuser) return null;
 
-  const initials = nuser.fullName
-    ?.split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "N";
+  const initials =
+    nuser.fullName
+      ?.split(" ")
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "N";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
@@ -103,6 +107,7 @@ const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
                 <InfoCard label="Firm Name" value={nuser.firmName} />
                 <InfoCard label="Role" value={nuser.role} />
                 <InfoCard label="Status" value={nuser.status || "active"} />
+                {/* <InfoCard label="Status" value={nuser.password || "active"} /> */}
               </div>
             </div>
 
@@ -128,10 +133,10 @@ const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
                 <h5 className="text-sm font-semibold text-gray-700">Identity Details</h5>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <InfoCard label="PAN Number" value={nuser.pan} />
                 <InfoCard label="Aadhaar Number" value={nuser.aadhaar} />
-                <InfoCard label="IFSC Code" value={nuser.ifsc} />
-                <InfoCard label="Account Number" value={nuser.accountNumber} />
+                <InfoCard label="PAN Number" value={nuser.pan} />
+                <InfoCard label="Firm Logo" value={nuser.firmLogo || "Not uploaded"} />
+                <InfoCard label="Created On" value={nuser.createdAt?.slice(0, 10)} />
               </div>
             </div>
 
@@ -143,106 +148,123 @@ const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
               <div className="grid gap-3 sm:grid-cols-2">
                 <InfoCard label="Bank Name" value={nuser.bankName} />
                 <InfoCard label="Account Holder" value={nuser.accountHolderName} />
-                <InfoCard label="Firm Logo" value={nuser.firmLogo || "Not uploaded"} />
-                <InfoCard label="Created On" value={nuser.createdAt?.slice(0, 10)} />
+                <InfoCard label="Account Number" value={nuser.accountNumber} />
+                <InfoCard label="IFSC Code" value={nuser.ifsc} />
               </div>
             </div>
           </div>
 
-          {/* ── Divider ── */}
-          <div className="my-6 border-t border-gray-200" />
-
-          {/* ── Customers Section ── */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+          {/* ── Customer Table ── */}
+          <div className="mt-8">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">Customers</h5>
+                <div className="rounded-lg bg-blue-50 p-2">
+                  <ShoppingCart className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <h5 className="text-sm font-semibold text-gray-700">Customers</h5>
+                  <p className="text-xs text-gray-400">All customers registered by this NUser</p>
+                </div>
               </div>
-              {!loadingCustomers && (
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-                  {customers.length} record{customers.length !== 1 ? "s" : ""}
+              {!customersLoading && !customersError && (
+                <span className="rounded-xl bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+                  Total: {customers.length}
                 </span>
               )}
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white">
-              {loadingCustomers ? (
-                <div className="space-y-2 p-4">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="h-8 w-full animate-pulse rounded-lg bg-gray-100"
-                    />
-                  ))}
+            <div className="overflow-hidden rounded-2xl border border-gray-100">
+              {customersLoading ? (
+                <div className="flex items-center justify-center gap-2 py-10 text-sm text-gray-400">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+                  Loading customers...
+                </div>
+              ) : customersError ? (
+                <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-400">
+                  <AlertCircle className="h-4 w-4" />
+                  {customersError}
+                </div>
+              ) : customers.length === 0 ? (
+                <div className="py-10 text-center text-sm text-gray-400">
+                  No customers found for this NUser.
                 </div>
               ) : (
-                <table className="min-w-full table-fixed">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      {["Name", "Mobile", "Email", "City"].map((col) => (
-                        <th
-                          key={col}
-                          className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400"
-                        >
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {customers.length === 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full table-fixed">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <td
-                          colSpan={4}
-                          className="py-8 text-center text-sm text-gray-400"
-                        >
-                          No Customers Found
-                        </td>
+                        {["Customer", "Mobile", "Email", "Address", "State", "Status"].map((h) => (
+                          <th
+                            key={h}
+                            className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500"
+                          >
+                            {h}
+                          </th>
+                        ))}
                       </tr>
-                    ) : (
-                      customers.map((cust) => {
-                        const cInitials = (cust.name || cust.fullName || "C")
-                          .split(" ")
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {customers.map((c) => {
+                        const cInitials = c.customerName
+                          ?.split(" ")
                           .map((w) => w[0])
                           .join("")
                           .slice(0, 2)
-                          .toUpperCase();
+                          .toUpperCase() || "C";
 
                         return (
-                          <tr
-                            key={cust._id}
-                            className="transition-colors hover:bg-gray-50"
-                          >
+                          <tr key={c._id} className="transition-colors hover:bg-gray-50">
                             <td className="px-4 py-3">
-                              <div className="flex items-center gap-2.5">
-                                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-teal-50 text-[10px] font-semibold text-teal-700">
+                              <div className="flex items-center gap-2">
+                                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
                                   {cInitials}
                                 </div>
                                 <span className="truncate text-sm font-medium text-gray-800">
-                                  {cust.name || cust.fullName || "-"}
+                                  {c.customerName}
                                 </span>
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-800">
-                              {cust.mobile || "-"}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <Phone className="h-3 w-3 text-gray-400" />
+                                {c.mobile || "-"}
+                              </div>
                             </td>
-                            <td className="truncate px-4 py-3 text-sm font-medium text-gray-800">
-                              {cust.email || "-"}
+                            <td className="px-4 py-3 text-sm text-gray-600 truncate">
+                              {c.email || "-"}
                             </td>
-                            <td className="truncate px-4 py-3 text-sm font-medium text-gray-800">
-                              {cust.city || "-"}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                                <span className="truncate max-w-[120px]">
+                                  {c.area ? `${c.area}, ${c.district}` : c.address || "-"}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
+                              {c.state || "-"}
+                            </td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                  c.status === "active"
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {c.status || "active"}
+                              </span>
                             </td>
                           </tr>
                         );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>
-          {/* ── End Customers Section ── */}
+          {/* ── End Customer Table ── */}
 
         </div>
       </div>
