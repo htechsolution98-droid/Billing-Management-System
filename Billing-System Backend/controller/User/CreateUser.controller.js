@@ -39,11 +39,11 @@ export const createUsercontroller = async (req, res, next) => {
 
     if (req.user.role === "superadmin") {
 
-      if (!req.body.distributorId) {
-        return res.status(400).json({
-          message: "DistributorId is required",
-        });
-      }
+      // if (!req.body.distributorId) {
+      //   return res.status(400).json({
+      //     message: "DistributorId is required",
+      //   });
+      // }
 
       body.distributorId = req.body.distributorId;
 

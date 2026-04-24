@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -60,9 +61,13 @@ const userSchema = new mongoose.Schema(
       enum: ["nuser", "user"],
       default: "nuser",
     },
+    registerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register",
+    },
     distributorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Distributor", 
+      ref: "Distributor",
     },
 
     bankName: {
@@ -89,6 +94,13 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+userSchema.pre("save", async function () {
+  // Only hash if password modified
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
 const User = mongoose.model("User", userSchema);
 

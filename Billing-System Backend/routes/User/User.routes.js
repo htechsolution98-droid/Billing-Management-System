@@ -7,6 +7,9 @@ import { GetuserController } from "../../controller/User/GetUser.controller.js";
 import { NuserDashController } from "../../controller/User/UserDashboard.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
+import { updateNusercontroller } from "../../controller/Distributor/User/update.controller.js";
+import { deleteNusercontroller } from "../../controller/Distributor/User/delete.controller.js";
+
 /**
  * @swagger
  * /api/nuserapi/create:
@@ -66,7 +69,8 @@ router.post("/create",
  *         description: List of  nuser  fetched successfully
  */
 
-router.get("/get", GetuserController);
+router.get("/get",verifyToken,
+  authorizeRoles("superadmin","distributor"),  GetuserController);
 
 /**
  * @swagger
@@ -79,6 +83,25 @@ router.get("/get", GetuserController);
 */
 router.get("/userdashget",
   verifyToken,
-  authorizeRoles("superadmin","distributor","nuser"),NuserDashController);
+  authorizeRoles("nuser"),NuserDashController);
+
+
+
+// update api distibutor dashboard
+router.put(
+  "/nuser/update/:id",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  upload.single("firmLogo"),
+  updateNusercontroller,
+);
+
+// delete api distibutor dashboard
+router.delete(
+  "/nuser/delete/:id",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  deleteNusercontroller,
+);
 
 export default router;

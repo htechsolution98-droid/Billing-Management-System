@@ -1,7 +1,10 @@
-import {createcustocontroller} from "../../controller/User/Customer/create.customer.controller.js"
-import {getcustocontroller} from "../../controller/User/Customer/get.customer.controller.js"
-// import { verifyToken } from "../../middlewares/authmiddlewares.js";
-// import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
+import { createcustocontroller } from "../../controller/User/Customer/create.customer.controller.js";
+import {
+  getcustocontroller,
+  getNUserCustomersController,
+} from "../../controller/User/Customer/get.customer.controller.js";
+import { verifyToken } from "../../middlewares/authmiddlewares.js";
+import { authorizeRoles, checkRole } from "../../middlewares/rolemiddleware.js";
 import express from "express";
 const router = express.Router();
 /**
@@ -26,7 +29,7 @@ const router = express.Router();
  *       201:
  *         description: customer created
  */
-router.post("/create",createcustocontroller);
+router.post("/create", verifyToken, checkRole("nuser"), createcustocontroller);
 
 /**
  * @swagger
@@ -38,6 +41,13 @@ router.post("/create",createcustocontroller);
  *       200:
  *         description: List of customer fetched successfully
  */
-router.get("/get",getcustocontroller);
+router.get("/get", verifyToken, authorizeRoles("superadmin", "nuser"), getcustocontroller);
+
+router.get(
+  "/my-customers",
+  verifyToken,
+  checkRole("nuser"),
+  getNUserCustomersController,
+);
 
 export default router;

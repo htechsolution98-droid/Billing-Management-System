@@ -18,3 +18,5 @@ export const authorizeRoles = (...roles) => {
   };
 
 };
+
+export const checkRole = (...roles) => authorizeRoles(...roles);

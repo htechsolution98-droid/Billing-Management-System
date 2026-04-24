@@ -3,10 +3,14 @@ import bcrypt from "bcrypt";
 
 const distributorSchema = new mongoose.Schema(
   {
+    registerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register",
+    },
     superAdminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Register",
-    
+      required: true,
     },
     name: {
       type: String,

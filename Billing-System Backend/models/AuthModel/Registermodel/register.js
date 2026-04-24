@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";   
+import bcrypt from "bcrypt";
 
 const RegisterSchema = new mongoose.Schema(
   {
@@ -23,7 +23,7 @@ const RegisterSchema = new mongoose.Schema(
 
     role: {
       type: String,
-     enum: ["superadmin", "distributor", "nuser"],
+      enum: ["distributor", "nuser", "superadmin"],
       default: "nuser",
     },
 
@@ -47,30 +47,26 @@ const RegisterSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-
 RegisterSchema.index(
   { role: 1 },
   {
     unique: true,
     partialFilterExpression: {
-      role: "superadmin"
-    }
-  }
+      role: "superadmin",
+    },
+  },
 );
 
 //
 // 🔐 PASSWORD HASHING ( ADD )
 //
 RegisterSchema.pre("save", async function () {
-
   // Only hash if password NOT already hashed
   if (!this.isModified("password")) return;
 
   // Prevent double hash
   if (this.password.startsWith("$2b$")) return;
 
-  this.password =
-    await bcrypt.hash(this.password, 10);
-
+  this.password = await bcrypt.hash(this.password, 10);
 });
 export default mongoose.model("Register", RegisterSchema);
