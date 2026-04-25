@@ -8,6 +8,7 @@ import { updateUsercontroller } from "../../controller/Distributor/SuperAdmin/up
 import { deleteUsercontroller } from "../../controller/Distributor/SuperAdmin/delete.controller.js";
 import { diactvatedistcontroller } from "../../controller/Distributor/SuperAdmin/Disactivatedist.controller.js";
 import { activateDistributor } from "../../controller/Distributor/SuperAdmin/activatedist.controller.js";
+import { SerchdisController } from "../../controller/Distributor/SuperAdmin/serch.controller.js";
 
 import express from "express";
 const router = express.Router();
@@ -116,4 +117,11 @@ router.patch(
   activateDistributor,
 );
 
+//distributor serch api
+router.get(
+  "/distributorsearch",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  SerchdisController,
+);
 export default router;

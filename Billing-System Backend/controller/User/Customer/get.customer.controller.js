@@ -25,7 +25,7 @@ export const getNUserCustomersController = async (req, res) => {
 
     const customers = await Customer.find({
       nuserId: nuser._id,
-    });
+    }).populate({ path: "nuserId", select: "usercode" });
 
     return res.status(200).json({
       data: customers,
@@ -40,7 +40,7 @@ export const getNUserCustomersController = async (req, res) => {
 export const getcustocontroller = async (req, res) => {
   try {
     if (req.user?.role === "superadmin") {
-      const data = await Customer.find().populate("nuserId", "fullName email");
+      const data = await Customer.find().populate({ path: "nuserId", select: "usercode" });
 
       return res.status(200).json({
         data,
@@ -69,7 +69,7 @@ export const getCustomersByNuserIdController = async (req, res) => {
       return res.status(400).json({ message: "nuserId is required" });
     }
 
-    const customers = await Customer.find({ nuserId });
+    const customers = await Customer.find({ nuserId }).populate({ path: "nuserId", select: "usercode" });
 
     return res.status(200).json({ data: customers });
   } catch (error) {

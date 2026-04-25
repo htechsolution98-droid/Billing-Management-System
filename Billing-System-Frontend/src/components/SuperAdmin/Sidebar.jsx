@@ -45,7 +45,7 @@ const Sidebar = ({
       id: "customers",
       label: "Manage Customers",
       icon: UserCog,
-      path: "#customers",
+      path: "/customer-table",
     },
     // { id: "users", label: "User Management", icon: UserCog, path: "#users" },
     { id: "settings", label: "Settings", icon: Settings, path: "#settings" },

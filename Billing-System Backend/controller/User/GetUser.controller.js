@@ -1,4 +1,3 @@
-import register from "../../models/AuthModel/Registermodel/register.js";
 import User from "../../models/User/User.js";
 
 export const GetuserController = async (req, res) => {
@@ -16,7 +15,7 @@ export const GetuserController = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized role" });
     }
 
-    const users = await User.find(query);
+      const users = await User.find(query).populate("distributorId", "name distributorCode");
 
     return res.status(200).json({
       count: users.length,

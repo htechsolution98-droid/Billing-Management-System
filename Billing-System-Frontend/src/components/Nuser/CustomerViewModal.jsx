@@ -94,6 +94,7 @@ const CustomerViewModal = ({ isOpen, customer, onClose }) => {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <InfoCard label="Status" value={customer.status} />
+              <InfoCard label="UserCode" value={customer.nuserId.usercode} />
               <InfoCard label="Created On" value={customer.createdAt?.slice(0, 10)} />
             </div>
           </div>

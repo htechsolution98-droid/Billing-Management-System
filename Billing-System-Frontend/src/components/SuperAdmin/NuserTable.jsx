@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus ,Eye} from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -231,9 +231,9 @@ const ManageNusers = () => {
                                 onClick={() => handleView(nuser)}
                                 className="rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-800 transition-colors hover:bg-blue-100"
                               >
-                                View
+                               <Eye className="w-5 h-4 mr-2" /> View
                               </button>
-                              <button
+                              {/* <button
                                 onClick={() => handleEdit(nuser)}
                                 className="rounded-md bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-800 transition-colors hover:bg-amber-100"
                               >
@@ -244,7 +244,7 @@ const ManageNusers = () => {
                                 className="rounded-md bg-red-50 px-2.5 py-1 text-[11px] font-medium text-red-800 transition-colors hover:bg-red-100"
                               >
                                 Delete
-                              </button>
+                              </button> */}
                             </div>
                           </td>
                         </tr>

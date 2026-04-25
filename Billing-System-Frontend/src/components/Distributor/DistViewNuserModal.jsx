@@ -107,6 +107,7 @@ const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
                 <InfoCard label="Firm Name" value={nuser.firmName} />
                 <InfoCard label="Role" value={nuser.role} />
                 <InfoCard label="Status" value={nuser.status || "active"} />
+                <InfoCard label="DistributorCode" value={nuser.distributorId.distributorCode} />
                 {/* <InfoCard label="Status" value={nuser.password || "active"} /> */}
               </div>
             </div>
@@ -121,7 +122,8 @@ const DistViewNuserModal = ({ isOpen, nuser, onClose }) => {
                 <InfoCard label="Mobile" value={nuser.mobile} />
                 <InfoCard
                   label="Distributor"
-                  value={nuser.distributorId?.name || nuser.distributorName}
+                  // value={nuser.distributorId?.name || nuser.name}
+                  value={nuser.distributorId?.name}
                 />
                 <InfoCard label="GST Number" value={nuser.gst} />
               </div>

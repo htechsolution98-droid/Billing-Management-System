@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { X, Building2, Mail, MapPin, FileText, IdCard, Users } from "lucide-react";
+import {
+  X,
+  Building2,
+  Mail,
+  MapPin,
+  FileText,
+  IdCard,
+  Users,
+  Eye,
+} from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
+import ViewNuserCustomerModal from "./ViewNuserCustomerModal";
 
 const FieldRow = ({ label, value }) => (
   <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
@@ -14,6 +24,13 @@ const FieldRow = ({ label, value }) => (
 const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
   const [nusers, setNusers] = useState([]);
   const [loadingNusers, setLoadingNusers] = useState(false);
+  const [selectedNuser, setSelectedNuser] = useState(null);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+
+  const handleViewNuser = (nuser) => {
+    setSelectedNuser(nuser);
+    setIsCustomerModalOpen(true);
+  };
 
   // Fetch NUsers when modal opens and distributor._id is available
   useEffect(() => {
@@ -23,7 +40,7 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
       setLoadingNusers(true);
       try {
         const res = await axiosInstance.get(
-          `/nuserapi/get?distributorId=${distributor._id}`
+          `/nuserapi/get?distributorId=${distributor._id}`,
         );
         setNusers(res.data.data || []);
       } catch (error) {
@@ -48,7 +65,9 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
         {/* ── Header ── */}
         <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
           <div>
-            <h3 className="text-2xl font-bold text-gray-800">Distributor Details</h3>
+            <h3 className="text-2xl font-bold text-gray-800">
+              Distributor Details
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               View complete information for this distributor.
             </p>
@@ -63,13 +82,14 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
 
         {/* ── Scrollable Body ── */}
         <div className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6">
-
           {/* ── Distributor Details Grid ── */}
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">Contact Details</h5>
+                <h5 className="text-sm font-semibold text-gray-700">
+                  Contact Details
+                </h5>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <FieldRow label="Name" value={distributor.name} />
@@ -81,11 +101,16 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">Business Details</h5>
+                <h5 className="text-sm font-semibold text-gray-700">
+                  Business Details
+                </h5>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <FieldRow label="Firm Name" value={distributor.firmName} />
-                <FieldRow label="Distributor Code" value={distributor.distributorCode} />
+                <FieldRow
+                  label="Distributor Code"
+                  value={distributor.distributorCode}
+                />
                 <FieldRow label="GST Number" value={distributor.gst} />
                 <FieldRow label="Company PAN" value={distributor.companypan} />
               </div>
@@ -94,26 +119,36 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <IdCard className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">Identity Details</h5>
+                <h5 className="text-sm font-semibold text-gray-700">
+                  Identity Details
+                </h5>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <FieldRow label="PAN Number" value={distributor.pan} />
                 <FieldRow label="Aadhaar Number" value={distributor.aadhaar} />
                 <FieldRow label="Role" value={distributor.role} />
-                <FieldRow label="Status" value={distributor.status || "Active"} />
+                <FieldRow
+                  label="Status"
+                  value={distributor.status || "Active"}
+                />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">Location Details</h5>
+                <h5 className="text-sm font-semibold text-gray-700">
+                  Location Details
+                </h5>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <FieldRow label="State" value={distributor.state} />
                 <FieldRow label="District" value={distributor.district} />
                 <FieldRow label="Area" value={distributor.area} />
-                <FieldRow label="Created On" value={distributor.createdAt?.slice(0, 10)} />
+                <FieldRow
+                  label="Created On"
+                  value={distributor.createdAt?.slice(0, 10)}
+                />
               </div>
             </div>
           </div>
@@ -122,11 +157,15 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
           <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
             <div className="mb-3 flex items-center gap-2">
               <FileText className="h-4 w-4 text-emerald-600" />
-              <h5 className="text-sm font-semibold text-gray-700">Additional Notes</h5>
+              <h5 className="text-sm font-semibold text-gray-700">
+                Additional Notes
+              </h5>
             </div>
             <p className="text-sm text-gray-600">
               Certificate:{" "}
-              {distributor.corpo_certino || distributor.certificate || "Not uploaded"}
+              {distributor.corpo_certino ||
+                distributor.certificate ||
+                "Not uploaded"}
             </p>
           </div>
 
@@ -138,7 +177,9 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">NUsers List</h5>
+                <h5 className="text-sm font-semibold text-gray-700">
+                  NUsers List
+                </h5>
               </div>
               {!loadingNusers && (
                 <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
@@ -162,14 +203,16 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                 <table className="min-w-full table-fixed">
                   <thead className="bg-gray-50">
                     <tr>
-                      {["Full Name", "Firm Name", "Mobile", "Email"].map((col) => (
-                        <th
-                          key={col}
-                          className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400"
-                        >
-                          {col}
-                        </th>
-                      ))}
+                      {["Full Name", "Firm Name", "Mobile", "Email","Action"].map(
+                        (col) => (
+                          <th
+                            key={col}
+                            className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400"
+                          >
+                            {col}
+                          </th>
+                        ),
+                      )}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -215,6 +258,14 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                             <td className="truncate px-4 py-3 text-sm font-medium text-gray-800">
                               {nuser.email || "-"}
                             </td>
+
+                             <button
+                                onClick={() => handleViewNuser(nuser)}
+                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 transition-colors"
+                              >
+                                <Eye className="w-4 h-4 mr-2" />
+                            
+                              </button>
                           </tr>
                         );
                       })
@@ -225,9 +276,18 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
             </div>
           </div>
           {/* ── End NUsers Section ── */}
-
         </div>
       </div>
+
+      {/* Nested Modal for viewing customers of an NUser */}
+      <ViewNuserCustomerModal
+        isOpen={isCustomerModalOpen}
+        nuser={selectedNuser}
+        onClose={() => {
+          setIsCustomerModalOpen(false);
+          setSelectedNuser(null);
+        }}
+      />
     </div>
   );
 };

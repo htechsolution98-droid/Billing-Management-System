@@ -39,15 +39,7 @@ const Header = ({ user, onLogout, currentTime, themeColors, children }) => {
 
         {/* Right: Search, Notifications, Profile */}
         <div className="flex items-center gap-4">
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-2">
-            <Search className="w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-transparent border-none outline-none text-sm w-40 lg:w-48"
-            />
-          </div>
+          
 
           {/* Theme Toggle (if provided) */}
           {children}

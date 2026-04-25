@@ -89,11 +89,23 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    usercode: {
+      type: String,
+      unique: true,
+    },
   },
   {
     timestamps: true,
   },
 );
+// Auto user Code
+userSchema.pre("save", async function () {
+  if (!this.usercode) {
+    const count = await mongoose.model("User").countDocuments();
+
+    this.usercode = "USER" + String(count + 1).padStart(4, "0");
+  }
+});
 
 userSchema.pre("save", async function () {
   // Only hash if password modified

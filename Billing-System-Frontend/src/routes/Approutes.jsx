@@ -10,6 +10,7 @@ import DistributorTable from "../components/SuperAdmin/distributor-table.jsx";
 import Distributorform from "../components/SuperAdmin/Distributorform.jsx";
 import NuserTable from "../components/SuperAdmin/NuserTable.jsx";
 import NuserForm from "../components/SuperAdmin/NuserForm.jsx";
+import CustomerTable from "../components/SuperAdmin/CustomerTabel.jsx";
 
 function AppRoutes() {
   return (
@@ -99,6 +100,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["superadmin"]}>
             <NuserForm />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/customer-table"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <CustomerTable />
           </ProtectedRoute>
         }
       />
