@@ -28,8 +28,29 @@ export const createUsercontroller = async (req, res, next) => {
     // ==============================
 
     if (req.user.role === "distributor") {
+      // Resolve distributor document. Token may contain Distributor._id or Register._id
+      let dist = null;
 
-      body.distributorId = req.user._id;
+      // If token includes distributorId (set at login), try that first
+      if (req.user.distributorId) {
+        dist = await Distributor.findById(req.user.distributorId);
+      }
+
+      // Next, try token _id as Distributor._id
+      if (!dist) {
+        dist = await Distributor.findById(req.user._id);
+      }
+
+      // Fallback: treat token _id as Register._id and lookup by registerId
+      if (!dist) {
+        dist = await Distributor.findOne({ registerId: req.user._id });
+      }
+
+      if (!dist) {
+        return res.status(400).json({ message: "Distributor record not found" });
+      }
+
+      body.distributorId = dist._id;
 
     }
 
@@ -38,15 +59,24 @@ export const createUsercontroller = async (req, res, next) => {
     // ==============================
 
     if (req.user.role === "superadmin") {
-
-      if (!req.body.distributorId) {
-        return res.status(400).json({
-          message: "DistributorId is required",
-        });
+      // Expect a Distributor id or a Register id; resolve to Distributor._id
+      const providedId = req.body.distributorId;
+      if (!providedId) {
+        return res.status(400).json({ message: "DistributorId is required" });
       }
 
-      body.distributorId = req.body.distributorId;
+      // Try as Distributor._id first
+      let dist = await Distributor.findById(providedId);
+      if (!dist) {
+        // Fallback: treat providedId as a Register id and find Distributor by registerId
+        dist = await Distributor.findOne({ registerId: providedId });
+      }
 
+      if (!dist) {
+        return res.status(400).json({ message: "Distributor not found for given id" });
+      }
+
+      body.distributorId = dist._id;
     }
 
     // console.log("DistributorId:",

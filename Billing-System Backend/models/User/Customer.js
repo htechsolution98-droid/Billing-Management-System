@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const customerSchema = new mongoose.Schema(
   {
-    // userId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    // },
+    nuserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
 
     customerName: {
       type: String,
@@ -57,6 +57,7 @@ const customerSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+ 
   },
   {
     timestamps: true,

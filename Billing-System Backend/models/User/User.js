@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -60,9 +61,13 @@ const userSchema = new mongoose.Schema(
       enum: ["nuser", "user"],
       default: "nuser",
     },
+    registerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register",
+    },
     distributorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Distributor", 
+      ref: "Distributor",
     },
 
     bankName: {
@@ -84,11 +89,30 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    usercode: {
+      type: String,
+      unique: true,
+    },
   },
   {
     timestamps: true,
   },
 );
+// Auto user Code
+userSchema.pre("save", async function () {
+  if (!this.usercode) {
+    const count = await mongoose.model("User").countDocuments();
+
+    this.usercode = "USER" + String(count + 1).padStart(4, "0");
+  }
+});
+
+userSchema.pre("save", async function () {
+  // Only hash if password modified
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
 const User = mongoose.model("User", userSchema);
 

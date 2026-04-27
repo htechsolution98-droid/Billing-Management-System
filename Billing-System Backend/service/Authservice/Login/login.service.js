@@ -36,8 +36,11 @@ export const loginService = async (data) => {
   }
 
   const registerUser = await Register.findOne({ email });
-  const distributorUser = registerUser ? null : await Distributor.findOne({ email });
-  const appUser = registerUser || distributorUser ? null : await User.findOne({ email });
+  const distributorUser = registerUser
+    ? null
+    : await Distributor.findOne({ email });
+  const appUser =
+    registerUser || distributorUser ? null : await User.findOne({ email });
 
   if (!registerUser && !distributorUser && !appUser) {
     throw new Error("User not found");
@@ -45,11 +48,18 @@ export const loginService = async (data) => {
 
   let user = null;
 
-  if (registerUser && (await verifyAndUpgradePassword(password, registerUser))) {
+  if (
+    registerUser &&
+    (await verifyAndUpgradePassword(password, registerUser))
+  ) {
     user = registerUser;
   }
 
-  if (!user && distributorUser && (await verifyAndUpgradePassword(password, distributorUser))) {
+  if (
+    !user &&
+    distributorUser &&
+    (await verifyAndUpgradePassword(password, distributorUser))
+  ) {
     user = distributorUser;
   }
 
@@ -59,6 +69,12 @@ export const loginService = async (data) => {
 
   if (!user) {
     throw new Error("Invalid password");
+  }
+
+  // ⭐ Block deactivated distributor
+
+  if (user.role === "distributor" && user.isActive === false) {
+    throw new Error("Your account is deactivated. Contact SuperAdmin.");
   }
 
   const normalizedRole = user.role === "user" ? "nuser" : user.role;
@@ -74,7 +90,7 @@ export const loginService = async (data) => {
       distributorId,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "5d" },
+    { expiresIn: "10d" },
   );
 
   return {
