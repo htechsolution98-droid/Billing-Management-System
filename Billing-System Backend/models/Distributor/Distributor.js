@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import Counter from "../../models/Distributor/counter.js";
 
 const distributorSchema = new mongoose.Schema(
   {
@@ -91,11 +92,19 @@ const distributorSchema = new mongoose.Schema(
   { timestamps: true },
 );
 // Auto Distributor Code
+
 distributorSchema.pre("save", async function () {
   if (!this.distributorCode) {
-    const count = await mongoose.model("Distributor").countDocuments();
+    const counter = await Counter.findOneAndUpdate(
+      { name: "distributor" },
+      { $inc: { seq: 3 } },
+      {
+        returnDocument: "after", // ✅ new fix
+        upsert: true,
+      },
+    );
 
-    this.distributorCode = "DIST-" + String(count + 1).padStart(4, "0");
+    this.distributorCode = "DIST-" + String(counter.seq).padStart(4, "0");
   }
 });
 

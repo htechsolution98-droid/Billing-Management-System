@@ -1,5 +1,5 @@
 import Distributor from "../../../models/Distributor/Distributor.js";
-export const DeleteUserservice = async (userId) => {
+export const DeleteDistservice = async (userId) => {
   try {
 
     const deletedUser =

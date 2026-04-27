@@ -1,6 +1,6 @@
-import { DeleteUserservice } from "../../../service/Distributor/Superadmin/disdelete.service.js";
+import { DeleteDistservice } from "../../../service/Distributor/Superadmin/disdelete.service.js";
 
-export const deleteUsercontroller = async (req, res, next) => {
+export const deleteDistcontroller = async (req, res, next) => {
   try {
 
     const { id } = req.params;

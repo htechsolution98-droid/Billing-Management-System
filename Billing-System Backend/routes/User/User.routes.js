@@ -7,8 +7,8 @@ import { GetuserController } from "../../controller/User/GetUser.controller.js";
 import { NuserDashController } from "../../controller/User/UserDashboard.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
-import { updateNusercontroller } from "../../controller/Distributor/User/update.controller.js";
-import { deleteNusercontroller } from "../../controller/Distributor/User/delete.controller.js";
+import { updateNusercontroller } from "../../controller/Distributor/SuperAdmin/userupdate.controller.js";
+import { deleteNusercontroller } from "../../controller/Distributor/SuperAdmin/userdelete.controller.js";
 
 /**
  * @swagger

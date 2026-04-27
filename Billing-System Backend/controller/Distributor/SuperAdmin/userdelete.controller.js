@@ -1,4 +1,4 @@
-import { DeleteNuserservice } from "../../../service/Distributor/User/userdelete.service.js";
+import { DeleteNuserservice } from "../../../service/Distributor/Superadmin/userdelete.service.js";
 
 export const deleteNusercontroller = async (req, res, next) => {
   try {

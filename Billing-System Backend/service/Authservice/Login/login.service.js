@@ -73,14 +73,9 @@ export const loginService = async (data) => {
 
   // ⭐ Block deactivated distributor
 
-if (
-  user.role === "distributor" &&
-  user.isActive === false
-) {
-  throw new Error(
-    "Your account is deactivated. Contact SuperAdmin."
-  );
-}
+  if (user.role === "distributor" && user.isActive === false) {
+    throw new Error("Your account is deactivated. Contact SuperAdmin.");
+  }
 
   const normalizedRole = user.role === "user" ? "nuser" : user.role;
   const name = user.name || user.fullName;

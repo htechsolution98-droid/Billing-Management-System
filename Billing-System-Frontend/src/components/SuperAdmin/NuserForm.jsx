@@ -193,7 +193,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                 className={inputCls}
               />
             </Field>
-            <Field label="Distributor" required>
+            {/* <Field label="Distributor" required>
               <select
                 name="distributorId"
                 value={formData.distributorId}
@@ -206,7 +206,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                   <option value={superadmin._id}>{superadmin.name}</option>
                 )}
               </select>
-            </Field>
+            </Field> */}
             <Field label="GST number">
               <input
                 type="text"

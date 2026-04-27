@@ -10,6 +10,7 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
     firmName: "",
     mobile: "",
     email: "",
+    password: "",
     gst: "",
     pan: "",
     aadhaar: "",
@@ -27,6 +28,7 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
         firmName: distributor.firmName || "",
         mobile: distributor.mobile || "",
         email: distributor.email || "",
+        password: distributor.password || "",
         gst: distributor.gst || "",
         pan: distributor.pan || "",
         aadhaar: distributor.aadhaar || "",
@@ -63,7 +65,9 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
       <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
         <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
           <div>
-            <h3 className="text-2xl font-bold text-gray-800">Edit Distributor</h3>
+            <h3 className="text-2xl font-bold text-gray-800">
+              Edit Distributor
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               Update distributor information and save it to the table.
             </p>
@@ -76,55 +80,147 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6">
+        <form
+          onSubmit={handleSubmit}
+          className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6"
+        >
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Distributor Name</label>
-              <input name="name" value={formData.name} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Distributor Name
+              </label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Firm Name</label>
-              <input name="firmName" value={formData.firmName} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Firm Name
+              </label>
+              <input
+                name="firmName"
+                value={formData.firmName}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Mobile</label>
-              <input name="mobile" value={formData.mobile} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Mobile
+              </label>
+              <input
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email</label>
-              <input name="email" value={formData.email} onChange={handleChange} className={inputClassName} />
+              <input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">GST Number</label>
-              <input name="gst" value={formData.gst} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">PAN Number</label>
-              <input name="pan" value={formData.pan} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                GST Number
+              </label>
+              <input
+                name="gst"
+                value={formData.gst}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Aadhaar Number</label>
-              <input name="aadhaar" value={formData.aadhaar} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                PAN Number
+              </label>
+              <input
+                name="pan"
+                value={formData.pan}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Company PAN</label>
-              <input name="companypan" value={formData.companypan} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Aadhaar Number
+              </label>
+              <input
+                name="aadhaar"
+                value={formData.aadhaar}
+                onChange={handleChange}
+                className={inputClassName}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Company PAN
+              </label>
+              <input
+                name="companypan"
+                value={formData.companypan}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">State</label>
-              <input name="state" value={formData.state} onChange={handleChange} className={inputClassName} />
+              <input
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">District</label>
-              <input name="district" value={formData.district} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                District
+              </label>
+              <input
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Area</label>
-              <input name="area" value={formData.area} onChange={handleChange} className={inputClassName} />
+              <input
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Status</label>
-              <select name="status" value={formData.status} onChange={handleChange} className={inputClassName}>
+              <label className="text-sm font-medium text-gray-700">
+                Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className={inputClassName}
+              >
                 <option value="Active">Active</option>
                 <option value="Pending">Pending</option>
                 <option value="Inactive">Inactive</option>

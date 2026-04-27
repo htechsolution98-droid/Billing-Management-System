@@ -4,11 +4,13 @@ import { GetDistributorController } from "../../controller/Distributor/GetDistri
 import { DistributorDashController } from "../../controller/Distributor/DistDashboard.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
-import { updateUsercontroller } from "../../controller/Distributor/SuperAdmin/update.controller.js";
-import { deleteUsercontroller } from "../../controller/Distributor/SuperAdmin/delete.controller.js";
+import { updateDistcontroller } from "../../controller/Distributor/SuperAdmin/update.controller.js";
+import { deleteDistcontroller } from "../../controller/Distributor/SuperAdmin/delete.controller.js";
 import { diactvatedistcontroller } from "../../controller/Distributor/SuperAdmin/Disactivatedist.controller.js";
 import { activateDistributor } from "../../controller/Distributor/SuperAdmin/activatedist.controller.js";
 import { SerchdisController } from "../../controller/Distributor/SuperAdmin/serch.controller.js";
+import { updateNusercontroller } from "../../controller/Distributor/SuperAdmin/userupdate.controller.js";
+import { deleteNusercontroller } from "../../controller/Distributor/SuperAdmin/userdelete.controller.js";
 
 import express from "express";
 const router = express.Router();
@@ -84,22 +86,42 @@ router.get(
   DistributorDashController,
 );
 
-// update api superadmin dashboard
+//********************************************************* */ Updated DeletAPI
+// update dist api superadmin dashboard
 router.put(
   "/distributor/update/:id",
   verifyToken,
   authorizeRoles("superadmin"),
   upload.single("firmLogo"),
-  updateUsercontroller,
+  updateDistcontroller,
 );
 
-// update api superadmin dashboard
+// delete dist api superadmin dashboard
 router.delete(
   "/distributor/delete/:id",
   verifyToken,
   authorizeRoles("superadmin"),
-  deleteUsercontroller,
+  deleteDistcontroller,
 );
+//***********************************************************  */
+// update nuser api superadmin dashboard
+router.put(
+  "/nuser/update/:id",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  upload.single("firmLogo"),
+  updateNusercontroller,
+);
+
+// delete nuser api superadmin dashboard
+router.delete(
+  "/nuser/delete/:id",
+  verifyToken,
+  authorizeRoles("superadmin"),
+  deleteNusercontroller,
+);
+
+//*************************** */ Activate API USER
 
 //diactivate dist api
 router.patch(

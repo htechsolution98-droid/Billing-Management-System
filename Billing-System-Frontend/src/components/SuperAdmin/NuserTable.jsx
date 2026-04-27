@@ -26,13 +26,17 @@ const ManageNusers = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedNuser, setSelectedNuser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 5;
 
   const themeColors =
     themes.find((theme) => theme.id === currentTheme)?.colors ||
     themes[0].colors;
 
   useEffect(() => {
-    fetchNusers();
+    fetchNusers(currentPage);
     try {
       const rawUser = localStorage.getItem("user");
       const userData = rawUser ? JSON.parse(rawUser) : null;
@@ -48,17 +52,23 @@ const ManageNusers = () => {
     }, 60000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     localStorage.setItem("superadmin-theme", currentTheme);
   }, [currentTheme]);
 
-  const fetchNusers = async () => {
+  const fetchNusers = async (page = currentPage) => {
     try {
-      const res = await axiosInstance.get("/nuserapi/get");
+      const res = await axiosInstance.get(`/nuserapi/get?page=${page}&limit=${limit}`);
       const nuserData = res.data.data || res.data || [];
       setNusers(Array.isArray(nuserData) ? nuserData : []);
+      
+      if (res.data.totalPages !== undefined) {
+        setTotalPages(res.data.totalPages);
+        setTotalItems(res.data.total);
+        setCurrentPage(res.data.page);
+      }
     } catch (error) {
       console.error("Fetch error:", error);
       setNusers([]);
@@ -75,15 +85,31 @@ const ManageNusers = () => {
     setEditModalOpen(true);
   };
 
-  const handleUpdate = (updatedNuser) => {
-    setNusers((prev) =>
-      prev.map((item) => (item._id === updatedNuser._id ? updatedNuser : item)),
-    );
+  const handleUpdate = async (updatedNuser) => {
+    try {
+      await axiosInstance.put(
+        `/distributorapi/nuser/update/${updatedNuser._id}`,
+        updatedNuser
+      );
+      fetchNusers();
+      setEditModalOpen(false);
+      setSelectedNuser(null);
+      alert("Nuser Updated Successfully ✅");
+    } catch (error) {
+      console.error("Update Error:", error);
+      alert("Update Failed ❌");
+    }
   };
 
-  const handleDelete = (id) => {
-    if (!window.confirm("Delete this nuser from the table view?")) return;
-    setNusers((prev) => prev.filter((item) => item._id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this nuser?")) return;
+    try {
+      await axiosInstance.delete(`/distributorapi/nuser/delete/${id}`);
+      fetchNusers();
+    } catch (error) {
+      console.error("Delete Error:", error);
+      alert("Delete Failed ❌");
+    }
   };
 
   const handleLogoutClick = () => {
@@ -233,7 +259,7 @@ const ManageNusers = () => {
                               >
                                <Eye className="w-5 h-4 mr-2" /> View
                               </button>
-                              {/* <button
+                              <button
                                 onClick={() => handleEdit(nuser)}
                                 className="rounded-md bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-800 transition-colors hover:bg-amber-100"
                               >
@@ -244,7 +270,7 @@ const ManageNusers = () => {
                                 className="rounded-md bg-red-50 px-2.5 py-1 text-[11px] font-medium text-red-800 transition-colors hover:bg-red-100"
                               >
                                 Delete
-                              </button> */}
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -253,6 +279,34 @@ const ManageNusers = () => {
                   )}
                 </tbody>
               </table>
+              
+              {/* Pagination UI */}
+              {totalPages > 1 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 px-6 py-4 bg-white gap-4">
+                  <div className="text-sm text-gray-500">
+                    Showing <span className="font-medium text-gray-800">{((currentPage - 1) * limit) + 1}</span> to <span className="font-medium text-gray-800">{Math.min(currentPage * limit, totalItems)}</span> of <span className="font-medium text-gray-800">{totalItems}</span> results
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    >
+                      Previous
+                    </button>
+                    <div className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg">
+                      {currentPage} / {totalPages}
+                    </div>
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>

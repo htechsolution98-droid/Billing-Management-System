@@ -29,13 +29,16 @@ const ManageDistributors = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedDistributor, setSelectedDistributor] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 5;
 
   const themeColors =
     themes.find((theme) => theme.id === currentTheme)?.colors ||
     themes[0].colors;
 
   useEffect(() => {
-    fetchDistributors();
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       setUser(userData);
@@ -57,12 +60,12 @@ const ManageDistributors = () => {
       if (searchQuery) {
         handleSearch(searchQuery);
       } else {
-        fetchDistributors();
+        fetchDistributors(currentPage);
       }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
+  }, [searchQuery, currentPage]);
 
   const handleSearch = async (query) => {
     try {
@@ -75,9 +78,9 @@ const ManageDistributors = () => {
     }
   };
 
-  const fetchDistributors = async () => {
+  const fetchDistributors = async (page = currentPage) => {
     try {
-      const res = await axiosInstance.get("/distributorapi/get");
+      const res = await axiosInstance.get(`/distributorapi/get?page=${page}&limit=${limit}`);
 
       console.log("API Response:", res.data);
 
@@ -85,6 +88,12 @@ const ManageDistributors = () => {
       const distributorData = res.data.data || res.data || [];
 
       setDistributors(distributorData);
+      
+      if (res.data.totalPages !== undefined) {
+        setTotalPages(res.data.totalPages);
+        setTotalItems(res.data.total);
+        setCurrentPage(res.data.page);
+      }
     } catch (error) {
       console.error("Fetch Error:", error);
     }
@@ -335,6 +344,34 @@ const ManageDistributors = () => {
                   )}
                 </tbody>
               </table>
+              
+              {/* Pagination UI */}
+              {!searchQuery && totalPages > 1 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 px-6 py-4 bg-white gap-4">
+                  <div className="text-sm text-gray-500">
+                    Showing <span className="font-medium text-gray-800">{((currentPage - 1) * limit) + 1}</span> to <span className="font-medium text-gray-800">{Math.min(currentPage * limit, totalItems)}</span> of <span className="font-medium text-gray-800">{totalItems}</span> results
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    >
+                      Previous
+                    </button>
+                    <div className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg">
+                      {currentPage} / {totalPages}
+                    </div>
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>

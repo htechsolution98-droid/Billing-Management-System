@@ -9,6 +9,7 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
     fullName: "",
     firmName: "",
     email: "",
+    password:"",
     mobile: "",
     gst: "",
     pan: "",
@@ -26,6 +27,7 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
         fullName: nuser.fullName || "",
         firmName: nuser.firmName || "",
         email: nuser.email || "",
+        password: nuser.password || "", 
         mobile: nuser.mobile || "",
         gst: nuser.gst || "",
         pan: nuser.pan || "",
@@ -87,6 +89,10 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email</label>
               <input name="email" value={formData.email} onChange={handleChange} className={inputClassName} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <input name="password" value={formData.password} onChange={handleChange} className={inputClassName} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Mobile</label>
