@@ -44,7 +44,12 @@ router.post("/create", verifyToken, checkRole("nuser"), createcustocontroller);
  *       200:
  *         description: List of customer fetched successfully
  */
-router.get("/get", verifyToken, authorizeRoles("superadmin", "nuser"), getcustocontroller);
+router.get(
+  "/get",
+  verifyToken,
+  authorizeRoles("superadmin", "nuser"),
+  getcustocontroller,
+);
 
 router.get(
   "/my-customers",

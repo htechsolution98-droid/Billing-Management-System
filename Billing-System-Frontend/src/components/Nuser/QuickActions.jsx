@@ -1,6 +1,6 @@
 import { Tag, Package, Users, FolderOpen, Plus } from "lucide-react";
 
-const QuickActions = () => {
+const QuickActions = ({ onAddBrand, onAddProduct, onAddCustomer, onAddCategory }) => {
   const actions = [
     {
       id: "add-brand",
@@ -10,6 +10,7 @@ const QuickActions = () => {
       hoverColor: "hover:bg-blue-100",
       textColor: "text-blue-600",
       borderColor: "border-blue-200",
+      onClick: onAddBrand,
     },
     {
       id: "add-product",
@@ -19,6 +20,7 @@ const QuickActions = () => {
       hoverColor: "hover:bg-emerald-100",
       textColor: "text-emerald-600",
       borderColor: "border-emerald-200",
+      onClick: onAddProduct,
     },
     {
       id: "add-customer",
@@ -28,6 +30,7 @@ const QuickActions = () => {
       hoverColor: "hover:bg-purple-100",
       textColor: "text-purple-600",
       borderColor: "border-purple-200",
+      onClick: onAddCustomer,
     },
     {
       id: "add-category",
@@ -37,6 +40,7 @@ const QuickActions = () => {
       hoverColor: "hover:bg-orange-100",
       textColor: "text-orange-600",
       borderColor: "border-orange-200",
+      onClick: onAddCategory,
     },
   ];
 
@@ -55,6 +59,7 @@ const QuickActions = () => {
           return (
             <button
               key={action.id}
+              onClick={action.onClick}
               className={`
                 flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200
                 ${action.bgColor} ${action.hoverColor} ${action.textColor} ${action.borderColor}

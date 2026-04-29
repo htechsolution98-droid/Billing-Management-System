@@ -1,5 +1,6 @@
 import { CreateBrandController } from "../../controller/User/Brand/createbrand.controller.js";
 import { GetBrandController } from "../../controller/User/Brand/getbrand.controller.js";
+import { GetBrandByCategoryController } from "../../controller/User/Brand/Getcategwisebrand.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 
@@ -29,6 +30,7 @@ const router = express.Router();
  */
 
 router.post("/create", verifyToken, authorizeRoles("nuser"), CreateBrandController);
+
 /**
  * @swagger
  * /api/barndapi/get:
@@ -39,6 +41,21 @@ router.post("/create", verifyToken, authorizeRoles("nuser"), CreateBrandControll
  *       200:
  *         description: List of brand fetched successfully
  */
+
 router.get("/get", GetBrandController);
 
+/**
+ * @swagger
+ * /api/categorywisebarndgetapi/get:
+ *   get:
+ *     summary: Get all brand
+
+ *     responses:
+ *       200:
+ *         description: List of brand fetched successfully
+ */
+router.get(
+  "/brand/by-category/:categoryId",
+  GetBrandByCategoryController
+);
 export default router;

@@ -27,9 +27,19 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
       icon: LayoutDashboard,
       path: "/nuser-dashboard",
     },
+    {
+      id: "customers",
+      label: "Customers",
+      icon: Users,
+      path: "/nuser/customers",
+    },
+    {
+      id: "products",
+      label: "Products",
+      icon: Package,
+      path: "/nuser/products",
+    },
     { id: "brands", label: "Brands", icon: Tag, path: "#brands" },
-    { id: "products", label: "Products", icon: Package, path: "#products" },
-    { id: "customers", label: "Customers", icon: Users, path: "#customers" },
     {
       id: "categories",
       label: "Categories",
@@ -91,7 +101,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
               </div>
               {!isCollapsed && (
                 <div>
-                  <h2 className="text-xl font-bold text-white">Nuser</h2>
+                  <h2 className="text-xl font-bold text-white">User</h2>
                   <p className="text-violet-100 text-xs">Panel</p>
                 </div>
               )}

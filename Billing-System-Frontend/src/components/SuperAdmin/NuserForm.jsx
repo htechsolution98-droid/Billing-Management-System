@@ -29,6 +29,7 @@ const Field = ({ label, required, children }) => (
 
 const AddNUserForm = ({ onClose, refreshData }) => {
   const [superadmin, setSuperadmin] = useState(null);
+  const [distributors, setDistributors] = useState([]);
   const [formData, setFormData] = useState({
     fullName: "",
     firmName: "",
@@ -53,10 +54,6 @@ const AddNUserForm = ({ onClose, refreshData }) => {
 
       if (loggedInUser) {
         setSuperadmin(loggedInUser);
-        setFormData((prev) => ({
-          ...prev,
-          distributorId: loggedInUser._id || "",
-        }));
       }
     } catch (error) {
       console.error("Error reading superadmin data:", error);
@@ -77,6 +74,22 @@ const AddNUserForm = ({ onClose, refreshData }) => {
     validateSuperadmin();
   }, []);
 
+  useEffect(() => {
+    const fetchDistributors = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "/distributorapi/get?page=1&limit=1000",
+        );
+        const distributorList = response.data.data || response.data || [];
+        setDistributors(distributorList);
+      } catch (error) {
+        console.error("Error loading distributors:", error);
+      }
+    };
+
+    fetchDistributors();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({ ...prev, [name]: files ? files[0] : value }));
@@ -85,6 +98,11 @@ const AddNUserForm = ({ onClose, refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!formData.distributorId) {
+        alert("Please select a distributor");
+        return;
+      }
+
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
       await axiosInstance.post("/nuserapi/create", data, {
@@ -193,7 +211,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                 className={inputCls}
               />
             </Field>
-            {/* <Field label="Distributor" required>
+            <Field label="Distributor" required>
               <select
                 name="distributorId"
                 value={formData.distributorId}
@@ -202,11 +220,13 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                 className={inputCls}
               >
                 <option value="">Select distributor</option>
-                {superadmin && (
-                  <option value={superadmin._id}>{superadmin.name}</option>
-                )}
+                {distributors.map((distributor) => (
+                  <option key={distributor._id} value={distributor._id}>
+                    {distributor.name}
+                  </option>
+                ))}
               </select>
-            </Field> */}
+            </Field>
             <Field label="GST number">
               <input
                 type="text"

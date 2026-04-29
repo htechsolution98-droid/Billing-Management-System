@@ -1,10 +1,17 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+
+const productImagePath = "uploads/ProductImg";
+
+if (!fs.existsSync(productImagePath)) {
+  fs.mkdirSync(productImagePath, { recursive: true });
+}
 
 // Storage setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // folder name
+    cb(null, productImagePath);
   },
 
   filename: function (req, file, cb) {

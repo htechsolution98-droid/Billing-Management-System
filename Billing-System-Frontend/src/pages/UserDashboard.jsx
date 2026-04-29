@@ -12,6 +12,9 @@ import DataTable from "../components/Nuser/DataTable";
 import WelcomeBanner from "../components/Nuser/WelcomeBanner";
 import LogoutModal from "../components/Nuser/LogoutModal";
 import CustomerSection from "../components/Nuser/CustomerSection";
+import ProductForm from "../components/Nuser/ProductForm";
+import CategoryForm from "../components/Nuser/CategoryForm";
+import BrandForm from "../components/Nuser/BrandForm";
 
 // Icons for StatCards and Tables
 import { Tag, Package, Users, FolderOpen } from "lucide-react";
@@ -23,6 +26,11 @@ const NuserDashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Modal states for forms
+  const [isProductFormOpen, setIsProductFormOpen] = useState(false);
+  const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
+  const [isBrandFormOpen, setIsBrandFormOpen] = useState(false);
 
   // User state
   const [user, setUser] = useState({
@@ -103,7 +111,7 @@ const NuserDashboard = () => {
 
       // Try to fetch from API
       try {
-        const res = await axiosInstance.get("/nuser/dashboard");
+        const res = await axiosInstance.get("/nuserapi/userdashget");
         if (res.data && res.data.data) {
           setDashboardData(res.data.data);
         }
@@ -274,7 +282,12 @@ const NuserDashboard = () => {
                   <ProfileCard user={user} />
                 </div>
                 <div className="lg:col-span-2">
-                  <QuickActions />
+                  <QuickActions
+                    onAddBrand={() => setIsBrandFormOpen(true)}
+                    onAddProduct={() => setIsProductFormOpen(true)}
+                    onAddCustomer={() => {}}
+                    onAddCategory={() => setIsCategoryFormOpen(true)}
+                  />
                 </div>
               </div>
 
@@ -284,6 +297,25 @@ const NuserDashboard = () => {
           )}
         </main>
       </div>
+
+      {/* Form Modals */}
+      <ProductForm
+        isOpen={isProductFormOpen}
+        onClose={() => setIsProductFormOpen(false)}
+        refreshData={() => console.log("Product created")}
+      />
+
+      <CategoryForm
+        isOpen={isCategoryFormOpen}
+        onClose={() => setIsCategoryFormOpen(false)}
+        refreshData={() => console.log("Category created")}
+      />
+
+      <BrandForm
+        isOpen={isBrandFormOpen}
+        onClose={() => setIsBrandFormOpen(false)}
+        refreshData={() => console.log("Brand created")}
+      />
 
       {/* Logout Confirmation Modal */}
       <LogoutModal

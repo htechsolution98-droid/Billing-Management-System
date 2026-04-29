@@ -20,14 +20,14 @@ const Header = ({ user, onLogout, currentTime }) => {
         {/* Right: Search, Notifications, Profile */}
         <div className="flex items-center gap-4">
           {/* Search Bar */}
-          <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-2">
+          {/* <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-2">
             <Search className="w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search..."
               className="bg-transparent border-none outline-none text-sm w-40 lg:w-48"
             />
-          </div>
+          </div> */}
 
           {/* Notification Bell */}
           <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
@@ -39,14 +39,14 @@ const Header = ({ user, onLogout, currentTime }) => {
           <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
             <div className="text-right hidden sm:block">
               <p className="font-semibold text-gray-800 text-sm">
-                {user.name || "Nuser"}
+                {user.name || "User"}
               </p>
               <p className="text-xs text-violet-600 capitalize">
-                {user.role || "Nuser"}
+                {user.role || "User"}
               </p>
             </div>
             <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center rounded-xl font-bold shadow-lg shadow-violet-500/30">
-              {user.name ? user.name.charAt(0).toUpperCase() : "N"}
+              {user.name ? user.name.charAt(0).toUpperCase() : "U"}
             </div>
             
             {/* Logout Button (Desktop) */}

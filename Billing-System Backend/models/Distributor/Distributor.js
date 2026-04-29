@@ -35,9 +35,9 @@ const distributorSchema = new mongoose.Schema(
       required: true,
     },
 
-    confirmPassword: {
-      type: String,
-    },
+    // confirmPassword: {
+    //   type: String,
+    // },
 
     gst: {
       type: String,

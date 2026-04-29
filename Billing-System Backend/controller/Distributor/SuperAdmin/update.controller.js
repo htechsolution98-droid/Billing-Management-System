@@ -10,7 +10,7 @@ export const updateDistcontroller = async (req, res, next) => {
 
     // Hash password
     if (body.password) {
-      body.confirmPassword = body.password;
+      // body.confirmPassword = body.password;
       body.password = await bcrypt.hash(body.password, 10);
       
     }

@@ -11,6 +11,7 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
     mobile: "",
     email: "",
     password: "",
+    confirmPassword: "",
     gst: "",
     pan: "",
     aadhaar: "",
@@ -28,7 +29,8 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
         firmName: distributor.firmName || "",
         mobile: distributor.mobile || "",
         email: distributor.email || "",
-        password: distributor.password || "",
+        password: "",
+        confirmPassword:"" ,
         gst: distributor.gst || "",
         pan: distributor.pan || "",
         aadhaar: distributor.aadhaar || "",
@@ -53,10 +55,29 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onUpdate({
-      ...distributor,
+
+    const password = formData.password.trim();
+    const confirmPassword = formData.confirmPassword.trim();
+
+    if (password && confirmPassword && password !== confirmPassword) {
+      alert("Password and confirm password do not match");
+      return;
+    }
+
+    const payload = {
       ...formData,
-    });
+      _id: distributor._id,
+    };
+
+    if (password || confirmPassword) {
+      payload.password = password || confirmPassword;
+    } else {
+      delete payload.password;
+    }
+
+    delete payload.confirmPassword;
+
+    onUpdate(payload);
     onClose();
   };
 
@@ -132,9 +153,24 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
                 Password
               </label>
               <input
+                // type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                placeholder="Enter new password"
+                className={inputClassName}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                // type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm new password"
                 className={inputClassName}
               />
             </div>
