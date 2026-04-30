@@ -5,6 +5,8 @@ import { createProductcontroller } from "../../controller/User/Products/Createpr
 import { GetProductController } from "../../controller/User/Products/Getproducts.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
+import { deleteproductcontroller } from "../../controller/User/Products/productdelete.controller.js";
+import { updateNusercontroller } from "../../controller/User/Products/productedit.controller.js";
 import express from "express";
 const router = express.Router();
 /**
@@ -64,5 +66,19 @@ router.post(
  *         description: List of product fetched successfully
  */
 router.get("/get", GetProductController);
+//******************************************update and delete api
+router.put(
+  "/product/update/:id",
+  verifyToken,
+  authorizeRoles("nuser"),
+  upload.single("productImage"),
+  updateNusercontroller,
+);
 
+router.delete(
+  "/product/delete/:id",
+  verifyToken,
+  authorizeRoles("nuser"),
+  deleteproductcontroller,
+);
 export default router;

@@ -58,7 +58,7 @@ router.get(
   getNUserCustomersController,
 );
 
-// Distributor: fetch all customers for a specific NUser
+// Distributor: fetch all customers for a specific NUser*****************************
 router.get(
   "/nuser/:nuserId",
   verifyToken,

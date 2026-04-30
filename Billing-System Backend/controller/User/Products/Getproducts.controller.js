@@ -1,11 +1,13 @@
-import {GetProductservice} from "../../../service/User/Product/Getproduct.service.js"
+import { GetProductservice } from "../../../service/User/Product/Getproduct.service.js";
 
-export const GetProductController = async (req,res) => {
-    try {
-        const data =await  GetProductservice();
-        res.status(200).json(data)
-    } catch (error) {
-        
-        res.status(200).json({error:error.message})
-    }
-}
+export const GetProductController = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const data = await GetProductservice(page, limit, search);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

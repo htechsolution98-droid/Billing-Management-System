@@ -104,50 +104,6 @@ const NuserCustomerPage = () => {
       setFilteredCustomers(data);
     } catch (err) {
       console.error("Fetch customers error:", err);
-      // Sample data for development
-      const sampleData = [
-        {
-          _id: "1",
-          customerName: "Rajesh Kumar",
-          mobile: "98765 11111",
-          email: "rajesh@example.com",
-          gst: "27AABCU9603R1ZX",
-          address: "123 Main Street",
-          state: "Maharashtra",
-          district: "Mumbai",
-          area: "Andheri",
-          pincode: "400053",
-          createdAt: "2026-01-15T10:30:00Z",
-        },
-        {
-          _id: "2",
-          customerName: "Priya Sharma",
-          mobile: "98766 22222",
-          email: "priya@example.com",
-          gst: "07AAACS1234R1Z5",
-          address: "456 Park Avenue",
-          state: "Delhi",
-          district: "New Delhi",
-          area: "Connaught Place",
-          pincode: "110001",
-          createdAt: "2026-01-12T14:20:00Z",
-        },
-        {
-          _id: "3",
-          customerName: "Amit Patel",
-          mobile: "98767 33333",
-          email: "amit@example.com",
-          gst: "24AAACP5678R1Z2",
-          address: "789 Gujarat Road",
-          state: "Gujarat",
-          district: "Ahmedabad",
-          area: "Navrangpura",
-          pincode: "380009",
-          createdAt: "2026-01-10T09:15:00Z",
-        },
-      ];
-      setCustomers(sampleData);
-      setFilteredCustomers(sampleData);
     } finally {
       setLoading(false);
     }

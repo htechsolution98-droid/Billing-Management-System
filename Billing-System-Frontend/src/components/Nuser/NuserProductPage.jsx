@@ -8,15 +8,14 @@ import {
   Search,
   Package,
   Loader2,
-  X,
-  Save,
-  Upload,
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import LogoutModal from "./LogoutModal";
 import ProductForm from "./ProductForm";
+import ProductViewModal from "./ProductViewModal";
+import ProductEditModal from "./ProductEditModal";
 
 const API_ORIGIN = "http://localhost:5000";
 
@@ -26,6 +25,12 @@ const NuserProductPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   // Modal states
   const [isProductFormOpen, setIsProductFormOpen] = useState(false);
@@ -68,108 +73,75 @@ const NuserProductPage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch products
-  const fetchProducts = async () => {
+  // Fetch products*******************************************
+  const fetchProducts = async (page = 1, search = searchQuery) => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/productapi/get");
-      const productData = res.data?.data || res.data || [];
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(itemsPerPage),
+      });
+
+      if (search.trim()) {
+        params.set("search", search.trim());
+      }
+
+      const res = await axiosInstance.get(`/productapi/get?${params}`);
+
+      const productData = res.data?.data || [];
       setProducts(productData);
       setFilteredProducts(productData);
+      
+      if (res.data?.totalPages) setTotalPages(res.data.totalPages);
+      if (res.data?.total !== undefined) setTotalItems(res.data.total);
     } catch (error) {
       console.error("Fetch Error:", error);
-      // Sample data for development
-      const sampleData = [
-        {
-          _id: "1",
-          productName: "Rice Basmati",
-          productDescription: "Premium quality basmati rice",
-          productUnit: "kg",
-          productPrice: 120,
-          discountPrice: 110,
-          category: "Grocery",
-          brand: "India Gate",
-          status: "active",
-          productImage: null,
-          createdAt: "2026-01-15T10:30:00Z",
-        },
-        {
-          _id: "2",
-          productName: "Sunflower Oil",
-          productDescription: "Pure sunflower cooking oil",
-          productUnit: "liter",
-          productPrice: 180,
-          discountPrice: null,
-          category: "Grocery",
-          brand: "Fortune",
-          status: "active",
-          productImage: null,
-          createdAt: "2026-01-12T14:20:00Z",
-        },
-        {
-          _id: "3",
-          productName: "Wheat Flour",
-          productDescription: "Whole wheat flour",
-          productUnit: "kg",
-          productPrice: 45,
-          discountPrice: 40,
-          category: "Grocery",
-          brand: "Aashirvaad",
-          status: "inactive",
-          productImage: null,
-          createdAt: "2026-01-10T09:15:00Z",
-        },
-        {
-          _id: "4",
-          productName: "Sugar",
-          productDescription: "Refined white sugar",
-          productUnit: "kg",
-          productPrice: 55,
-          discountPrice: null,
-          category: "Grocery",
-          brand: "Madhur",
-          status: "active",
-          productImage: null,
-          createdAt: "2026-01-08T11:00:00Z",
-        },
-      ];
-      setProducts(sampleData);
-      setFilteredProducts(sampleData);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchProducts(currentPage, searchQuery);
+    }, 300);
 
-  // Filter products
+    return () => clearTimeout(timer);
+  }, [currentPage, searchQuery]);
+
+  // Reset to first page only when search query changes
   useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredProducts(products);
-    } else {
-      const filtered = products.filter(
-        (p) =>
-          p.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getCategoryName(p).toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getBrandName(p).toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.productDescription
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()),
-      );
-      setFilteredProducts(filtered);
-    }
-  }, [searchQuery, products]);
+    setCurrentPage(1);
+  }, [searchQuery]);
 
-  // Delete product
+  // // Update filtered products when products or search query changes
+  // useEffect(() => {
+  //   if (searchQuery.trim() === "") {
+  //     setFilteredProducts(products);
+  //   } else {
+  //     const filtered = products.filter(
+  //       (p) =>
+  //         p.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         getCategoryName(p)
+  //           .toLowerCase()
+  //           .includes(searchQuery.toLowerCase()) ||
+  //         getBrandName(p).toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         p.productDescription
+  //           ?.toLowerCase()
+  //           .includes(searchQuery.toLowerCase()),
+  //     );
+  //     setFilteredProducts(filtered);
+  //   }
+  // }, [searchQuery, products]);
+
+  // Delete product*******************************************
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
 
     try {
-      await axiosInstance.delete(`/productapi/delete/${id}`);
-      fetchProducts();
+      await axiosInstance.delete(`/productapi/product/delete/${id}`);
+      fetchProducts(currentPage);
     } catch (error) {
       console.error("Delete Error:", error);
       alert("Error deleting product");
@@ -191,8 +163,11 @@ const NuserProductPage = () => {
       productUnit: product.productUnit || "kg",
       productPrice: product.productPrice || "",
       discountPrice: product.discountPrice || "",
-      category: product.categoryId?._id || product.category || "",
-      brand: product.brandId?._id || product.brand || "",
+      categoryId: product.categoryId?._id || "",
+      categoryName:
+        product.categoryId?.categoryName || product.category || "N/A",
+      brandId: product.brandId?._id || "",
+      brandName: product.brandId?.brandName || product.brand || "N/A",
     });
     setEditImage(null);
     setIsEditOpen(true);
@@ -207,6 +182,7 @@ const NuserProductPage = () => {
     setEditImage(e.target.files[0]);
   };
 
+  // Submit edit product*******************************************
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setEditLoading(true);
@@ -214,7 +190,12 @@ const NuserProductPage = () => {
     try {
       const data = new FormData();
       Object.entries(editFormData).forEach(([key, value]) => {
-        if (value !== "" && value !== null && value !== undefined) {
+        if (
+          !["categoryName", "brandName"].includes(key) &&
+          value !== "" &&
+          value !== null &&
+          value !== undefined
+        ) {
           data.append(key, value);
         }
       });
@@ -222,11 +203,16 @@ const NuserProductPage = () => {
         data.append("productImage", editImage);
       }
 
-      await axiosInstance.put(`/productapi/update/${selectedProduct._id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+     const editproduct =  await axiosInstance.put(
+        `/productapi/product/update/${selectedProduct._id}`,
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
+console.log("editproduct",editproduct);
 
-      fetchProducts();
+      fetchProducts(currentPage);
       setIsEditOpen(false);
       setEditImage(null);
     } catch (err) {
@@ -303,6 +289,12 @@ const NuserProductPage = () => {
     "bg-emerald-100 text-emerald-700",
   ];
 
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // Use products directly as they are already paginated by backend
+  const currentItems = filteredProducts;
+
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 to-violet-50">
       <Sidebar
@@ -363,7 +355,7 @@ const NuserProductPage = () => {
                   Product List
                 </h2>
                 <span className="text-sm text-gray-500">
-                  Total: {filteredProducts.length}
+                  Total: {totalItems}
                 </span>
               </div>
 
@@ -375,10 +367,10 @@ const NuserProductPage = () => {
                         "Product",
                         "Unit",
                         "Price",
-                        "Discount",
+                        // "Discount",
                         "Category",
                         "Brand",
-                        "Status",
+                        // "Status",
                         "Actions",
                       ].map((h) => (
                         <th
@@ -410,7 +402,7 @@ const NuserProductPage = () => {
                         </td>
                       </tr>
                     ) : (
-                      filteredProducts.map((product, index) => {
+                      currentItems.map((product, index) => {
                         const avatarColor =
                           avatarColors[index % avatarColors.length];
 
@@ -419,7 +411,6 @@ const NuserProductPage = () => {
                             key={product._id}
                             className="hover:bg-gray-50 transition-colors"
                           >
-                            
                             {/* Product */}
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-3">
@@ -464,7 +455,7 @@ const NuserProductPage = () => {
                             </td>
 
                             {/* Discount Price */}
-                            <td className="px-4 py-4">
+                            {/* <td className="px-4 py-4">
                               {product.discountPrice ? (
                                 <span className="font-semibold text-emerald-600">
                                   ₹{product.discountPrice}
@@ -472,20 +463,20 @@ const NuserProductPage = () => {
                               ) : (
                                 <span className="text-gray-400 text-sm">-</span>
                               )}
-                            </td>
+                            </td> */}
 
                             {/* Category */}
-                            <td className="px-4 py-4 text-sm text-gray-600">
+                            <td className="px-4 py-4 text-sm text-gray-800">
                               {getCategoryName(product)}
                             </td>
 
                             {/* Brand */}
-                            <td className="px-4 py-4 text-sm text-gray-600">
+                            <td className="px-4 py-4 text-sm text-gray-800">
                               {getBrandName(product)}
                             </td>
 
                             {/* Status */}
-                            <td className="px-4 py-4">
+                            {/* <td className="px-4 py-4">
                               <span
                                 className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
                                   product.status,
@@ -493,7 +484,7 @@ const NuserProductPage = () => {
                               >
                                 {product.status || "Active"}
                               </span>
-                            </td>
+                            </td> */}
 
                             {/* Actions */}
                             <td className="px-4 py-4">
@@ -528,6 +519,54 @@ const NuserProductPage = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50/50">
+                  <span className="text-sm text-gray-500">
+                    Showing {totalItems === 0 ? 0 : indexOfFirstItem + 1} to{" "}
+                    {indexOfFirstItem + filteredProducts.length} of {totalItems}{" "}
+                    entries
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 text-sm font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Previous
+                    </button>
+                    <div className="flex items-center gap-1 hidden sm:flex">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (page) => (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg transition-colors ${
+                              currentPage === page
+                                ? "bg-violet-600 text-white shadow-sm"
+                                : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ),
+                      )}
+                    </div>
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 text-sm font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>
@@ -537,337 +576,33 @@ const NuserProductPage = () => {
       <ProductForm
         isOpen={isProductFormOpen}
         onClose={() => setIsProductFormOpen(false)}
-        refreshData={fetchProducts}
+        refreshData={() => fetchProducts(currentPage)}
       />
 
-      {/* View Modal */}
-      {isViewOpen && selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsViewOpen(false)}
-          />
-          <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <Package className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">
-                      Product Details
-                    </h2>
-                    <p className="text-violet-100 text-sm">
-                      {selectedProduct.productName}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsViewOpen(false)}
-                  className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">
-                    Product Name
-                  </p>
-                  <p className="font-semibold text-gray-800">
-                    {selectedProduct.productName}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Unit</p>
-                  <p className="font-semibold text-gray-800 capitalize">
-                    {selectedProduct.productUnit}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Price</p>
-                  <p className="font-semibold text-gray-800">
-                    ₹{selectedProduct.productPrice}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">
-                    Discount Price
-                  </p>
-                  <p className="font-semibold text-emerald-600">
-                    {selectedProduct.discountPrice
-                      ? `₹${selectedProduct.discountPrice}`
-                      : "N/A"}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Category</p>
-                  <p className="font-semibold text-gray-800">
-                    {getCategoryName(selectedProduct)}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Brand</p>
-                  <p className="font-semibold text-gray-800">
-                    {getBrandName(selectedProduct)}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Status</p>
-                  <span
-                    className={`inline-block mt-1 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      selectedProduct.status,
-                    )}`}
-                  >
-                    {selectedProduct.status}
-                  </span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Created</p>
-                  <p className="font-semibold text-gray-800">
-                    {formatDate(selectedProduct.createdAt)}
-                  </p>
-                </div>
-              </div>
-
-              {selectedProduct.productDescription && (
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase">Description</p>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {selectedProduct.productDescription}
-                  </p>
-                </div>
-              )}
-
-              {selectedProduct.productImage && (
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <p className="text-xs text-gray-500 uppercase mb-2">
-                    Product Image
-                  </p>
-                  <img
-                    src={getProductImageUrl(selectedProduct.productImage)}
-                    alt={selectedProduct.productName}
-                    className="w-32 h-32 object-cover rounded-xl"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
-              <button
-                onClick={() => setIsViewOpen(false)}
-                className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+      {isViewOpen && (
+        <ProductViewModal
+          product={selectedProduct}
+          onClose={() => setIsViewOpen(false)}
+          getCategoryName={getCategoryName}
+          getBrandName={getBrandName}
+          getStatusColor={getStatusColor}
+          getProductImageUrl={getProductImageUrl}
+          formatDate={formatDate}
+        />
       )}
 
-      {/* Edit Modal */}
-      {isEditOpen && selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsEditOpen(false)}
-          />
-          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    <Pencil className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">
-                      Edit Product
-                    </h2>
-                    <p className="text-orange-100 text-sm">
-                      {selectedProduct.productName}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsEditOpen(false)}
-                  className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            {/* Form */}
-            <form
-              onSubmit={handleEditSubmit}
-              className="overflow-y-auto max-h-[calc(90vh-80px)]"
-            >
-              <div className="p-6 space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Product Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="productName"
-                      value={editFormData.productName}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Unit
-                    </label>
-                    <select
-                      name="productUnit"
-                      value={editFormData.productUnit}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                    >
-                      <option value="kg">kg</option>
-                      <option value="gram">gram</option>
-                      <option value="liter">liter</option>
-                      <option value="ml">ml</option>
-                      <option value="piece">piece</option>
-                      <option value="box">box</option>
-                      <option value="packet">packet</option>
-                      <option value="bottle">bottle</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Price (₹) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="productPrice"
-                      value={editFormData.productPrice}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Discount Price (₹)
-                    </label>
-                    <input
-                      type="number"
-                      name="discountPrice"
-                      value={editFormData.discountPrice}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Category
-                    </label>
-                    <input
-                      type="text"
-                      name="category"
-                      value={editFormData.category}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Brand
-                    </label>
-                    <input
-                      type="text"
-                      name="brand"
-                      value={editFormData.brand}
-                      onChange={handleEditChange}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2 sm:col-span-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Description
-                    </label>
-                    <textarea
-                      name="productDescription"
-                      value={editFormData.productDescription}
-                      onChange={handleEditChange}
-                      rows="3"
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none transition-all bg-gray-50 focus:bg-white resize-none"
-                    />
-                  </div>
-
-                  <div className="space-y-2 sm:col-span-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Product Image
-                    </label>
-                    <div className="flex items-center gap-4">
-                      {selectedProduct.productImage && !editImage && (
-                        <img
-                          src={getProductImageUrl(selectedProduct.productImage)}
-                          alt={selectedProduct.productName}
-                          className="w-16 h-16 object-cover rounded-xl border border-gray-200"
-                        />
-                      )}
-                      {editImage && (
-                        <img
-                          src={URL.createObjectURL(editImage)}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover rounded-xl border border-gray-200"
-                        />
-                      )}
-                      <label className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer transition-colors text-sm font-medium">
-                        <Upload className="w-4 h-4" />
-                        Choose New Image
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleEditImageChange}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsEditOpen(false)}
-                  className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={editLoading}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium rounded-xl shadow-lg shadow-amber-500/30 transition-all disabled:opacity-50"
-                >
-                  {editLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Save className="w-5 h-5" />
-                  )}
-                  {editLoading ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {isEditOpen && (
+        <ProductEditModal
+          product={selectedProduct}
+          formData={editFormData}
+          editImage={editImage}
+          editLoading={editLoading}
+          onClose={() => setIsEditOpen(false)}
+          onChange={handleEditChange}
+          onImageChange={handleEditImageChange}
+          onSubmit={handleEditSubmit}
+          getProductImageUrl={getProductImageUrl}
+        />
       )}
 
       {/* Logout Modal */}

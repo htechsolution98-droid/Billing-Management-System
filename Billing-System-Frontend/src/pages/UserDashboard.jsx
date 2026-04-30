@@ -292,7 +292,7 @@ const NuserDashboard = () => {
               </div>
 
               {/* Tables Section */}
-              <CustomerSection />
+              {/* <CustomexrSection /> */}
             </div>
           )}
         </main>

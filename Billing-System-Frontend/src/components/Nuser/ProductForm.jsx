@@ -248,8 +248,8 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                   className={inputClass}
                 >
                   <option value="">Select Category</option>
-                  {categories.map((cat, idx) => (
-                    <option key={idx} value={cat._id || cat.categoryName || cat.name}>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
                       {cat.categoryName || cat.name}
                     </option>
                   ))}
@@ -265,8 +265,8 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                   className={inputClass}
                 >
                   <option value="">Select Brand</option>
-                  {brands.map((brand, idx) => (
-                    <option key={idx} value={brand._id || brand.brandName || brand.name}>
+                  {brands.map((brand) => (
+                    <option key={brand._id} value={brand._id}>
                       {brand.brandName || brand.name}
                     </option>
                   ))}

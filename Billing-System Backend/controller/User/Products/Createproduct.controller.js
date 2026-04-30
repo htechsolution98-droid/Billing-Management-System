@@ -1,4 +1,6 @@
 import { CreateProductservice } from "../../../service/User/Product/Createproduct.service.js";
+import mongoose from "mongoose";
+
 export const createProductcontroller = async (req, res) => {
   try {
     //************************************************** */
@@ -6,15 +8,19 @@ export const createProductcontroller = async (req, res) => {
     console.log("Uploaded File", req.file);
     // console.log(body);
 
-    if (body.category && !body.categoryId) {
-      body.categoryId = body.category;
-      delete body.category;
-    }
+    // ["categoryId", "brandId"].forEach((field) => {
+    //   if (body[field] === "") {
+    //     delete body[field];
+    //   }
+    // });
 
-    if (body.brand && !body.brandId) {
-      body.brandId = body.brand;
-      delete body.brand;
-    }
+    // if (body.categoryId && !mongoose.Types.ObjectId.isValid(body.categoryId)) {
+    //   return res.status(400).json({ error: "Invalid category id" });
+    // }
+
+    // if (body.brandId && !mongoose.Types.ObjectId.isValid(body.brandId)) {
+    //   return res.status(400).json({ error: "Invalid brand id" });
+    // }
 
     //productImage upload
     if (req.file) {

@@ -58,8 +58,8 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["nuser", "user"],
-      default: "nuser",
+      enum: ["user"],
+      default: "user",
     },
     registerId: {
       type: mongoose.Schema.Types.ObjectId,

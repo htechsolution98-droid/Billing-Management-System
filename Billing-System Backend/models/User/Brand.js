@@ -5,7 +5,7 @@ const brandSchema = new mongoose.Schema(
     brandName: {
       type: String,
       required: true,
-      unique: true,
+    
       trim: true,
     },
     userId: {
