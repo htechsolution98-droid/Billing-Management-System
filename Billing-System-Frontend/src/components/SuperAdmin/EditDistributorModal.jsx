@@ -163,7 +163,7 @@ const EditDistributorModal = ({ isOpen, distributor, onClose, onUpdate }) => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Confirm Password
+                Confirm Password  
               </label>
               <input
                 // type="password"

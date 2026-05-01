@@ -86,7 +86,7 @@ router.get(
   DistributorDashController,
 );
 
-//********************************************************* */ Updated DeletAPI
+//********************************************************** SuperAdmin Updated/Delet API
 // update dist api superadmin dashboard
 router.put(
   "/distributor/update/:id",

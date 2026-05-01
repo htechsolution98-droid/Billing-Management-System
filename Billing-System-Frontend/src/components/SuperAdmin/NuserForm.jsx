@@ -29,7 +29,6 @@ const Field = ({ label, required, children }) => (
 
 const AddNUserForm = ({ onClose, refreshData }) => {
   const [superadmin, setSuperadmin] = useState(null);
-  const [distributors, setDistributors] = useState([]);
   const [formData, setFormData] = useState({
     fullName: "",
     firmName: "",
@@ -40,7 +39,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
     email: "",
     password: "",
     mobile: "",
-    distributorId: "",
+    superAdminId: "",
     bankName: "",
     ifsc: "",
     accountNumber: "",
@@ -54,6 +53,10 @@ const AddNUserForm = ({ onClose, refreshData }) => {
 
       if (loggedInUser) {
         setSuperadmin(loggedInUser);
+        setFormData((prev) => ({
+          ...prev,
+          superAdminId: loggedInUser._id || "",
+        }));
       }
     } catch (error) {
       console.error("Error reading superadmin data:", error);
@@ -66,28 +69,16 @@ const AddNUserForm = ({ onClose, refreshData }) => {
         const rawUser = localStorage.getItem("user");
         const loggedInUser = rawUser ? JSON.parse(rawUser) : null;
         setSuperadmin(loggedInUser);
+        setFormData((prev) => ({
+          ...prev,
+          superAdminId: loggedInUser?._id || "",
+        }));
       } catch (error) {
         console.error("Error loading superadmin:", error);
       }
     };
 
     validateSuperadmin();
-  }, []);
-
-  useEffect(() => {
-    const fetchDistributors = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "/distributorapi/get?page=1&limit=1000",
-        );
-        const distributorList = response.data.data || response.data || [];
-        setDistributors(distributorList);
-      } catch (error) {
-        console.error("Error loading distributors:", error);
-      }
-    };
-
-    fetchDistributors();
   }, []);
 
   const handleChange = (e) => {
@@ -98,22 +89,26 @@ const AddNUserForm = ({ onClose, refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formData.distributorId) {
-        alert("Please select a distributor");
+      if (!formData.superAdminId) {
+        alert("Superadmin session not found. Please login again.");
         return;
       }
 
       const data = new FormData();
-      Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== null && formData[key] !== "") {
+          data.append(key, formData[key]);
+        }
+      });
       await axiosInstance.post("/nuserapi/create", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("NUser Added Successfully ✅");
+      alert("NUser Added Successfully");
       if (refreshData) refreshData();
       if (onClose) onClose();
     } catch (error) {
       console.error(error);
-      alert("Error Adding NUser ❌");
+      alert(error.response?.data?.message || "Error Adding NUser");
     }
   };
 
@@ -211,21 +206,13 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                 className={inputCls}
               />
             </Field>
-            <Field label="Distributor" required>
-              <select
-                name="distributorId"
-                value={formData.distributorId}
-                onChange={handleChange}
-                required
-                className={inputCls}
-              >
-                <option value="">Select distributor</option>
-                {distributors.map((distributor) => (
-                  <option key={distributor._id} value={distributor._id}>
-                    {distributor.name}
-                  </option>
-                ))}
-              </select>
+            <Field label="Super Admin" required>
+              <input
+                type="text"
+                value={superadmin?.name || "Current Super Admin"}
+                readOnly
+                className={`${inputCls} bg-gray-50 cursor-not-allowed`}
+              />
             </Field>
             <Field label="GST number">
               <input

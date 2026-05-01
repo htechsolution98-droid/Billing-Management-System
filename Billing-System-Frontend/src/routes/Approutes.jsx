@@ -13,6 +13,7 @@ import NuserForm from "../components/SuperAdmin/NuserForm.jsx";
 import CustomerTable from "../components/SuperAdmin/CustomerTabel.jsx";
 import NuserCustomerPage from "../components/Nuser/NuserCustomerPage.jsx";
 import NuserProductPage from "../components/Nuser/NuserProductPage.jsx";
+import MasterPage from "../components/Nuser/MasterPage.jsx";
 
 function AppRoutes() {
   return (
@@ -131,6 +132,16 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["nuser"]}>
             <NuserProductPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Nuser Master Management (Brand & Category) */}
+      <Route
+        path="/nuser/master"
+        element={
+          <ProtectedRoute allowedRoles={["nuser"]}>
+            <MasterPage />
           </ProtectedRoute>
         }
       />

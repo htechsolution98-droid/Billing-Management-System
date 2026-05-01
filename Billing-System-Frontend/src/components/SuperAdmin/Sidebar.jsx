@@ -39,8 +39,13 @@ const Sidebar = ({
       icon: Users,
       path: "/distributor-table",
     },
-    { id: "nusers", label: "Manage Nusers", icon: UserCircle, path: "/nuser-table" },
-    { id: "products", label: "All Products", icon: Package, path: "#products" },
+    {
+      id: "nusers",
+      label: "Manage Nusers",
+      icon: UserCircle,
+      path: "/nuser-table",
+    },
+    // { id: "products", label: "All Products", icon: Package, path: "#products" },
     {
       id: "customers",
       label: "Manage Customers",
@@ -121,7 +126,7 @@ const Sidebar = ({
         </div>
 
         {/* User Info Card */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div
             className={`mx-4 mt-4 p-4 bg-gradient-to-r ${themeColors.primaryLight} rounded-2xl border ${themeColors.primaryBorder}`}
           >
@@ -143,12 +148,12 @@ const Sidebar = ({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Collapse Toggle (Desktop) */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex mx-4 mt-4 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
+          className="hidden lg:flex mx-2 mt-2 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
         >
           <ChevronRight
             className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`}
@@ -199,16 +204,49 @@ const Sidebar = ({
           })}
         </nav>
 
-        {/* Logout Section */}
+        {/* User/Logout Section */}
         <div className="p-4 border-t border-gray-100">
-          <button
-            onClick={onLogout}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors group ${isCollapsed ? "justify-center" : ""}`}
-            title={isCollapsed ? "Logout" : ""}
-          >
-            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            {!isCollapsed && <span className="font-medium">Logout</span>}
-          </button>
+          <div className="flex flex-col gap-2">
+            {!isCollapsed ? (
+              <div
+                className={`p-3 bg-gradient-to-r ${themeColors.primaryLight} rounded-2xl border ${themeColors.primaryBorder}`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className={`w-10 h-10 bg-gradient-to-br ${themeColors.activeBg} text-white flex items-center justify-center rounded-xl font-bold shadow-lg`}
+                  >
+                    {user.name ? user.name.charAt(0).toUpperCase() : "S"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-800 text-sm truncate">
+                      {user.name || "SuperAdmin"}
+                    </p>
+                    <p
+                      className={`text-[10px] ${themeColors.primaryText} font-bold uppercase`}
+                    >
+                      {user.role || "Admin"}
+                    </p>
+                  </div>
+                </div>
+                {/* <button
+                  onClick={onLogout}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors text-sm font-medium"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button> */}
+              </div>
+            ) : (
+
+              // <button
+              //   onClick={onLogout}
+              //   className="w-full flex items-center justify-center p-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+              //   title="Logout"
+              // >
+                <LogOut />
+              // </button>
+            )}
+          </div>
         </div>
       </aside>
     </>

@@ -188,7 +188,7 @@ const ManageNusers = () => {
                       "Firm",
                       "Mobile",
                       "Email",
-                      "Distributor",
+                      "Created By",
                       "Status",
                       "Actions",
                     ].map((header) => (
@@ -246,7 +246,7 @@ const ManageNusers = () => {
                             {nuser.email}
                           </td>
                           <td className="truncate px-4 py-3 text-sm font-medium text-gray-800">
-                            {nuser.distributorId?.name || "-"}
+                            {nuser.distributorId?.name || nuser.superAdminId?.name || "-"}
                           </td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-800">
                             {nuser.status || "active"}

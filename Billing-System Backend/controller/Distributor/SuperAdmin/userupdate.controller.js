@@ -1,6 +1,5 @@
 import { UpdateNuserservice } from "../../../service/Distributor/Superadmin/userupdate.service.js";
 
-
 export const updateNusercontroller = async (req, res, next) => {
   try {
     const { id } = req.params;

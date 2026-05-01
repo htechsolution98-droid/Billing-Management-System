@@ -42,15 +42,14 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
       icon: Package,
       path: "/nuser/products",
     },
-    { id: "brands", label: "Brands", icon: Tag, path: "#brands" },
     {
-      id: "categories",
-      label: "Categories",
-      icon: FolderOpen,
-      path: "#categories",
+      id: "master",
+      label: "Brand & Category",
+      icon: Store,
+      path: "/nuser/master",
     },
     { id: "reports", label: "Reports", icon: FileText, path: "#reports" },
-    { id: "profile", label: "Profile", icon: UserCircle, path: "#profile" },
+    // { id: "profile", label: "Profile", icon: UserCircle, path: "#profile" },
   ];
 
   const isActivePath = (path) => {
@@ -106,8 +105,8 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
               </div>
               {!isCollapsed && (
                 <div>
-                  <h2 className="text-xl font-bold text-white">User</h2>
-                  <p className="text-violet-100 text-xs">Panel</p>
+                  <h2 className="text-xl font-bold text-white">Billing Managment </h2>
+                  <p className="text-violet-100 text-xs">User Panel</p>
                 </div>
               )}
             </div>
@@ -121,7 +120,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
         </div>
 
         {/* User Info Card */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div className="mx-4 mt-4 p-4 bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl border border-violet-100">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center rounded-xl font-bold text-lg shadow-lg">
@@ -140,12 +139,12 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Collapse Toggle (Desktop) */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex mx-4 mt-4 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
+          className="hidden lg:flex  mt-2 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
         >
           <ChevronRight
             className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`}
@@ -215,7 +214,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
                   {user.name}
                 </p>
                 <p className="text-xs text-gray-400 truncate">
-                  {user?.role || "Nuser"}
+                  {user?.role || "User"}
                 </p>
               </div>
             )}

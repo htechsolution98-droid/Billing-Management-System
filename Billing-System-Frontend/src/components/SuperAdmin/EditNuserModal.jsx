@@ -9,7 +9,7 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
     fullName: "",
     firmName: "",
     email: "",
-    password:"",
+    password: "",
     mobile: "",
     gst: "",
     pan: "",
@@ -27,7 +27,7 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
         fullName: nuser.fullName || "",
         firmName: nuser.firmName || "",
         email: nuser.email || "",
-        password: nuser.password || "", 
+        password: "",
         mobile: nuser.mobile || "",
         gst: nuser.gst || "",
         pan: nuser.pan || "",
@@ -53,10 +53,18 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onUpdate({
-      ...nuser,
+    const payload = {
+      _id: nuser._id,
       ...formData,
-    });
+      email: formData.email.trim().toLowerCase(),
+      password: formData.password.trim(),
+    };
+
+    if (!payload.password) {
+      delete payload.password;
+    }
+
+    onUpdate(payload);
     onClose();
   };
 
@@ -66,7 +74,9 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
         <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
           <div>
             <h3 className="text-2xl font-bold text-gray-800">Edit Nuser</h3>
-            <p className="mt-1 text-sm text-gray-500">Update nuser information in the table.</p>
+            <p className="mt-1 text-sm text-gray-500">
+              Update nuser information in the table.
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -76,59 +86,151 @@ const EditNuserModal = ({ isOpen, nuser, onClose, onUpdate }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6">
+        <form
+          onSubmit={handleSubmit}
+          className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6"
+        >
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Full Name</label>
-              <input name="fullName" value={formData.fullName} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <input
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Firm Name</label>
-              <input name="firmName" value={formData.firmName} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Firm Name
+              </label>
+              <input
+                name="firmName"
+                value={formData.firmName}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Email</label>
-              <input name="email" value={formData.email} onChange={handleChange} className={inputClassName} />
+              <input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Password</label>
-              <input name="password" value={formData.password} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter new password"
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Mobile</label>
-              <input name="mobile" value={formData.mobile} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Mobile
+              </label>
+              <input
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">GST Number</label>
-              <input name="gst" value={formData.gst} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                GST Number
+              </label>
+              <input
+                name="gst"
+                value={formData.gst}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">PAN Number</label>
-              <input name="pan" value={formData.pan} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                PAN Number
+              </label>
+              <input
+                name="pan"
+                value={formData.pan}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Aadhaar Number</label>
-              <input name="aadhaar" value={formData.aadhaar} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Aadhaar Number
+              </label>
+              <input
+                name="aadhaar"
+                value={formData.aadhaar}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Bank Name</label>
-              <input name="bankName" value={formData.bankName} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Bank Name
+              </label>
+              <input
+                name="bankName"
+                value={formData.bankName}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">IFSC</label>
-              <input name="ifsc" value={formData.ifsc} onChange={handleChange} className={inputClassName} />
+              <input
+                name="ifsc"
+                value={formData.ifsc}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Account Number</label>
-              <input name="accountNumber" value={formData.accountNumber} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Account Number
+              </label>
+              <input
+                name="accountNumber"
+                value={formData.accountNumber}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Account Holder Name</label>
-              <input name="accountHolderName" value={formData.accountHolderName} onChange={handleChange} className={inputClassName} />
+              <label className="text-sm font-medium text-gray-700">
+                Account Holder Name
+              </label>
+              <input
+                name="accountHolderName"
+                value={formData.accountHolderName}
+                onChange={handleChange}
+                className={inputClassName}
+              />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Status</label>
-              <select name="status" value={formData.status} onChange={handleChange} className={inputClassName}>
+              <label className="text-sm font-medium text-gray-700">
+                Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className={inputClassName}
+              >
                 <option value="active">active</option>
                 <option value="inactive">inactive</option>
               </select>

@@ -59,24 +59,23 @@ export const createUsercontroller = async (req, res, next) => {
     // ==============================
 
     if (req.user.role === "superadmin") {
-      // Expect a Distributor id or a Register id; resolve to Distributor._id
-      const providedId = req.body.distributorId;
-      if (!providedId) {
-        return res.status(400).json({ message: "DistributorId is required" });
-      }
+      body.superAdminId = req.user._id;
 
-      // Try as Distributor._id first
-      let dist = await Distributor.findById(providedId);
-      if (!dist) {
-        // Fallback: treat providedId as a Register id and find Distributor by registerId
-        dist = await Distributor.findOne({ registerId: providedId });
-      }
+      // Superadmin can optionally assign the NUser under a distributor too.
+      if (req.body.distributorId) {
+        const providedId = req.body.distributorId;
+        let dist = await Distributor.findById(providedId);
 
-      if (!dist) {
-        return res.status(400).json({ message: "Distributor not found for given id" });
-      }
+        if (!dist) {
+          dist = await Distributor.findOne({ registerId: providedId });
+        }
 
-      body.distributorId = dist._id;
+        if (!dist) {
+          return res.status(400).json({ message: "Distributor not found for given id" });
+        }
+
+        body.distributorId = dist._id;
+      }
     }
 
     // console.log("DistributorId:",

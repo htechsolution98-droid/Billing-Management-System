@@ -59,9 +59,13 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["user"],
-      default: "user",
+      default: "nuser",
     },
     registerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Register",
+    },
+    superAdminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Register",
     },

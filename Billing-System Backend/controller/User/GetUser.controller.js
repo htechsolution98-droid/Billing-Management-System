@@ -15,7 +15,9 @@ export const GetuserController = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized role" });
     }
 
-      const users = await User.find(query).populate("distributorId", "name distributorCode");
+    const users = await User.find(query)
+      .populate("distributorId", "name distributorCode")
+      .populate("superAdminId", "name");
 
     return res.status(200).json({
       count: users.length,
