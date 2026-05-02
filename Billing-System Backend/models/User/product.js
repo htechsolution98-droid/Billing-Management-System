@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
     },
 
     productImage: {
-      type: String, // store image path
+      type: [String], // store image path
     },
 
     productDescription: {
@@ -17,21 +17,33 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-    productUnit: {
-      type: String,
-      enum: ["kg", "gm", "liter", "ml", "piece"],
-      required: true,
-    },
+    // Single unit/price fields kept for backward compatibility but made optional
+    // productUnit: {
+    //   type: String,
+    //   enum: ["kg", "gm", "liter", "ml", "piece"],
+    //   required: false,
+    // },
 
-    productPrice: {
-      type: Number,
-      required: true,
-    },
+    // productPrice: {
+    //   type: Number,
+    //   required: false,
+    // },
 
-    discountPrice: {
-      type: Number,
-      required: false,
-    },
+    // discountPrice: {
+    //   type: Number,
+    //   required: false,
+    // },
+
+    // New variants array to support "Sizes & Pricing"
+    variants: [
+      {
+        sizeName: { type: String, required: true },
+        price: { type: Number, required: true },
+        discountPrice: { type: Number },
+        stock: { type: Number, default: 0 },
+      },
+    ],
+
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -37,7 +37,7 @@ router.post(
   verifyToken,
   authorizeRoles("nuser"),
   (req, res, next) => {
-    upload.single("productImage")(req, res, function (err) {
+    upload.array("productImage")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         return res.status(400).json({
           msg: "File too large. Max 2MB allowed",
@@ -66,12 +66,28 @@ router.post(
  *         description: List of product fetched successfully
  */
 router.get("/get", GetProductController);
+
+
 //******************************************update and delete api
 router.put(
   "/product/update/:id",
   verifyToken,
   authorizeRoles("nuser"),
-  upload.single("productImage"),
+  (req, res, next) => {
+    upload.array("productImage")(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+          msg: "File too large. Max 2MB allowed",
+        });
+      }
+      if (err) {
+        return res.status(400).json({
+          msg: err.message,
+        });
+      }
+      next();
+    });
+  },
   updateNusercontroller,
 );
 

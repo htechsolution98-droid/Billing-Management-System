@@ -5,28 +5,23 @@ export const createProductcontroller = async (req, res) => {
   try {
     //************************************************** */
     const body = { ...req.body, userId: req.user._id };
-    console.log("Uploaded File", req.file);
-    // console.log(body);
+    // console.log("Uploaded File", req.file);
 
-    // ["categoryId", "brandId"].forEach((field) => {
-    //   if (body[field] === "") {
-    //     delete body[field];
-    //   }
-    // });
-
-    // if (body.categoryId && !mongoose.Types.ObjectId.isValid(body.categoryId)) {
-    //   return res.status(400).json({ error: "Invalid category id" });
-    // }
-
-    // if (body.brandId && !mongoose.Types.ObjectId.isValid(body.brandId)) {
-    //   return res.status(400).json({ error: "Invalid brand id" });
-    // }
-
-    //productImage upload
-    if (req.file) {
-      body.productImage = `${req.protocol}://${req.get("host")}/uploads/ProductImg/${req.file.filename}`;
+    // productImage upload - store relative path for better portability
+    if (req.files && req.files.length > 0) {
+      body.productImage = req.files.map(
+        (file) => `/uploads/ProductImg/${file.filename}`
+      );
     }
-    // const userId = req.user._id; // logged-in nuser
+    // Parse variants if sent as a JSON string (common in multipart/form-data)
+    if (typeof body.variants === "string") {
+      try {
+        body.variants = JSON.parse(body.variants);
+      } catch (e) {
+        console.error("Error parsing variants:", e);
+      }
+    }
+
     const data = await CreateProductservice(body);
     res.status(200).json({ msg: "Nuser Added", data });
   } catch (error) {

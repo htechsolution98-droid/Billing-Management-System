@@ -6,8 +6,8 @@ import axiosInstance from "../api/axiosInstance";
 import Sidebar from "../components/Nuser/Sidebar";
 import Header from "../components/Nuser/Header";
 import StatCard from "../components/Nuser/StatCard";
-import ProfileCard from "../components/Nuser/ProfileCard";
-import QuickActions from "../components/Nuser/QuickActions";
+// import ProfileCard from "../components/Nuser/ProfileCard";
+// import QuickActions from "../components/Nuser/QuickActions";
 import DataTable from "../components/Nuser/DataTable";
 import WelcomeBanner from "../components/Nuser/WelcomeBanner";
 import LogoutModal from "../components/Nuser/LogoutModal";
@@ -276,11 +276,11 @@ const NuserDashboard = () => {
                 ))}
               </div>
 
-              {/* Profile & Quick Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1">
-                  <ProfileCard user={user} />
-                </div>
+              {/*  Quick Actions */}
+              {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-1"> */}
+                  {/* <ProfileCard user={user} /> */}
+                {/* </div>
                 <div className="lg:col-span-2">
                   <QuickActions
                     onAddBrand={() => setIsBrandFormOpen(true)}
@@ -289,7 +289,7 @@ const NuserDashboard = () => {
                     onAddCategory={() => setIsCategoryFormOpen(true)}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Tables Section */}
               {/* <CustomexrSection /> */}

@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+// import Header from "./Header";
 import LogoutModal from "./LogoutModal";
 import ProductForm from "./ProductForm";
-import ProductViewModal from "./ProductViewModal";
+// import ProductViewModal from "./ProductViewModal";
 import ProductEditModal from "./ProductEditModal";
 
 const API_ORIGIN = "http://localhost:5000";
@@ -39,7 +39,9 @@ const NuserProductPage = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   const [editLoading, setEditLoading] = useState(false);
-  const [editImage, setEditImage] = useState(null);
+  const [editImages, setEditImages] = useState([]);
+  const [retainedImages, setRetainedImages] = useState([]);
+  const [editError, setEditError] = useState(null);
 
   // Dashboard states
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -89,9 +91,10 @@ const NuserProductPage = () => {
       const res = await axiosInstance.get(`/productapi/get?${params}`);
 
       const productData = res.data?.data || [];
+      console.log("Fetched Products Data:", productData[0]);
       setProducts(productData);
       setFilteredProducts(productData);
-      
+
       if (res.data?.totalPages) setTotalPages(res.data.totalPages);
       if (res.data?.total !== undefined) setTotalItems(res.data.total);
     } catch (error) {
@@ -113,26 +116,6 @@ const NuserProductPage = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-
-  // // Update filtered products when products or search query changes
-  // useEffect(() => {
-  //   if (searchQuery.trim() === "") {
-  //     setFilteredProducts(products);
-  //   } else {
-  //     const filtered = products.filter(
-  //       (p) =>
-  //         p.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         getCategoryName(p)
-  //           .toLowerCase()
-  //           .includes(searchQuery.toLowerCase()) ||
-  //         getBrandName(p).toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         p.productDescription
-  //           ?.toLowerCase()
-  //           .includes(searchQuery.toLowerCase()),
-  //     );
-  //     setFilteredProducts(filtered);
-  //   }
-  // }, [searchQuery, products]);
 
   // Delete product*******************************************
   const handleDelete = async (id) => {
@@ -168,23 +151,56 @@ const NuserProductPage = () => {
         product.categoryId?.categoryName || product.category || "N/A",
       brandId: product.brandId?._id || "",
       brandName: product.brandId?.brandName || product.brand || "N/A",
+      variants: product.variants || [
+        { sizeName: "", price: "", discountPrice: "", stock: "" },
+      ],
     });
-    setEditImage(null);
+    setEditImages([]);
+    setRetainedImages(product.productImage ? (Array.isArray(product.productImage) ? product.productImage : [product.productImage]) : []);
+    setEditError(null);
     setIsEditOpen(true);
   };
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "categoryId" ? { brandId: "" } : {}),
+    }));
   };
 
   const handleEditImageChange = (e) => {
-    setEditImage(e.target.files[0]);
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setEditImages((prev) => [...prev, ...files]);
+    e.target.value = "";
+  };
+
+  const removeEditImage = (index, isRetained) => {
+    if (isRetained) {
+      setRetainedImages((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      setEditImages((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   // Submit edit product*******************************************
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setEditError(null);
+
+    if (editFormData.variants) {
+      for (let i = 0; i < editFormData.variants.length; i++) {
+        const price = parseFloat(editFormData.variants[i].price);
+        const discountPrice = parseFloat(editFormData.variants[i].discountPrice);
+        if (discountPrice && discountPrice > price) {
+          setEditError(`Discount price cannot be greater than regular price in Size ${i + 1}`);
+          return;
+        }
+      }
+    }
+
     setEditLoading(true);
 
     try {
@@ -196,21 +212,28 @@ const NuserProductPage = () => {
           value !== null &&
           value !== undefined
         ) {
-          data.append(key, value);
+          if (key === "variants") {
+            data.append(key, JSON.stringify(value));
+          } else {
+            data.append(key, value);
+          }
         }
       });
-      if (editImage) {
-        data.append("productImage", editImage);
+      if (editImages.length > 0) {
+        editImages.forEach((img) => data.append("productImage", img));
+      }
+      if (retainedImages.length > 0) {
+        data.append("retainedImages", JSON.stringify(retainedImages));
       }
 
-     const editproduct =  await axiosInstance.put(
+      const editproduct = await axiosInstance.put(
         `/productapi/product/update/${selectedProduct._id}`,
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },
         },
       );
-console.log("editproduct",editproduct);
+      console.log("editproductttttttttttttttttttttttttttttttttttttttttttttttt", editproduct);
 
       fetchProducts(currentPage);
       setIsEditOpen(false);
@@ -252,26 +275,43 @@ console.log("editproduct",editproduct);
     });
   };
   //Img Url ==========================================
-  const getProductImageUrl = (productImage) => {
-    if (!productImage) return "";
+  const getProductImageUrl = (productImg) => {
+    // Check if the image field is an array (as defined in the Mongoose schema)
+    let productImage = productImg;
+    if (Array.isArray(productImage)) {
+      productImage = productImage.length > 0 ? productImage[0] : null;
+    }
 
+    if (!productImage || typeof productImage !== "string") {
+      if (productImage)
+        console.warn(
+          "Invalid productImage type or value:",
+          typeof productImage,
+          productImage,
+        );
+      return "";
+    }
+
+    let finalUrl = "";
     if (productImage.startsWith("http")) {
-      return productImage;
+      finalUrl = productImage;
+    } else if (productImage.includes("/uploads/")) {
+      // If it contains /uploads/ but doesn't start with http, it might be a relative path from root
+      const pathPart = productImage.substring(
+        productImage.indexOf("/uploads/"),
+      );
+      finalUrl = `${API_ORIGIN}${pathPart}`;
+    } else if (productImage.includes("uploads/")) {
+      const pathPart = productImage.substring(productImage.indexOf("uploads/"));
+      finalUrl = `${API_ORIGIN}/${pathPart}`;
+    } else if (productImage.startsWith("ProductImg/")) {
+      finalUrl = `${API_ORIGIN}/uploads/${productImage}`;
+    } else {
+      // Assume it's just the filename
+      finalUrl = `${API_ORIGIN}/uploads/ProductImg/${productImage}`;
     }
 
-    if (productImage.startsWith("/uploads/")) {
-      return `${API_ORIGIN}${productImage}`;
-    }
-
-    if (productImage.startsWith("uploads/")) {
-      return `${API_ORIGIN}/${productImage}`;
-    }
-
-    if (productImage.startsWith("ProductImg/")) {
-      return `${API_ORIGIN}/uploads/${productImage}`;
-    }
-
-    return `${API_ORIGIN}/uploads/ProductImg/${productImage}`;
+    return finalUrl;
   };
 
   const getCategoryName = (product) =>
@@ -305,12 +345,6 @@ console.log("editproduct",editproduct);
       />
 
       <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
-        <Header
-          user={user}
-          onLogout={handleLogoutClick}
-          currentTime={currentTime}
-        />
-
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Page Header */}
@@ -359,165 +393,141 @@ console.log("editproduct",editproduct);
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      {[
-                        "Product",
-                        "Unit",
-                        "Price",
-                        // "Discount",
-                        "Category",
-                        "Brand",
-                        // "Status",
-                        "Actions",
-                      ].map((h) => (
-                        <th
-                          key={h}
-                          className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {loading ? (
-                      <tr>
-                        <td colSpan="8" className="py-12 text-center">
-                          <Loader2 className="w-8 h-8 animate-spin mx-auto text-violet-600" />
-                        </td>
-                      </tr>
-                    ) : filteredProducts.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan="8"
-                          className="py-12 text-center text-gray-500"
-                        >
-                          <div className="flex flex-col items-center gap-2">
-                            <Package className="w-12 h-12 text-gray-300" />
-                            <p>No products found</p>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      currentItems.map((product, index) => {
-                        const avatarColor =
-                          avatarColors[index % avatarColors.length];
+              <div className="p-6">
+                {loading ? (
+                  <div className="py-12 flex justify-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
+                  </div>
+                ) : filteredProducts.length === 0 ? (
+                  <div className="py-12 flex flex-col items-center gap-2 text-gray-500">
+                    <Package className="w-12 h-12 text-gray-300" />
+                    <p>No products found</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {currentItems.map((product, index) => {
+                      const avatarColor =
+                        avatarColors[index % avatarColors.length];
 
-                        return (
-                          <tr
-                            key={product._id}
-                            className="hover:bg-gray-50 transition-colors"
+                      return (
+                        <div
+                          key={product._id}
+                          className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group"
+                        >
+                          {/* Image Section */}
+                          <div
+                            className={`relative h-48 sm:h-56 w-full ${avatarColor.split(" ")[0]} flex items-center justify-center overflow-hidden`}
                           >
-                            {/* Product */}
-                            <td className="px-4 py-4">
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className={`w-20 h-20 rounded-xl flex items-center justify-center overflow-hidden  ${avatarColor}`}
-                                >
-                                  {product.productImage ? (
-                                    <img
-                                      src={getProductImageUrl(
-                                        product.productImage,
-                                      )}
-                                      alt={product.productName}
-                                      className="w-full h-full object-cover rounded-xl"
-                                    />
-                                  ) : (
-                                    <Package className="w-5 h-5" />
-                                  )}
-                                </div>
-                                <div>
-                                  <p className="font-medium text-gray-800">
-                                    {product.productName}
-                                  </p>
-                                  {/* <p className="text-xs text-gray-500 truncate max-w-[200px]">
-                                    {product.productDescription}
-                                  </p> */}
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* Unit */}
-                            <td className="px-4 py-4">
-                              <span className="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium capitalize">
-                                {product.productUnit}
-                              </span>
-                            </td>
-
-                            {/* Price */}
-                            <td className="px-4 py-4">
-                              <span className="font-semibold text-gray-800">
-                                ₹{product.productPrice}
-                              </span>
-                            </td>
-
-                            {/* Discount Price */}
-                            {/* <td className="px-4 py-4">
-                              {product.discountPrice ? (
-                                <span className="font-semibold text-emerald-600">
-                                  ₹{product.discountPrice}
-                                </span>
+                            {(() => {
+                              const imageUrl = getProductImageUrl(
+                                product.productImage,
+                              );
+                              return imageUrl ? (
+                                <img
+                                  src={imageUrl}
+                                  alt={product.productName}
+                                  className="w-full h-full object-contain p-4 bg-white/50 group-hover:scale-105 transition-transform duration-500"
+                                />
                               ) : (
-                                <span className="text-gray-400 text-sm">-</span>
-                              )}
-                            </td> */}
+                                <Package
+                                  className={`w-12 h-12 ${avatarColor.split(" ")[1].replace("text-", "text-opacity-50 text-")}`}
+                                />
+                              );
+                            })()}
 
-                            {/* Category */}
-                            <td className="px-4 py-4 text-sm text-gray-800">
-                              {getCategoryName(product)}
-                            </td>
-
-                            {/* Brand */}
-                            <td className="px-4 py-4 text-sm text-gray-800">
-                              {getBrandName(product)}
-                            </td>
-
-                            {/* Status */}
-                            {/* <td className="px-4 py-4">
-                              <span
-                                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                  product.status,
-                                )}`}
-                              >
-                                {product.status || "Active"}
+                            {/* Tags overlay */}
+                            {/* <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                              <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-gray-800 rounded-lg text-[10px] font-bold tracking-wider uppercase shadow-sm">
+                                {getCategoryName(product)}
                               </span>
-                            </td> */}
+                            </div>
+                            <div className="absolute top-3 right-3 flex flex-wrap gap-2">
+                              <span className="px-2.5 py-1 bg-black/70 backdrop-blur text-white rounded-lg text-[10px] font-bold tracking-wider uppercase shadow-sm">
+                                {getBrandName(product)}
+                              </span>
+                            </div> */}
+                          </div>
 
-                            {/* Actions */}
-                            <td className="px-4 py-4">
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() => handleView(product)}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-100 transition-colors"
-                                >
-                                  <Eye className="w-3.5 h-3.5" />
-                                  View
-                                </button>
+                          {/* Content Section */}
+                          <div className="p-5 flex flex-col flex-1">
+                            <h3 className="font-bold text-gray-900 text-lg line-clamp-1 mb-1">
+                              {product.productName}
+                            </h3>
+
+                            <div className="flex items-center gap-2 mb-4">
+                              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium uppercase tracking-wider">
+                                {product.productUnit ||
+                                  (product.variants &&
+                                    product.variants[0]?.sizeName) ||
+                                  "N/A"}
+                              </span>
+                              <span className="px-2 py-0.5 bg-violet-100 text-violet-700 rounded text-xs font-medium uppercase tracking-wider">
+                                Stock: {
+                                  product.variants && product.variants.length > 0 
+                                    ? product.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0) 
+                                    : (Number(product.stock) || 0)
+                                }
+                              </span>
+                            </div>
+
+                            <div className="mt-auto pt-4 border-t border-gray-50 flex flex-col gap-3">
+                              <div className="flex flex-col gap-1.5 max-h-[72px] overflow-y-auto pr-1 custom-scrollbar">
+                                {(product.variants && product.variants.length > 0) ? (
+                                  product.variants.map((v, i) => (
+                                    <div key={i} className="flex justify-between items-center text-sm">
+                                      <span className="text-xs font-semibold text-gray-500 uppercase">{v.sizeName}</span>
+                                      <div className="flex items-baseline gap-1.5">
+                                        <span className="font-black text-gray-900">
+                                          ₹{v.discountPrice || v.price || "0"}
+                                        </span>
+                                        {v.discountPrice && Number(v.discountPrice) > 0 && (
+                                          <span className="text-xs text-gray-400 line-through font-medium">
+                                            ₹{v.price}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="flex justify-between items-center text-sm">
+                                    <span className="text-xs font-semibold text-gray-500 uppercase">Price</span>
+                                    <div className="flex items-baseline gap-1.5">
+                                      <span className="font-black text-gray-900">
+                                        ₹{product.discountPrice || product.productPrice || "0"}
+                                      </span>
+                                      {product.discountPrice && Number(product.discountPrice) > 0 && (
+                                        <span className="text-xs text-gray-400 line-through font-medium">
+                                          ₹{product.productPrice}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex items-center gap-2 pt-1">
                                 <button
                                   onClick={() => handleEdit(product)}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-medium hover:bg-amber-100 transition-colors"
+                                  className="flex-1 py-2 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center gap-1.5 hover:bg-amber-500 hover:text-white transition-colors text-sm font-semibold"
+                                  title="Edit Product"
                                 >
-                                  <Pencil className="w-3.5 h-3.5" />
-                                  Edit
+                                  <Pencil className="w-4 h-4" /> Edit
                                 </button>
                                 <button
                                   onClick={() => handleDelete(product._id)}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors"
+                                  className="flex-1 py-2 rounded-xl bg-red-50 text-red-600 flex items-center justify-center gap-1.5 hover:bg-red-500 hover:text-white transition-colors text-sm font-semibold"
+                                  title="Delete Product"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                  Delete
+                                  <Trash2 className="w-4 h-4" /> Delete
                                 </button>
                               </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Pagination Controls */}
@@ -595,11 +605,14 @@ console.log("editproduct",editproduct);
         <ProductEditModal
           product={selectedProduct}
           formData={editFormData}
-          editImage={editImage}
+          editImages={editImages}
+          retainedImages={retainedImages}
           editLoading={editLoading}
+          error={editError}
           onClose={() => setIsEditOpen(false)}
           onChange={handleEditChange}
           onImageChange={handleEditImageChange}
+          removeEditImage={removeEditImage}
           onSubmit={handleEditSubmit}
           getProductImageUrl={getProductImageUrl}
         />

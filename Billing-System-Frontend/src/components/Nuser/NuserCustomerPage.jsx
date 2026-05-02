@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+// import Header from "./Header";
 import LogoutModal from "./LogoutModal";
 import CustomerViewModal from "./CustomerViewModal";
 import CustomerEditModal from "./CustomerEditModal";
@@ -212,11 +212,11 @@ const NuserCustomerPage = () => {
       />
 
       <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
-        <Header
+        {/* <Header
           user={user}
           onLogout={handleLogoutClick}
           currentTime={currentTime}
-        />
+        /> */}
 
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="max-w-7xl mx-auto space-y-6">
