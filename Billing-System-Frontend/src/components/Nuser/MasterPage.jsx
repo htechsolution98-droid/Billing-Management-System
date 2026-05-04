@@ -75,11 +75,21 @@ const MasterPage = () => {
     } catch (error) {
       console.error("Fetch brands error:", error);
       // Sample data fallback
-      setBrands([
-        { _id: "b1", brandName: "India Gate", name: "India Gate", status: "active" },
-        { _id: "b2", brandName: "Fortune", name: "Fortune", status: "active" },
-        { _id: "b3", brandName: "Aashirvaad", name: "Aashirvaad", status: "inactive" },
-      ]);
+      // setBrands([
+      //   {
+      //     _id: "b1",
+      //     brandName: "India Gate",
+      //     name: "India Gate",
+      //     status: "active",
+      //   },
+      //   { _id: "b2", brandName: "Fortune", name: "Fortune", status: "active" },
+      //   {
+      //     _id: "b3",
+      //     brandName: "Aashirvaad",
+      //     name: "Aashirvaad",
+      //     status: "inactive",
+      //   },
+      // ]);
     } finally {
       setLoading(false);
     }
@@ -100,11 +110,26 @@ const MasterPage = () => {
     } catch (error) {
       console.error("Fetch categories error:", error);
       // Sample data fallback
-      setCategories([
-        { _id: "c1", categoryName: "Grocery", name: "Grocery", status: "active" },
-        { _id: "c2", categoryName: "Beverages", name: "Beverages", status: "active" },
-        { _id: "c3", categoryName: "Snacks", name: "Snacks", status: "inactive" },
-      ]);
+      // setCategories([
+      //   {
+      //     _id: "c1",
+      //     categoryName: "Grocery",
+      //     name: "Grocery",
+      //     status: "active",
+      //   },
+      //   {
+      //     _id: "c2",
+      //     categoryName: "Beverages",
+      //     name: "Beverages",
+      //     status: "active",
+      //   },
+      //   {
+      //     _id: "c3",
+      //     categoryName: "Snacks",
+      //     name: "Snacks",
+      //     status: "inactive",
+      //   },
+      // ]);
     } finally {
       setLoading(false);
     }
@@ -125,7 +150,7 @@ const MasterPage = () => {
     const data = activeTab === "brand" ? brands : categories;
     if (!searchQuery.trim()) return data;
     return data.filter((item) =>
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   };
 
@@ -143,13 +168,15 @@ const MasterPage = () => {
     setIsModalOpen(true);
   };
 
-  // Delete
+  // Brand and Category Delete api =====================================================
   const handleDelete = async (id) => {
     if (!window.confirm(`Are you sure you want to delete this ${activeTab}?`))
       return;
 
     const endpoint =
-      activeTab === "brand" ? `/barndapi/delete/${id}` : `/cetegoryapi/delete/${id}`;
+      activeTab === "brand"
+        ? `/barndapi/branddelete/${id}`
+        : `/cetegoryapi/categorydelete/${id}`;
 
     try {
       await axiosInstance.delete(endpoint);
@@ -161,7 +188,7 @@ const MasterPage = () => {
     }
   };
 
-  // Submit (Create / Update)
+  // Submit (Create / Update) category brand edit api ============================================================
   const handleSubmit = async (formData) => {
     setModalLoading(true);
 
@@ -170,10 +197,14 @@ const MasterPage = () => {
         const payload = {
           brandName: formData.name,
           status: formData.status,
+          categoryId: formData.categoryId || undefined,
         };
 
         if (editMode && selectedItem) {
-          await axiosInstance.put(`/barndapi/update/${selectedItem._id}`, payload);
+          await axiosInstance.put(
+            `/barndapi/brandedit/${selectedItem._id}`,
+            payload,
+          );
         } else {
           await axiosInstance.post("/barndapi/create", payload);
         }
@@ -185,7 +216,10 @@ const MasterPage = () => {
         };
 
         if (editMode && selectedItem) {
-          await axiosInstance.put(`/cetegoryapi/update/${selectedItem._id}`, payload);
+          await axiosInstance.put(
+            `/cetegoryapi/categoryedit/${selectedItem._id}`,
+            payload,
+          );
         } else {
           await axiosInstance.post("/cetegoryapi/create", payload);
         }
@@ -237,11 +271,11 @@ const MasterPage = () => {
       />
 
       <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
-        <Header
+        {/* <Header
           user={user}
           onLogout={handleLogoutClick}
           currentTime={currentTime}
-        />
+        /> */}
 
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="max-w-5xl mx-auto space-y-6">

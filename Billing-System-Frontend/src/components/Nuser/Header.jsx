@@ -36,6 +36,28 @@ const Header = ({ user, onLogout, currentTime }) => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [logoFile, setLogoFile] = useState(null);
+  const [headerName, setHeaderName] = useState(user?.name || "User");
+
+  // Fetch updated profile silently on mount to ensure header displays correct name
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+      try {
+        const res = await axiosInstance.get("/nuserapi/profile");
+        const data = res.data?.data || res.data || {};
+        if (data.fullName) {
+          setHeaderName(data.fullName);
+          const localUser = JSON.parse(localStorage.getItem("user")) || {};
+          if (localUser.name !== data.fullName) {
+            localUser.name = data.fullName;
+            localStorage.setItem("user", JSON.stringify(localUser));
+          }
+        }
+      } catch (err) {
+        console.error("Silent profile fetch error", err);
+      }
+    };
+    fetchHeaderData();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -52,10 +74,7 @@ const Header = ({ user, onLogout, currentTime }) => {
   const fetchProfile = async () => {
     try {
       setProfileLoading(true);
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const res = await axiosInstance.get(
-        `/nuserapi/get/${userData?._id || userData?.id}`,
-      );
+      const res = await axiosInstance.get("/nuserapi/profile");
       const data = res.data?.data || res.data || {};
       setProfileData(data);
       setEditForm({
@@ -75,24 +94,24 @@ const Header = ({ user, onLogout, currentTime }) => {
       console.error("Fetch profile error:", err);
       // Fallback to localStorage + props
       const userData = JSON.parse(localStorage.getItem("user")) || {};
-      const fallback = {
-        ...userData,
-        fullName: userData.fullName || userData.name || "",
-        firmName: userData.firmName || userData.businessName || "",
-        email: userData.email || "",
-        mobile: userData.mobile || "",
-        aadhaar: userData.aadhaar || "",
-        gst: userData.gst || "",
-        pan: userData.pan || "",
-        bankName: userData.bankName || "",
-        ifsc: userData.ifsc || "",
-        accountNumber: userData.accountNumber || "",
-        accountHolderName: userData.accountHolderName || "",
-        usercode: userData.usercode || "",
-        status: userData.status || "active",
-        role: userData.role || "nuser",
-        createdAt: userData.createdAt,
-      };
+      // const fallback = {
+      //   ...userData,
+      //   fullName: userData.fullName || "",
+      //   firmName: userData.firmName  || "",
+      //   email: userData.email || "",
+      //   mobile: userData.mobile || "",
+      //   aadhaar: userData.aadhaar || "",
+      //   gst: userData.gst || "",
+      //   pan: userData.pan || "",
+      //   bankName: userData.bankName || "",
+      //   ifsc: userData.ifsc || "",
+      //   accountNumber: userData.accountNumber || "",
+      //   accountHolderName: userData.accountHolderName || "",
+      //   usercode: userData.usercode || "",
+      //   status: userData.status || "",
+      //   role: userData.role || "",
+      //   createdAt: userData.createdAt,
+      // };
       setProfileData(fallback);
       setEditForm({
         fullName: fallback.fullName,
@@ -134,24 +153,15 @@ const Header = ({ user, onLogout, currentTime }) => {
     setSaveLoading(true);
 
     try {
-      const data = new FormData();
-      Object.entries(editForm).forEach(([key, value]) => {
-        if (value !== "" && value !== null && value !== undefined) {
-          data.append(key, value);
-        }
-      });
-      if (logoFile) {
-        data.append("firmLogo", logoFile);
-      }
+      await axiosInstance.put("/nuserapi/update-profile", editForm);
 
-      const userData = JSON.parse(localStorage.getItem("user"));
-      await axiosInstance.put(
-        `/nuserapi/update/${userData?._id || userData?.id}`,
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      );
+      // Update local state and localStorage immediately
+      if (editForm.fullName) {
+        setHeaderName(editForm.fullName);
+        const localUser = JSON.parse(localStorage.getItem("user")) || {};
+        localUser.name = editForm.fullName;
+        localStorage.setItem("user", JSON.stringify(localUser));
+      }
 
       // Refresh profile data
       await fetchProfile();
@@ -220,9 +230,10 @@ const Header = ({ user, onLogout, currentTime }) => {
                 onClick={() => setOpen(!open)}
                 className="flex items-center gap-2 cursor-pointer select-none"
               >
+                {/* //----------------------------------------------------------------------------------- */}
                 <div className="text-right hidden sm:block">
                   <p className="font-semibold text-gray-800 text-sm">
-                    {user.name || "User"}
+                    {headerName}
                   </p>
                   <p className="text-xs text-violet-600 capitalize">
                     {user.role || "User"}
@@ -230,7 +241,7 @@ const Header = ({ user, onLogout, currentTime }) => {
                 </div>
 
                 <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center rounded-lg font-bold text-sm">
-                  {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  {headerName.charAt(0).toUpperCase()}
                 </div>
 
                 <ChevronDown
@@ -339,44 +350,8 @@ const Header = ({ user, onLogout, currentTime }) => {
                   </p>
                 </div>
               ) : isEditMode ? (
-                /* Edit Mode Form */
+                /* Edit Mode Form **********************************************************************/
                 <form onSubmit={handleSave} className="p-6 space-y-6">
-                  {/* Firm Logo */}
-                  <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                    <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
-                      {logoFile ? (
-                        <img
-                          src={URL.createObjectURL(logoFile)}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : profileData.firmLogo ? (
-                        <img
-                          src={getLogoUrl(profileData.firmLogo)}
-                          alt="Logo"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Building2 className="w-8 h-8 text-gray-400" />
-                      )}
-                    </div>
-                    <div>
-                      <label className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl cursor-pointer transition-colors text-sm font-medium">
-                        <Upload className="w-4 h-4" />
-                        Upload Logo
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleLogoChange}
-                          className="hidden"
-                        />
-                      </label>
-                      <p className="text-xs text-gray-400 mt-1">
-                        PNG, JPG up to 2MB
-                      </p>
-                    </div>
-                  </div>
-
                   {/* Personal Info */}
                   <div>
                     <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">

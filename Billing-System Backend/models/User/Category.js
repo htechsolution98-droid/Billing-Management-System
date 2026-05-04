@@ -5,7 +5,7 @@ const categorySchema = new mongoose.Schema(
     categoryName: {
       type: String,
       required: true,
-      unique: true,
+
       trim: true,
     },
     userId: {
@@ -22,6 +22,9 @@ const categorySchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// 🔑 UNIQUE PER USER
+categorySchema.index({ categoryName: 1, userId: 1 }, { unique: true });
 
 const Category = mongoose.model("Category", categorySchema);
 

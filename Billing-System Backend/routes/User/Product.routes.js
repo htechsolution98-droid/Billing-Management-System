@@ -65,7 +65,7 @@ router.post(
  *       200:
  *         description: List of product fetched successfully
  */
-router.get("/get", GetProductController);
+router.get("/get", verifyToken, authorizeRoles("nuser"), GetProductController);
 
 
 //******************************************update and delete api

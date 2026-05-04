@@ -18,6 +18,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [brandsLoading, setBrandsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
         return;
       }
 
+      setBrandsLoading(true);
       try {
         const brandRes = await axiosInstance.get(
           `/barndapi/brand/by-category/${formData.categoryId}`,
@@ -50,6 +52,8 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
       } catch (err) {
         console.error("Error fetching brands by category:", err);
         setBrands([]);
+      } finally {
+        setBrandsLoading(false);
       }
     };
 
@@ -123,6 +127,17 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Validate discount prices
+    for (let i = 0; i < sizes.length; i++) {
+      const price = parseFloat(sizes[i].price);
+      const discountPrice = parseFloat(sizes[i].discountPrice);
+      if (sizes[i].discountPrice && discountPrice >= price) {
+        setError(`Size ${i + 1}: Discount price must be less than regular price (₹${price})`);
+        setLoading(false);
+        return;
+      }
+    }
 
     try {
       const data = new FormData();
@@ -263,16 +278,30 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                   name="brandId"
                   value={formData.brandId}
                   onChange={handleChange}
-                  className={inputClass}
+                  className={`${inputClass} ${!formData.categoryId ? "cursor-not-allowed opacity-60" : ""}`}
                   required
+                  disabled={!formData.categoryId || brandsLoading}
                 >
-                  <option value="">Select Brand</option>
+                  <option value="">
+                    {!formData.categoryId
+                      ? "Select category first"
+                      : brandsLoading
+                      ? "Loading brands..."
+                      : brands.length === 0
+                      ? "No brands for this category"
+                      : "Select Brand"}
+                  </option>
                   {brands.map((brand) => (
                     <option key={brand._id} value={brand._id}>
                       {brand.brandName || brand.name}
                     </option>
                   ))}
                 </select>
+                {!formData.categoryId && (
+                  <p className="mt-1 text-[10px] text-amber-500 font-medium">
+                    ⚠ Please select a category to load brands
+                  </p>
+                )}
               </div>
             </div>
 
@@ -339,7 +368,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                         />
                       </div>
                       <div>
-                        <label className={labelClass}>Discount</label>
+                        <label className={labelClass}>Discounted Price</label>
                         <input
                           type="number"
                           name="discountPrice"

@@ -3,7 +3,8 @@ import { GetBrandController } from "../../controller/User/Brand/getbrand.control
 import { GetBrandByCategoryController } from "../../controller/User/Brand/Getcategwisebrand.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
-
+import { editBrandController } from "../../controller/User/Brand/editbrand.controller.js";
+import { deleteBrandController } from "../../controller/User/Brand/deletbrand.controller.js";
 import express from "express";
 const router = express.Router();
 /**
@@ -42,7 +43,7 @@ router.post("/create", verifyToken, authorizeRoles("nuser"), CreateBrandControll
  *         description: List of brand fetched successfully
  */
 
-router.get("/get", GetBrandController);
+router.get("/get", verifyToken, authorizeRoles("nuser"), GetBrandController);
 
 /**
  * @swagger
@@ -56,6 +57,12 @@ router.get("/get", GetBrandController);
  */
 router.get(
   "/brand/by-category/:categoryId",
+  verifyToken,
+  authorizeRoles("nuser"),
   GetBrandByCategoryController
 );
+
+
+router.put("/brandedit/:id", editBrandController);
+router.delete("/branddelete/:id", deleteBrandController);
 export default router;

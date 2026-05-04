@@ -227,7 +227,7 @@ const ProductEditModal = ({
                         />
                       </div>
                       <div>
-                        <label className={labelClass}>Discount</label>
+                        <label className={labelClass}>Discount Price</label>
                         <input
                           type="number"
                           name="discountPrice"

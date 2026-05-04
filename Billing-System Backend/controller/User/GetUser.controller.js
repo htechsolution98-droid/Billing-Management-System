@@ -31,6 +31,61 @@ export const GetuserController = async (req, res) => {
   }
 };
 
+//GetUser Profile data
+export const getProfileController = async (req, res) => {
+  try {
+    // req.user comes from auth middleware
+    const userId = req.user._id;
+
+    const user = await User.findById(userId).select("-password");
+    // 🔐 exclude password only
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+//Update user Profile data
+export const updateProfileController = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // if (req.file) {
+    //   req.body.firmLogo = req.file.path.replace(/\\/g, "/");
+    // }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update profile",
+    });
+  }
+};
 // export const GetuserController = async (req, res) => {
 //   try {
 //     console.log("Logged User:", req.user);

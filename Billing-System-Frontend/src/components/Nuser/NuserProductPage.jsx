@@ -91,7 +91,7 @@ const NuserProductPage = () => {
       const res = await axiosInstance.get(`/productapi/get?${params}`);
 
       const productData = res.data?.data || [];
-      console.log("Fetched Products Data:", productData[0]);
+      // console.log("Fetched Products Data:", productData[0]);
       setProducts(productData);
       setFilteredProducts(productData);
 
@@ -156,7 +156,13 @@ const NuserProductPage = () => {
       ],
     });
     setEditImages([]);
-    setRetainedImages(product.productImage ? (Array.isArray(product.productImage) ? product.productImage : [product.productImage]) : []);
+    setRetainedImages(
+      product.productImage
+        ? Array.isArray(product.productImage)
+          ? product.productImage
+          : [product.productImage]
+        : [],
+    );
     setEditError(null);
     setIsEditOpen(true);
   };
@@ -193,9 +199,13 @@ const NuserProductPage = () => {
     if (editFormData.variants) {
       for (let i = 0; i < editFormData.variants.length; i++) {
         const price = parseFloat(editFormData.variants[i].price);
-        const discountPrice = parseFloat(editFormData.variants[i].discountPrice);
+        const discountPrice = parseFloat(
+          editFormData.variants[i].discountPrice,
+        );
         if (discountPrice && discountPrice > price) {
-          setEditError(`Discount price cannot be greater than regular price in Size ${i + 1}`);
+          setEditError(
+            `Discount price cannot be greater than regular price in Size ${i + 1}`,
+          );
           return;
         }
       }
@@ -226,18 +236,18 @@ const NuserProductPage = () => {
         data.append("retainedImages", JSON.stringify(retainedImages));
       }
 
-      const editproduct = await axiosInstance.put(
+      await axiosInstance.put(
         `/productapi/product/update/${selectedProduct._id}`,
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },
         },
       );
-      console.log("editproductttttttttttttttttttttttttttttttttttttttttttttttt", editproduct);
 
       fetchProducts(currentPage);
       setIsEditOpen(false);
-      setEditImage(null);
+      setEditImages([]);
+      setRetainedImages([]);
     } catch (err) {
       console.error("Update Error:", err);
       alert("Error updating product");
@@ -330,8 +340,8 @@ const NuserProductPage = () => {
   ];
 
   // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
   // Use products directly as they are already paginated by backend
   const currentItems = filteredProducts;
 
@@ -455,51 +465,66 @@ const NuserProductPage = () => {
                             </h3>
 
                             <div className="flex items-center gap-2 mb-4">
-                              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium uppercase tracking-wider">
+                              <span className="px-2 py-0.5 text-gray-500 rounded text-xs font-medium uppercase tracking-wider">
                                 {product.productUnit ||
                                   (product.variants &&
                                     product.variants[0]?.sizeName) ||
                                   "N/A"}
                               </span>
-                              <span className="px-2 py-0.5 bg-violet-100 text-violet-700 rounded text-xs font-medium uppercase tracking-wider">
-                                Stock: {
-                                  product.variants && product.variants.length > 0 
-                                    ? product.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0) 
-                                    : (Number(product.stock) || 0)
-                                }
+                              <span className="px-2 py-0.5 text-gray-500 rounded text-xs font-medium uppercase tracking-wider">
+                                Stock:{" "}
+                                {product.variants && product.variants.length > 0
+                                  ? product.variants.reduce(
+                                      (sum, v) => sum + (Number(v.stock) || 0),
+                                      0,
+                                    )
+                                  : Number(product.stock) || 0}
                               </span>
                             </div>
 
                             <div className="mt-auto pt-4 border-t border-gray-50 flex flex-col gap-3">
                               <div className="flex flex-col gap-1.5 max-h-[72px] overflow-y-auto pr-1 custom-scrollbar">
-                                {(product.variants && product.variants.length > 0) ? (
+                                {product.variants &&
+                                product.variants.length > 0 ? (
                                   product.variants.map((v, i) => (
-                                    <div key={i} className="flex justify-between items-center text-sm">
-                                      <span className="text-xs font-semibold text-gray-500 uppercase">{v.sizeName}</span>
+                                    <div
+                                      key={i}
+                                      className="flex justify-between items-center text-sm"
+                                    >
+                                      <span className="text-xs font-semibold text-gray-500 uppercase">
+                                        {v.sizeName}
+                                      </span>
                                       <div className="flex items-baseline gap-1.5">
                                         <span className="font-black text-gray-900">
                                           ₹{v.discountPrice || v.price || "0"}
                                         </span>
-                                        {v.discountPrice && Number(v.discountPrice) > 0 && (
-                                          <span className="text-xs text-gray-400 line-through font-medium">
-                                            ₹{v.price}
-                                          </span>
-                                        )}
+                                        {v.discountPrice &&
+                                          Number(v.discountPrice) > 0 && (
+                                            <span className="text-xs text-gray-400 line-through font-medium">
+                                              ₹{v.price}
+                                            </span>
+                                          )}
                                       </div>
                                     </div>
                                   ))
                                 ) : (
                                   <div className="flex justify-between items-center text-sm">
-                                    <span className="text-xs font-semibold text-gray-500 uppercase">Price</span>
+                                    <span className="text-xs font-semibold text-gray-500 uppercase">
+                                      Price
+                                    </span>
                                     <div className="flex items-baseline gap-1.5">
                                       <span className="font-black text-gray-900">
-                                        ₹{product.discountPrice || product.productPrice || "0"}
+                                        ₹
+                                        {product.discountPrice ||
+                                          product.productPrice ||
+                                          "0"}
                                       </span>
-                                      {product.discountPrice && Number(product.discountPrice) > 0 && (
-                                        <span className="text-xs text-gray-400 line-through font-medium">
-                                          ₹{product.productPrice}
-                                        </span>
-                                      )}
+                                      {product.discountPrice &&
+                                        Number(product.discountPrice) > 0 && (
+                                          <span className="text-xs text-gray-400 line-through font-medium">
+                                            ₹{product.productPrice}
+                                          </span>
+                                        )}
                                     </div>
                                   </div>
                                 )}
@@ -589,6 +614,7 @@ const NuserProductPage = () => {
         refreshData={() => fetchProducts(currentPage)}
       />
 
+      {/* ProductViewModal is currently disabled (import commented out)
       {isViewOpen && (
         <ProductViewModal
           product={selectedProduct}
@@ -599,7 +625,7 @@ const NuserProductPage = () => {
           getProductImageUrl={getProductImageUrl}
           formatDate={formatDate}
         />
-      )}
+      )} */}
 
       {isEditOpen && (
         <ProductEditModal

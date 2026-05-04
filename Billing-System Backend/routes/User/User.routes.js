@@ -9,6 +9,8 @@ import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 import { updateNusercontroller } from "../../controller/Distributor/SuperAdmin/userupdate.controller.js";
 import { deleteNusercontroller } from "../../controller/Distributor/SuperAdmin/userdelete.controller.js";
+import { getProfileController } from "../../controller/User/GetUser.controller.js";
+import { updateProfileController } from "../../controller/User/GetUser.controller.js";
 
 /**
  * @swagger
@@ -36,9 +38,10 @@ import { deleteNusercontroller } from "../../controller/Distributor/SuperAdmin/u
  *         description: Distributor created
  */
 
-router.post("/create",
+router.post(
+  "/create",
   verifyToken,
-  authorizeRoles("superadmin","distributor"),
+  authorizeRoles("superadmin", "distributor"),
   (req, res, next) => {
     upload.single("firmLogo")(req, res, function (err) {
       if (err instanceof multer.MulterError) {
@@ -63,14 +66,18 @@ router.post("/create",
  * @swagger
  * /api/nuserapi/get:
  *   get:
- *     summary: Get all  nuser 
+ *     summary: Get all  nuser
  *     responses:
  *       200:
  *         description: List of  nuser  fetched successfully
  */
 
-router.get("/get",verifyToken,
-  authorizeRoles("superadmin","distributor"),  GetuserController);
+router.get(
+  "/get",
+  verifyToken,
+  authorizeRoles("superadmin", "distributor"),
+  GetuserController,
+);
 
 /**
  * @swagger
@@ -80,18 +87,19 @@ router.get("/get",verifyToken,
  *     responses:
  *       200:
  *         description: List of  nuser dashboard fetched successfully
-*/
-router.get("/userdashget",
+ */
+router.get(
+  "/userdashget",
   verifyToken,
-  authorizeRoles("nuser"),NuserDashController);
-
-
+  authorizeRoles("nuser"),
+  NuserDashController,
+);
 
 // update api distibutor dashboard
 router.put(
   "/nuser/update/:id",
   verifyToken,
-  authorizeRoles("superadmin","distributor"),
+  authorizeRoles("superadmin", "distributor"),
   upload.single("firmLogo"),
   updateNusercontroller,
 );
@@ -100,8 +108,24 @@ router.put(
 router.delete(
   "/nuser/delete/:id",
   verifyToken,
-  authorizeRoles("superadmin","distributor"),
+  authorizeRoles("superadmin", "distributor"),
   deleteNusercontroller,
+);
+
+//User Get profile
+router.get(
+  "/profile",
+  verifyToken,
+  authorizeRoles("nuser"),
+  getProfileController,
+);
+
+router.put(
+  "/update-profile",
+  verifyToken,
+  authorizeRoles("nuser"),
+  // upload.single("firmLogo"),
+  updateProfileController,
 );
 
 export default router;

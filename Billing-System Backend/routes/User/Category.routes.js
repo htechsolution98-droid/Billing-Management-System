@@ -2,6 +2,8 @@ import { CreateCategoryController } from "../../controller/User/Category/createc
 import { GetCategoryController } from "../../controller/User/Category/getcategory.controller.js";
 import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
+import { deletecategoryController } from "../../controller/User/Category/deletcategory.controller.js";
+import { editcategoryController } from "../../controller/User/Category/editcategory.controller.js";
 
 import express from "express";
 const router = express.Router();
@@ -28,7 +30,12 @@ const router = express.Router();
  *         description: Category created
  */
 
-router.post("/create", verifyToken, authorizeRoles("nuser"), CreateCategoryController);
+router.post(
+  "/create",
+  verifyToken,
+  authorizeRoles("nuser"),
+  CreateCategoryController,
+);
 /**
  * @swagger
  * /api/cetegoryapi/get:
@@ -38,6 +45,9 @@ router.post("/create", verifyToken, authorizeRoles("nuser"), CreateCategoryContr
  *       200:
  *         description: Category list
  */
-router.get("/get", GetCategoryController);
+router.get("/get", verifyToken, authorizeRoles("nuser"), GetCategoryController);
+
+router.put("/categoryedit/:id", editcategoryController);
+router.delete("/categorydelete/:id", deletecategoryController);
 
 export default router;

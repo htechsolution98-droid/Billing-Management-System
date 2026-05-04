@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axiosInstance from "../../api/axiosInstance";
 import { X, Plus, Pencil, Loader2, Save } from "lucide-react";
 
 const CommonModalForm = ({
@@ -12,10 +13,14 @@ const CommonModalForm = ({
   initialData,
   loading,
 }) => {
+  const isBrand = title === "Brand";
   const [formData, setFormData] = useState({
     name: "",
     status: "active",
+    categoryId: "",
   });
+  const [categories, setCategories] = useState([]);
+  const [catLoading, setCatLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,12 +28,23 @@ const CommonModalForm = ({
         setFormData({
           name: initialData.brandName || initialData.categoryName || initialData.name || "",
           status: initialData.status || "active",
+          categoryId: initialData.categoryId?._id || initialData.categoryId || "",
         });
       } else {
-        setFormData({ name: "", status: "active" });
+        setFormData({ name: "", status: "active", categoryId: "" });
+      }
+
+      // Fetch categories when Brand form opens
+      if (isBrand) {
+        setCatLoading(true);
+        axiosInstance
+          .get("/cetegoryapi/get")
+          .then((res) => setCategories(res.data?.data || res.data || []))
+          .catch((err) => console.error("Failed to load categories:", err))
+          .finally(() => setCatLoading(false));
       }
     }
-  }, [isOpen, editMode, initialData]);
+  }, [isOpen, editMode, initialData, isBrand]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,6 +115,31 @@ const CommonModalForm = ({
               autoFocus
             />
           </div>
+
+          {/* Category dropdown — only shown for Brand */}
+          {isBrand && (
+            <div className="space-y-2">
+              <label className={labelClass}>
+                Category <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={handleChange}
+                className={inputClass}
+                required
+              >
+                <option value="">
+                  {catLoading ? "Loading categories..." : "Select Category"}
+                </option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.categoryName || cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <label className={labelClass}>Status</label>

@@ -116,14 +116,21 @@ const BrandForm = ({ isOpen, onClose, refreshData }) => {
               </div>
 
               <div className="space-y-2">
-                <label className={labelClass}>Category </label>
+                <label className={labelClass}>
+                  Category <span className="text-red-500">*</span>
+                </label>
                 <select
                   name="categoryId"
                   value={formData.categoryId}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 >
-                  <option value="">Select Category</option>
+                  <option value="">
+                    {categories.length === 0
+                      ? "Loading categories..."
+                      : "Select Category"}
+                  </option>
                   {categories.map((cat, idx) => (
                     <option
                       key={cat._id || idx}

@@ -2,15 +2,17 @@ import Product from "../../../models/User/product.js";
 import Category from "../../../models/User/Category.js";
 import Brand from "../../../models/User/Brand.js";
 
-export const GetProductservice = async (page = 1, limit = 5, search = "") => {
+export const GetProductservice = async (userId, page = 1, limit = 5, search = "") => {
   const skip = (page - 1) * limit;
-   const cleanSearch = search.trim();
+  const cleanSearch = (search || "").toString().trim();
 
-  // ✅ Only product name search
-  const query = cleanSearch
-    ? { productName: { $regex: cleanSearch, $options: "i" } }
-    : {};
 
+    const query = {
+    userId: userId,
+    ...(cleanSearch && {
+      productName: { $regex: cleanSearch, $options: "i" },
+    }),
+  };
   const total = await Product.countDocuments(query);
   const users = await Product.find(query)
     .populate("categoryId", "categoryName")

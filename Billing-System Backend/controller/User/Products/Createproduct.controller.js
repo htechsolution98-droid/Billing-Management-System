@@ -7,10 +7,10 @@ export const createProductcontroller = async (req, res) => {
     const body = { ...req.body, userId: req.user._id };
     // console.log("Uploaded File", req.file);
 
-    // productImage upload - store relative path for better portability
+    // Multiple images
     if (req.files && req.files.length > 0) {
       body.productImage = req.files.map(
-        (file) => `/uploads/ProductImg/${file.filename}`
+        (file) => `/uploads/ProductImg/${file.filename}`,
       );
     }
     // Parse variants if sent as a JSON string (common in multipart/form-data)
@@ -20,6 +20,18 @@ export const createProductcontroller = async (req, res) => {
       } catch (e) {
         console.error("Error parsing variants:", e);
       }
+    }
+
+    if (body.price < 0) {
+      return res.status(400).json({
+        message: "Price cannot be negative",
+      });
+    }
+
+    if (body.discountPrice > body.price) {
+      return res.status(400).json({
+        message: "Discount price cannot be greater than price",
+      });
     }
 
     const data = await CreateProductservice(body);

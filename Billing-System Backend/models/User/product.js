@@ -38,9 +38,9 @@ const productSchema = new mongoose.Schema(
     variants: [
       {
         sizeName: { type: String, required: true },
-        price: { type: Number, required: true },
-        discountPrice: { type: Number },
-        stock: { type: Number, default: 0 },
+        price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
+        discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
+        stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
       },
     ],
 
