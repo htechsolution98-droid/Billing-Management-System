@@ -12,7 +12,7 @@ const MasterPage = () => {
   const navigate = useNavigate();
 
   // Tab state: "brand" | "category"
-  const [activeTab, setActiveTab] = useState("brand");
+  const [activeTab, setActiveTab] = useState("category");
 
   // Data states
   const [brands, setBrands] = useState([]);
@@ -137,20 +137,37 @@ const MasterPage = () => {
 
   // Fetch data based on active tab
   useEffect(() => {
-    if (activeTab === "brand") {
-      fetchBrands();
-    } else {
-      fetchCategories();
-    }
+    fetchBrands();
+    fetchCategories();
     setSearchQuery("");
   }, [activeTab]);
 
   // Filter data
   const getFilteredData = () => {
-    const data = activeTab === "brand" ? brands : categories;
+    let data = [];
+    if (activeTab === "brand") {
+      data = brands.map((b) => ({
+        ...b,
+        categoryName: b.categoryId?.categoryName || b.categoryId?.name || "N/A",
+      }));
+    } else {
+      data = categories.map((cat) => {
+        const catBrands = brands
+          .filter(
+            (b) =>
+              b.categoryId?._id === cat._id || b.categoryId === cat._id
+          )
+          .map((b) => b.brandName || b.name);
+        return {
+          ...cat,
+          brandNames: catBrands.length > 0 ? catBrands : ["None"],
+        };
+      });
+    }
+
     if (!searchQuery.trim()) return data;
     return data.filter((item) =>
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase()),
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   };
 
@@ -247,14 +264,22 @@ const MasterPage = () => {
   };
 
   const tabs = [
-    { id: "brand", label: "Brand", icon: Tag },
     { id: "category", label: "Category", icon: FolderOpen },
+    { id: "brand", label: "Brand", icon: Tag },
   ];
 
-  const tableColumns = [
-    { key: "name", label: "Name" },
-    { key: "status", label: "Status" },
-  ];
+  const tableColumns =
+    activeTab === "brand"
+      ? [
+          { key: "name", label: "Name" },
+          { key: "categoryName", label: "Category" },
+          { key: "status", label: "Status" },
+        ]
+      : [
+          { key: "name", label: "Name" },
+          { key: "brandNames", label: "Brands" },
+          { key: "status", label: "Status" },
+        ];
 
   const filteredData = getFilteredData();
 
@@ -294,60 +319,65 @@ const MasterPage = () => {
               </div>
             </div>
 
-            {/* Toggle Tabs */}
-            <div className="bg-white rounded-2xl p-2 shadow-sm border border-gray-100 flex gap-1">
-              {tabs.map((tab) => {
-                const TabIcon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                      isActive
-                        ? "bg-violet-600 text-white shadow-lg shadow-violet-500/25"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                    }`}
-                  >
-                    <TabIcon className="w-4 h-4" />
-                    {tab.label}
-                    <span
-                      className={`ml-1 px-2 py-0.5 rounded-full text-xs ${
-                        isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {tab.id === "brand" ? brands.length : categories.length}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Search & Add Button Row */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder={`Search ${activeTab}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all bg-white"
-                />
-              </div>
-              <button
-                onClick={handleAddNew}
-                className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-5 py-3 rounded-xl shadow-lg shadow-violet-500/30 transition-all hover:shadow-xl whitespace-nowrap"
-              >
-                <Plus className="w-5 h-5" />
-                Add New {currentTabLabel}
-              </button>
-            </div>
-
             {/* Table */}
             <CommonTable
+              tableHeader={
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    {/* Toggle Tabs */}
+                    <div className="bg-gray-00 rounded-xl p-1 flex gap-1 w-full sm:w-auto">
+                      {tabs.map((tab) => {
+                        const TabIcon = tab.icon;
+                        const isActive = activeTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                              isActive
+                                ? "bg-white text-violet-700 shadow-sm"
+                                : "text-gray-500 hover:text-gray-700"
+                            }`}
+                          >
+                            <TabIcon className="w-4 h-4" />
+                            {tab.label}
+                            <span
+                              className={`ml-1 px-2 py-0.5 rounded-full text-xs ${
+                                isActive
+                                  ? "bg-violet-100 text-violet-700"
+                                  : "bg-gray-200 text-gray-500"
+                              }`}
+                            >
+                              {tab.id === "brand" ? brands.length : categories.length}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Add Button */}
+                    <button
+                      onClick={handleAddNew}
+                      className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-violet-500/30 transition-all hover:shadow-xl whitespace-nowrap text-sm font-medium"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Add New {currentTabLabel}
+                    </button>
+                  </div>
+
+                  {/* Search */}
+                  <div className="relative w-full max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder={`Search ${activeTab}...`}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none transition-all bg-gray-50 focus:bg-white text-sm"
+                    />
+                  </div>
+                </div>
+              }
               columns={tableColumns}
               data={filteredData}
               loading={loading}

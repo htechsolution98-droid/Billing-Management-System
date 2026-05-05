@@ -8,7 +8,7 @@ export const deleteDistcontroller = async (req, res, next) => {
     console.log("Delete ID:", id);
 
     const deletedUser =
-      await DeleteUserservice(id);
+      await DeleteDistservice(id);
 
     res.status(200).json({
       message: "User deleted successfully ✅",

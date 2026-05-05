@@ -6,8 +6,6 @@ import axiosInstance from "../api/axiosInstance";
 import Sidebar from "../components/Distributor/Sidebar";
 import Header from "../components/Distributor/Header";
 import StatCard from "../components/Distributor/StatCard";
-import ProfileCard from "../components/Distributor/ProfileCard";
-import QuickActions from "../components/Distributor/QuickActions";
 import RecentTable from "../components/Distributor/RecentTable";
 import ActivityFeed from "../components/Distributor/ActivityFeed";
 import WelcomeBanner from "../components/Distributor/WelcomeBanner";
@@ -43,27 +41,7 @@ const DistributorDashboard = () => {
     totalorder: 0,
   });
 
-  // Sample data for tables (in real app, fetch from API)
-  // const [recentNusers] = useState([
-  //   { name: "Amit Sharma", mobile: "98765 43210", email: "amit@gmail.com", status: "Active" },
-  //   { name: "Rahul Patel", mobile: "98766 12345", email: "rahul@gmail.com", status: "Active" },
-  //   { name: "Priya Gupta", mobile: "98767 67890", email: "priya@gmail.com", status: "Pending" },
-  //   { name: "Suresh Kumar", mobile: "98768 54321", email: "suresh@gmail.com", status: "Active" },
-  // ]);
 
-  // const [recentProducts] = useState([
-  //   { name: "Rice Basmati", category: "Grocery", price: "₹50/kg", stock: 40 },
-  //   { name: "Cooking Oil", category: "Grocery", price: "₹120/l", stock: 20 },
-  //   { name: "Wheat Flour", category: "Grocery", price: "₹35/kg", stock: 8 },
-  //   { name: "Sugar", category: "Grocery", price: "₹45/kg", stock: 55 },
-  // ]);
-
-  // const [recentCustomers] = useState([
-  //   { name: "Ravi Patel", mobile: "98765 11111", city: "Ahmedabad" },
-  //   { name: "Suresh Mehta", mobile: "98766 22222", city: "Surat" },
-  //   { name: "Kiran Shah", mobile: "98767 33333", city: "Vadodara" },
-  //   { name: "Meena Desai", mobile: "98768 44444", city: "Rajkot" },
-  // ]);
 
   // Fetch Dashboard Data
   const getDashboardData = async () => {
@@ -237,25 +215,7 @@ const DistributorDashboard = () => {
                 {statCards.map((card, index) => (
                   <StatCard key={index} {...card} />
                 ))}
-              </div>
-
-              {/* Profile & Quick Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1">
-                  <ProfileCard user={user} />
-                </div>
-                <div className="lg:col-span-2">
-                  <QuickActions user={user} />
-                </div>
-              </div>
-
-              {/* NUser Table Section */}
-              {user._id && (
-                <div id="nusers">
-                  <DistNuserTable distributorId={user._id} />
-                </div>
-              )}
-            
+              </div>            
             </div>
           )}
         </main>

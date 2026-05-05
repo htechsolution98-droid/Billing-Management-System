@@ -138,9 +138,6 @@ const DistNuserTable = ({ distributorId }) => {
                       <td className="px-6 font-medium text-gray-800 py-4 text-sm text-gray-600 truncate">
                         {nuser.firmName || "-"}
                       </td>
-                      {/* <td className="px-6 py-4 text-sm text-gray-600">
-                        {nuser.mobile || "-"}
-                      </td> */}
                       <td className="px-6 font-medium text-gray-800 py-4 text-sm text-gray-600 truncate">
                         {nuser.email || "-"}
                       </td>
