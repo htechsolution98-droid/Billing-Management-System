@@ -18,7 +18,9 @@ const CommonModalForm = ({
     name: "",
     status: "active",
     categoryId: "",
+    subcategories: [],
   });
+  const [subInput, setSubInput] = useState("");
   const [categories, setCategories] = useState([]);
   const [catLoading, setCatLoading] = useState(false);
 
@@ -29,9 +31,10 @@ const CommonModalForm = ({
           name: initialData.brandName || initialData.categoryName || initialData.name || "",
           status: initialData.status || "active",
           categoryId: initialData.categoryId?._id || initialData.categoryId || "",
+          subcategories: initialData.subcategories || [],
         });
       } else {
-        setFormData({ name: "", status: "active", categoryId: "" });
+        setFormData({ name: "", status: "active", categoryId: "", subcategories: [] });
       }
 
       // Fetch categories when Brand form opens
@@ -49,6 +52,26 @@ const CommonModalForm = ({
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const addSubcategory = () => {
+    if (!subInput.trim()) return;
+    if (formData.subcategories.includes(subInput.trim())) {
+      setSubInput("");
+      return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      subcategories: [...prev.subcategories, subInput.trim()],
+    }));
+    setSubInput("");
+  };
+
+  const removeSubcategory = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      subcategories: prev.subcategories.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -138,6 +161,51 @@ const CommonModalForm = ({
                   </option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {!isBrand && (
+            <div className="space-y-3">
+              <label className={labelClass}>Subcategories</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={subInput}
+                  onChange={(e) => setSubInput(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), addSubcategory())
+                  }
+                  className={inputClass}
+                  placeholder="Add subcategory (e.g. Basmati)"
+                />
+                <button
+                  type="button"
+                  onClick={addSubcategory}
+                  className="px-4 py-2 bg-violet-100 text-violet-600 rounded-xl hover:bg-violet-200 transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+
+              {formData.subcategories.length > 0 && (
+                <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  {formData.subcategories.map((sub, index) => (
+                    <span
+                      key={index}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 shadow-sm"
+                    >
+                      {sub}
+                      <button
+                        type="button"
+                        onClick={() => removeSubcategory(index)}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

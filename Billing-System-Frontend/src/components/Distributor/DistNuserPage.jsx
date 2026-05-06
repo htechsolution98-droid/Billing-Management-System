@@ -10,6 +10,7 @@ const DistNuserPage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // User state
   const [user, setUser] = useState({
@@ -67,16 +68,19 @@ const DistNuserPage = () => {
         onLogout={handleLogoutClick}
         isCollapsed={isSidebarCollapsed}
         setIsCollapsed={setIsSidebarCollapsed}
+        onProfileClick={() => setIsProfileModalOpen(true)}
       />
 
       {/* Main Content */}
       <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
         {/* Header */}
-        <Header 
+        {/* <Header 
           user={user} 
           onLogout={handleLogoutClick} 
           currentTime={currentTime} 
-        />
+          isProfileOpen={isProfileModalOpen}
+          setIsProfileOpen={setIsProfileModalOpen}
+        /> */}
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="space-y-6">
             <div className="mb-6">

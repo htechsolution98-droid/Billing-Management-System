@@ -17,6 +17,7 @@ const ProductEditModal = ({
   error,
 }) => {
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
@@ -30,6 +31,16 @@ const ProductEditModal = ({
     };
     fetchCategories();
   }, []);
+
+  // Update subcategories when category changes
+  useEffect(() => {
+    if (formData.categoryId && categories.length > 0) {
+      const selectedCat = categories.find(cat => cat._id === formData.categoryId);
+      setSubcategories(selectedCat?.subcategories || []);
+    } else {
+      setSubcategories([]);
+    }
+  }, [formData.categoryId, categories]);
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -149,6 +160,30 @@ const ProductEditModal = ({
                   {brands.map((brand) => (
                     <option key={brand._id} value={brand._id}>
                       {brand.brandName || brand.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>Subcategory</label>
+                <select
+                  name="subcategory"
+                  value={formData.subcategory || ""}
+                  onChange={onChange}
+                  className={`${inputClass} ${!formData.categoryId ? "cursor-not-allowed opacity-60" : ""}`}
+                  disabled={!formData.categoryId}
+                >
+                  <option value="">
+                    {!formData.categoryId 
+                      ? "Select category first" 
+                      : subcategories.length === 0 
+                      ? "No subcategories" 
+                      : "Select Subcategory"}
+                  </option>
+                  {subcategories.map((sub, idx) => (
+                    <option key={idx} value={sub}>
+                      {sub}
                     </option>
                   ))}
                 </select>

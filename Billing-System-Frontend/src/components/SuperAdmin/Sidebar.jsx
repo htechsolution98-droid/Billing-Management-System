@@ -100,8 +100,17 @@ const Sidebar = ({
       >
         {/* Logo Section */}
         <div
-          className={`flex h-24 items-center bg-gradient-to-r ${themeColors.primary} px-6`}
+          className={`flex h-24 items-center bg-gradient-to-r ${themeColors.primary} px-6 relative overflow-hidden`}
         >
+          {/* Desktop Collapse Toggle */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden lg:flex absolute top-2 right-2 p-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all duration-200 z-10"
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} />
+          </button>
+
           <div className="flex w-full items-center justify-between">
             <div
               className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
@@ -150,15 +159,6 @@ const Sidebar = ({
           </div>
         )} */}
 
-        {/* Collapse Toggle (Desktop) */}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex mx-2 mt-2 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
-        >
-          <ChevronRight
-            className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`}
-          />
-        </button>
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -219,12 +219,12 @@ const Sidebar = ({
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-800 text-sm truncate">
-                      {user.name || "SuperAdmin"}
+                      {user.name }
                     </p>
                     <p
                       className={`text-[10px] ${themeColors.primaryText} font-bold uppercase`}
                     >
-                      {user.role || "Admin"}
+                      {user.role }
                     </p>
                   </div>
                 </div>

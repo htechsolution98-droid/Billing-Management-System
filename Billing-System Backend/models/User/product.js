@@ -16,13 +16,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    
+    productUnit: {
+      type: String,
+      enum: ["kg", "gm", "liter", "ml", "piece","cm"],
+      required: false,
+    },
     // Single unit/price fields kept for backward compatibility but made optional
-    // productUnit: {
-    //   type: String,
-    //   enum: ["kg", "gm", "liter", "ml", "piece"],
-    //   required: false,
-    // },
 
     // productPrice: {
     //   type: Number,
@@ -59,6 +59,10 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
      
+    },
+    subcategory: {
+      type: String,
+      trim: true,
     },
 
     status: {

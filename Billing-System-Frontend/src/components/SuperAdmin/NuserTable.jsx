@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus ,Eye} from "lucide-react";
+import { Plus, Eye, Users,Trash2,Edit } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -140,7 +140,7 @@ const ManageNusers = () => {
       />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <Header
+        {/* <Header
           user={user}
           onLogout={handleLogoutClick}
           currentTime={currentTime}
@@ -150,7 +150,7 @@ const ManageNusers = () => {
             currentTheme={currentTheme}
             onThemeChange={setCurrentTheme}
           />
-        </Header>
+        </Header> */}
 
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -174,16 +174,17 @@ const ManageNusers = () => {
                   className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-md transition hover:bg-violet-700"
                 >
                   <Plus className="h-5 w-5" />
-                  Add Nuser
+                  Add User
                 </button>
               </div>
             </div>
 
             <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white">
               <table className="min-w-full table-fixed">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 ">
                   <tr>
                     {[
+                      "ID",
                       "Name",
                       "Firm",
                       "Mobile",
@@ -194,7 +195,7 @@ const ManageNusers = () => {
                     ].map((header) => (
                       <th
                         key={header}
-                        className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400"
+                        className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-black"
                       >
                         {header}
                       </th>
@@ -213,28 +214,20 @@ const ManageNusers = () => {
                       </td>
                     </tr>
                   ) : (
-                    nusers.map((nuser) => {
-                      const initials = nuser.fullName
-                        ?.split(" ")
-                        .map((word) => word[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase();
-
+                    nusers.map((nuser, index) => {
+                      const displayId = (currentPage - 1) * limit + (index + 1);
                       return (
                         <tr
                           key={nuser._id}
                           className="transition-colors hover:bg-gray-50"
                         >
+                          <td className="px-4 py-3 text-xs font-bold text-black">
+                            #{displayId}
+                          </td>
                           <td className="px-4 py-3">
-                            <div className="flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-violet-50 text-[11px] font-semibold text-violet-800">
-                                {initials || "N"}
-                              </div>
-                              <span className="truncate text-sm font-medium text-gray-800">
-                                {nuser.fullName}
-                              </span>
-                            </div>
+                            <span className="truncate text-sm font-medium text-gray-800">
+                              {nuser.fullName}
+                            </span>
                           </td>
                           <td className="truncate px-4 py-3 text-sm font-medium text-gray-800">
                             {nuser.firmName}
@@ -252,24 +245,45 @@ const ManageNusers = () => {
                             {nuser.status || "active"}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-2">
+                              {/* Customer View */}
+                              <button
+                                onClick={() => navigate(`/superadmin/nuser-customers/${nuser._id}`)}
+                                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold bg-violet-50 text-violet-700 hover:bg-violet-100 transition-all border border-violet-100"
+                                title="View Customers"
+                              >
+                                <Users className="w-3.5 h-3.5" />
+                                <span>Customer View</span>
+                              </button>
+
+                              {/* View Info */}
                               <button
                                 onClick={() => handleView(nuser)}
-                                className="rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-800 transition-colors hover:bg-blue-100"
+                                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all border border-blue-100"
+                                title="View Info"
                               >
-                               <Eye className="w-5 h-4 mr-2" /> View
+                                <Eye className="w-3.5 h-3.5" />
                               </button>
+
+                              {/* Edit */}
                               <button
                                 onClick={() => handleEdit(nuser)}
-                                className="rounded-md bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-800 transition-colors hover:bg-amber-100"
+                                className="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-all border border-amber-100"
+                                title="Edit"
                               >
-                                Edit
+                                {/* <Eye className="w-3.5 h-3.5 hidden" /> dummy for spacing if needed */}
+                                {/* <span className="text-xs font-bold px-1">Edit</span> */}
+                                <Edit className="w-3.5 h-3.5" />
                               </button>
+
+                              {/* Delete */}
                               <button
                                 onClick={() => handleDelete(nuser._id)}
-                                className="rounded-md bg-red-50 px-2.5 py-1 text-[11px] font-medium text-red-800 transition-colors hover:bg-red-100"
+                                className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all border border-red-100"
+                                title="Delete"
                               >
-                                Delete
+                                {/* <span className="text-xs font-bold px-1">Delete</span> */}
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>
@@ -288,7 +302,7 @@ const ManageNusers = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
                       className="px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     >

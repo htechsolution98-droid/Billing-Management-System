@@ -25,7 +25,7 @@ import axiosInstance from "../../api/axiosInstance";
 
 const API_ORIGIN = "http://localhost:5000";
 
-const Header = ({ user, onLogout, currentTime }) => {
+const Header = ({ user, onLogout, currentTime, isProfileOpen: externalIsProfileOpen, setIsProfileOpen: externalSetIsProfileOpen }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -43,7 +43,7 @@ const Header = ({ user, onLogout, currentTime }) => {
   useEffect(() => {
     const fetchHeaderData = async () => {
       try {
-        const res = await axiosInstance.get("/distributorapi/profile");
+        const res = await axiosInstance.get("/distributorapi/distributorprofile");
         const data = res.data?.data || res.data || {};
         if (data.name) {
           setHeaderName(data.name);
@@ -60,6 +60,13 @@ const Header = ({ user, onLogout, currentTime }) => {
     fetchHeaderData();
   }, []);
 
+  // Effect to watch for external profile modal trigger
+  useEffect(() => {
+    if (externalIsProfileOpen) {
+      handleOpenProfile();
+    }
+  }, [externalIsProfileOpen]);
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -75,7 +82,7 @@ const Header = ({ user, onLogout, currentTime }) => {
   const fetchProfile = async () => {
     try {
       setProfileLoading(true);
-      const res = await axiosInstance.get("/distributorapi/profile");
+      const res = await axiosInstance.get("/distributorapi/distributorprofile");
       const data = res.data?.data || res.data || {};
       setProfileData(data);
       setEditForm({
@@ -136,7 +143,7 @@ const Header = ({ user, onLogout, currentTime }) => {
     setSaveLoading(true);
 
     try {
-      await axiosInstance.put("/distributorapi/update-profile", editForm);
+      await axiosInstance.put("/distributorapi/distributorprofile-update", editForm);
 
       // Update local state and localStorage immediately
       if (editForm.name) {
@@ -214,11 +221,11 @@ const Header = ({ user, onLogout, currentTime }) => {
                 className="flex items-center gap-2 cursor-pointer select-none"
               >
                 <div className="text-right hidden sm:block">
-                  <p className="font-semibold text-gray-800 text-sm">
-                    {headerName}
-                  </p>
+                   <p className="text-sm font-semibold text-gray-800 truncate">
+                  {user.name}
+                </p>
                   <p className="text-xs text-emerald-600 capitalize">
-                    {user.role || "User"}
+                    {user.role}
                   </p>
                 </div>
 
@@ -277,6 +284,7 @@ const Header = ({ user, onLogout, currentTime }) => {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => {
               setIsProfileOpen(false);
+              if (externalSetIsProfileOpen) externalSetIsProfileOpen(false);
               setIsEditMode(false);
               setLogoFile(null);
             }}
@@ -311,6 +319,7 @@ const Header = ({ user, onLogout, currentTime }) => {
                   <button
                     onClick={() => {
                       setIsProfileOpen(false);
+                      if (externalSetIsProfileOpen) externalSetIsProfileOpen(false);
                       setIsEditMode(false);
                       setLogoFile(null);
                     }}

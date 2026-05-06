@@ -3,12 +3,15 @@ import { Users ,Eye} from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import DistViewNuserModal from "./DistViewNuserModal";
 import DistEditNuserModal from "./DistEditNuserModal";
+import DistAddNuserModal from "./DistAddNuserModal";
+import { Plus } from "lucide-react";
 
 const DistNuserTable = ({ distributorId }) => {
   const [nusers, setNusers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [selectedNuser, setSelectedNuser] = useState(null);
 
   const fetchNusers = async () => {
@@ -76,8 +79,17 @@ const DistNuserTable = ({ distributorId }) => {
             <p className="text-sm text-gray-500">Your registered NUsers</p>
           </div>
         </div>
-        <div className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
-          Total: {nusers.length}
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+            Total: {nusers.length}
+          </div>
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all shadow-lg shadow-emerald-500/20 text-sm font-semibold"
+          >
+            <Plus className="w-4 h-4" />
+            Add User
+          </button>
         </div>
       </div>
 
@@ -88,11 +100,12 @@ const DistNuserTable = ({ distributorId }) => {
           <table className="min-w-full table-fixed">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-black w-16">ID</th>
                 {["Name", "Firm", "Email", "Status", "Actions"].map(
                   (h) => (
                     <th
                       key={h}
-                      className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500"
+                      className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-black"
                     >
                       {h}
                     </th>
@@ -111,7 +124,7 @@ const DistNuserTable = ({ distributorId }) => {
                   </td>
                 </tr>
               ) : (
-                nusers.map((nuser) => {
+                nusers.map((nuser, index) => {
                   const initials =
                     nuser.fullName
                       ?.split(" ")
@@ -125,11 +138,12 @@ const DistNuserTable = ({ distributorId }) => {
                       key={nuser._id}
                       className="hover:bg-gray-50 transition-colors"
                     >
+                      <td className="px-6 py-4 text-sm font-bold text-black">
+                        #{index + 1}
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 flex-shrink-0">
-                            {initials}
-                          </div>
+                          
                           <span className="text-sm font-medium text-gray-800 truncate">
                             {nuser.fullName}
                           </span>
@@ -197,6 +211,13 @@ const DistNuserTable = ({ distributorId }) => {
           setSelectedNuser(null);
         }}
         onUpdate={handleUpdate}
+      />
+
+      <DistAddNuserModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        distributorId={distributorId}
+        onSuccess={fetchNusers}
       />
     </div>
   );

@@ -14,7 +14,7 @@ import {
   Store,
 } from "lucide-react";
 
-const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
+const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed, onProfileClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -53,6 +53,12 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
   };
 
   const handleNavClick = (item) => {
+    if (item.id === "profile" && onProfileClick) {
+      onProfileClick();
+      setIsMobileOpen(false);
+      return;
+    }
+    
     if (item.path.startsWith("#")) {
       // For demo purposes - in real app, navigate to actual routes
       console.log(`Navigate to ${item.label}`);
@@ -91,7 +97,16 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
         `}
       >
         {/* Logo Section */}
-        <div className="p-6 bg-gradient-to-r from-emerald-600 to-teal-600">
+        <div className="p-6 bg-gradient-to-r from-emerald-600 to-teal-600 relative overflow-hidden">
+          {/* Desktop Collapse Toggle */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden lg:flex absolute top-2 right-2 p-1 rounded-md bg-white/20 hover:bg-white/30 text-white transition-all duration-200 z-10"
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} />
+          </button>
+
           <div className="flex items-center justify-between">
             <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}>
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -100,7 +115,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
               {!isCollapsed && (
                 <div>
                   <h2 className="text-xl font-bold text-white">Distributor</h2>
-                  <p className="text-emerald-100 text-xs">Panel</p>
+                  <p className="text-emerald-100 text-xs">Billing Software</p>
                 </div>
               )}
             </div>
@@ -112,14 +127,6 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             </button>
           </div>
         </div>
-
-        {/* Collapse Toggle (Desktop) */}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex mx-4 mt-4 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
-        >
-          <ChevronRight className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`} />
-        </button>
 
         {/* Nav Links */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 custom-scrollbar">
@@ -168,7 +175,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             }`}
             title={isCollapsed ? firstName : ""}
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-sm">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center rounded-xl font-bold shadow-lg">
               {userInitial}
             </div>
             {!isCollapsed && (

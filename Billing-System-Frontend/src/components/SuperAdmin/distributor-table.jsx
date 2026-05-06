@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
-import { Plus, Eye } from "lucide-react";
+import { Search, Plus, Eye, Users, Edit, Trash2 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -26,6 +25,7 @@ const ManageDistributors = () => {
     email: "",
   });
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("info");
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedDistributor, setSelectedDistributor] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -110,8 +110,9 @@ const ManageDistributors = () => {
     }
   };
   // *****************************************************************************
-  const handleView = (distributor) => {
+  const handleView = (distributor, mode = "info") => {
     setSelectedDistributor(distributor);
+    setViewMode(mode);
     setViewModalOpen(true);
   };
 
@@ -172,7 +173,7 @@ const ManageDistributors = () => {
       />
 
       <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
-        <Header
+        {/* <Header
           user={user}
           onLogout={handleLogoutClick}
           currentTime={currentTime}
@@ -182,7 +183,7 @@ const ManageDistributors = () => {
             currentTheme={currentTheme}
             onThemeChange={setCurrentTheme}
           />
-        </Header>
+        </Header> */}
 
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
@@ -225,23 +226,14 @@ const ManageDistributors = () => {
             </div>
 
             <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white">
-              {/* Table header bar */}
-              {/* <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-                <h3 className="text-sm font-semibold text-gray-700">
-                  Distributors
-                </h3>
-                <span className="text-xs font-medium text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
-                  {distributors.length} records
-                </span>
-              </div> */}
-
               <table className="min-w-full table-fixed">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-black w-12">ID</th>
                     {["Name", "Firm", "Email", "Status", "Actions"].map((h) => (
                       <th
                         key={h}
-                        className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400"
+                        className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-black"
                       >
                         {h}
                       </th>
@@ -253,50 +245,28 @@ const ManageDistributors = () => {
                   {distributors.length === 0 ? (
                     <tr>
                       <td
-                        colSpan="7"
+                        colSpan="6"
                         className="py-10 text-center text-sm text-gray-400"
                       >
                         No distributors found.
                       </td>
                     </tr>
                   ) : (
-                    distributors.map((dist) => {
-                      const initials = dist.name
-                        ?.split(" ")
-                        .map((w) => w[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase();
-
-                      const avatarColors = [
-                        "bg-blue-50 text-blue-800",
-                        "bg-emerald-50 text-emerald-800",
-                        "bg-purple-50 text-purple-800",
-                        "bg-orange-50 text-orange-800",
-                        "bg-amber-50 text-amber-800",
-                      ];
-                      const color =
-                        avatarColors[
-                          dist._id?.charCodeAt(0) % avatarColors.length
-                        ] ?? avatarColors[0];
+                    distributors.map((dist, index) => {
+                      const displayId = (currentPage - 1) * limit + (index + 1);
 
                       return (
                         <tr
                           key={dist._id}
                           className="hover:bg-gray-50 transition-colors"
                         >
-                          {/* Name + avatar */}
+                          <td className="px-4 py-3 text-xs font-bold text-black">
+                            #{displayId}
+                          </td>
                           <td className="px-4 py-3">
-                            <div className="flex items-center gap-2.5">
-                              <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold flex-shrink-0 ${color}`}
-                              >
-                                {initials}
-                              </div>
-                              <span className="text-sm font-medium text-gray-800 truncate">
+                              <span className="text-sm font-medium text-black truncate">
                                 {dist.name}
                               </span>
-                            </div>
                           </td>
 
                           <td className="px-4 py-3 text-sm  font-medium text-gray-800 truncate">
@@ -306,7 +276,6 @@ const ManageDistributors = () => {
                             {dist.email}
                           </td>
 
-                          {/* Status */}
                           <td className="px-4 py-3">
                             <DistributorStatusToggle
                               distributorId={dist._id}
@@ -315,26 +284,39 @@ const ManageDistributors = () => {
                             />
                           </td>
 
-                          {/* Actions */}
                           <td className="px-4 py-3">
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-2">
                               <button
-                                onClick={() => handleView(dist)}
-                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 transition-colors"
+                                onClick={() => navigate(`/superadmin/distributor-users/${dist._id}`)}
+                                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold bg-violet-50 text-violet-700 hover:bg-violet-100 transition-all border border-violet-100"
+                                title="View Users"
                               >
-                                <Eye className="w-4 h-4 mr-2" />
+                                <Users className="w-3.5 h-3.5" />
+                                <span>User View</span>
                               </button>
+
+                              <button
+                                onClick={() => handleView(dist, "info")}
+                                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all border border-blue-100"
+                                title="View Info"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+
                               <button
                                 onClick={() => handleEdit(dist)}
-                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors"
+                                className="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-all border border-amber-100"
+                                title="Edit"
                               >
-                                Edit
+                                <Edit className="w-3.5 h-3.5" />
                               </button>
+
                               <button
                                 onClick={() => handleDelete(dist._id)}
-                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-red-50 text-red-800 hover:bg-red-100 transition-colors"
+                                className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all border border-red-100"
+                                title="Delete"
                               >
-                                Delete
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>
@@ -345,7 +327,6 @@ const ManageDistributors = () => {
                 </tbody>
               </table>
               
-              {/* Pagination UI */}
               {!searchQuery && totalPages > 1 && (
                 <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 px-6 py-4 bg-white gap-4">
                   <div className="text-sm text-gray-500">
@@ -387,6 +368,7 @@ const ManageDistributors = () => {
       <ViewDistributorModal
         isOpen={viewModalOpen}
         distributor={selectedDistributor}
+        mode={viewMode}
         onClose={() => {
           setViewModalOpen(false);
           setSelectedDistributor(null);

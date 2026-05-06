@@ -151,6 +151,7 @@ const NuserProductPage = () => {
         product.categoryId?.categoryName || product.category || "N/A",
       brandId: product.brandId?._id || "",
       brandName: product.brandId?.brandName || product.brand || "N/A",
+      subcategory: product.subcategory || "",
       variants: product.variants || [
         { sizeName: "", price: "", discountPrice: "", stock: "" },
       ],
@@ -172,7 +173,7 @@ const NuserProductPage = () => {
     setEditFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "categoryId" ? { brandId: "" } : {}),
+      ...(name === "categoryId" ? { brandId: "", subcategory: "" } : {}),
     }));
   };
 

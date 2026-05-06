@@ -7,6 +7,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
     productName: "",
     productDescription: "",
     categoryId: "",
+    subcategory: "",
     brandId: "",
   });
   const [sizes, setSizes] = useState([
@@ -17,6 +18,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [brandsLoading, setBrandsLoading] = useState(false);
   const fileInputRef = useRef(null);
@@ -62,11 +64,21 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      ...(name === "categoryId" ? { brandId: "" } : {}),
-    }));
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+      
+      // Reset subcategory and brand when category changes
+      if (name === "categoryId") {
+        newData.subcategory = "";
+        newData.brandId = "";
+        
+        // Find selected category and update subcategories list
+        const selectedCat = categories.find(cat => cat._id === value);
+        setSubcategories(selectedCat?.subcategories || []);
+      }
+      
+      return newData;
+    });
   };
 
   const handleSizeChange = (index, e) => {
@@ -116,6 +128,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
       productName: "",
       productDescription: "",
       categoryId: "",
+      subcategory: "",
       brandId: "",
     });
     setSizes([{ sizeName: "", price: "", discountPrice: "", stock: "" }]);
@@ -254,7 +267,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
                 <label className={labelClass}>Category *</label>
                 <select
@@ -268,6 +281,29 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.categoryName || cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Subcategory</label>
+                <select
+                  name="subcategory"
+                  value={formData.subcategory}
+                  onChange={handleChange}
+                  className={`${inputClass} ${!formData.categoryId ? "cursor-not-allowed opacity-60" : ""}`}
+                  disabled={!formData.categoryId}
+                >
+                  <option value="">
+                    {!formData.categoryId 
+                      ? "Select category first" 
+                      : subcategories.length === 0 
+                      ? "No subcategories" 
+                      : "Select Subcategory"}
+                  </option>
+                  {subcategories.map((sub, idx) => (
+                    <option key={idx} value={sub}>
+                      {sub}
                     </option>
                   ))}
                 </select>
@@ -297,13 +333,13 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                     </option>
                   ))}
                 </select>
-                {!formData.categoryId && (
-                  <p className="mt-1 text-[10px] text-amber-500 font-medium">
-                    ⚠ Please select a category to load brands
-                  </p>
-                )}
               </div>
             </div>
+            {!formData.categoryId && (
+              <p className="mt-1 text-[10px] text-amber-500 font-medium">
+                ⚠ Please select a category to load brands and subcategories
+              </p>
+            )}
 
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3">

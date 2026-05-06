@@ -20,6 +20,7 @@ const DistributorDashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -170,6 +171,7 @@ const DistributorDashboard = () => {
         onLogout={handleLogoutClick}
         isCollapsed={isSidebarCollapsed}
         setIsCollapsed={setIsSidebarCollapsed}
+        onProfileClick={() => setIsProfileModalOpen(true)}
       />
 
       {/* Main Content */}
@@ -179,6 +181,8 @@ const DistributorDashboard = () => {
           user={user} 
           onLogout={handleLogoutClick} 
           currentTime={currentTime} 
+          isProfileOpen={isProfileModalOpen}
+          setIsProfileOpen={setIsProfileModalOpen}
         />
 
         {/* Dashboard Content */}

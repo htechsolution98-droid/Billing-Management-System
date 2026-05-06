@@ -25,6 +25,10 @@ const CustomerTable = () => {
   });
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 10;
 
   const themeColors =
     themes.find((theme) => theme.id === currentTheme)?.colors ||
@@ -59,6 +63,15 @@ const CustomerTable = () => {
       const res = await axiosInstance.get("/customerapi/get");
       const customerData = res.data.data || res.data || [];
       setCustomers(Array.isArray(customerData) ? customerData : []);
+      
+      // If the API returns pagination info in the future, set it here
+      if (res.data.total) {
+        setTotalItems(res.data.total);
+        setTotalPages(Math.ceil(res.data.total / limit));
+      } else {
+        setTotalItems(customerData.length);
+        setTotalPages(1);
+      }
     } catch (error) {
       console.error("Fetch error:", error);
       setCustomers([]);
@@ -100,7 +113,7 @@ const CustomerTable = () => {
       />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <Header
+        {/* <Header
           user={user}
           onLogout={handleLogoutClick}
           currentTime={currentTime}
@@ -110,7 +123,7 @@ const CustomerTable = () => {
             currentTheme={currentTheme}
             onThemeChange={setCurrentTheme}
           />
-        </Header>
+        </Header> */}
 
         <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6">
           <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -147,6 +160,7 @@ const CustomerTable = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       {[
+                        "ID",
                         "Customer Name",
                         "NUser (Creator)",
                         "Mobile",
@@ -157,7 +171,7 @@ const CustomerTable = () => {
                       ].map((header) => (
                         <th
                           key={header}
-                          className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500"
+                          className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-black"
                         >
                           {header}
                         </th>
@@ -184,24 +198,21 @@ const CustomerTable = () => {
                         </td>
                       </tr>
                     ) : (
-                      customers.map((customer) => {
-                        const initials = customer.customerName
-                          ?.split(" ")
-                          .map((word) => word[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase();
-
+                      customers.map((customer, index) => {
+                        const displayId = (currentPage - 1) * limit + (index + 1);
                         return (
                           <tr
                             key={customer._id}
                             className="transition-colors hover:bg-gray-50"
                           >
+                            <td className="px-4 py-3 text-xs font-bold text-black">
+                              #{displayId}
+                            </td>
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-[12px] font-semibold text-indigo-700">
+                                {/* <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-[12px] font-semibold text-indigo-700">
                                   {initials || "C"}
-                                </div>
+                                </div> */}
                                 <div>
                                   <div className="text-sm font-medium text-gray-900">
                                     {customer.customerName}
@@ -251,15 +262,15 @@ const CustomerTable = () => {
                                   onClick={() => handleView(customer)}
                                   className="rounded-md bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-700 transition-colors hover:bg-blue-100 flex items-center gap-1.5"
                                 >
-                                  <Eye className="w-3.5 h-3.5" />
-                                  View
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
+                                <Eye className="w-3.5 h-3.5" />
+                                View
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                   </tbody>
                 </table>
               )}

@@ -154,8 +154,7 @@ const MasterPage = () => {
       data = categories.map((cat) => {
         const catBrands = brands
           .filter(
-            (b) =>
-              b.categoryId?._id === cat._id || b.categoryId === cat._id
+            (b) => b.categoryId?._id === cat._id || b.categoryId === cat._id,
           )
           .map((b) => b.brandName || b.name);
         return {
@@ -167,7 +166,7 @@ const MasterPage = () => {
 
     if (!searchQuery.trim()) return data;
     return data.filter((item) =>
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   };
 
@@ -230,6 +229,7 @@ const MasterPage = () => {
         const payload = {
           categoryName: formData.name,
           status: formData.status,
+          subcategories: formData.subcategories,
         };
 
         if (editMode && selectedItem) {
@@ -348,7 +348,9 @@ const MasterPage = () => {
                                   : "bg-gray-200 text-gray-500"
                               }`}
                             >
-                              {tab.id === "brand" ? brands.length : categories.length}
+                              {tab.id === "brand"
+                                ? brands.length
+                                : categories.length}
                             </span>
                           </button>
                         );

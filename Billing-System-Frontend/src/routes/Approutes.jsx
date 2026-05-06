@@ -14,6 +14,8 @@ import CustomerTable from "../components/SuperAdmin/CustomerTabel.jsx";
 import NuserCustomerPage from "../components/Nuser/NuserCustomerPage.jsx";
 import NuserProductPage from "../components/Nuser/NuserProductPage.jsx";
 import MasterPage from "../components/Nuser/MasterPage.jsx";
+import SADistributorUsersPage from "../components/SuperAdmin/SADistributorUsersPage.jsx";
+import SANuserCustomersPage from "../components/SuperAdmin/SANuserCustomersPage.jsx";
 
 function AppRoutes() {
   return (
@@ -112,6 +114,24 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["superadmin"]}>
             <CustomerTable />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/superadmin/distributor-users/:distributorId"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <SADistributorUsersPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/superadmin/nuser-customers/:nuserId"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <SANuserCustomersPage />
           </ProtectedRoute>
         }
       />

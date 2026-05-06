@@ -11,6 +11,9 @@ import { activateDistributor } from "../../controller/Distributor/SuperAdmin/act
 import { SerchdisController } from "../../controller/Distributor/SuperAdmin/serch.controller.js";
 import { updateNusercontroller } from "../../controller/Distributor/SuperAdmin/userupdate.controller.js";
 import { deleteNusercontroller } from "../../controller/Distributor/SuperAdmin/userdelete.controller.js";
+import { getDistProfileController } from "../../controller/Distributor/GetDistributor.controller.js";
+import { updateDistProfileController } from "../../controller/Distributor/GetDistributor.controller.js";
+import { LatestDistributortget } from "../../controller/Distributor/GetDistributor.controller.js";
 
 import express from "express";
 const router = express.Router();
@@ -146,4 +149,23 @@ router.get(
   authorizeRoles("superadmin"),
   SerchdisController,
 );
+
+//Distributor Get & Updated Profile
+
+router.get(
+  "/distributorprofile",
+  verifyToken,
+  authorizeRoles("distributor"),
+  getDistProfileController,
+);
+
+router.put(
+  "/distributorprofile-update",
+  verifyToken,
+  authorizeRoles("distributor"),
+  updateDistProfileController,
+);
+
+router.get("/latest-users", LatestDistributortget);
+
 export default router;

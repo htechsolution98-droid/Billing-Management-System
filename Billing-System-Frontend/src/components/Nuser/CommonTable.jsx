@@ -1,6 +1,97 @@
-import { Pencil, Trash2, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Trash2, Loader2, X } from "lucide-react";
 
-const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: EmptyIcon, tableHeader }) => {
+const BrandModal = ({ isOpen, onClose, brands, categoryName }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-violet-50/50">
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">Brands</h3>
+            <p className="text-xs text-violet-600 font-medium uppercase tracking-wider">
+              Category: {categoryName}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white rounded-xl transition-colors text-gray-400 hover:text-gray-600"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6">
+          <div className="flex flex-wrap gap-2">
+            {brands.map((brand, idx) => (
+              <span
+                key={idx}
+                className="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium text-gray-700"
+              >
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-5 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BrandList = ({ brands, categoryName }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const limit = 2;
+  const hasMore = brands.length > limit;
+
+  const displayBrands = brands.slice(0, limit);
+
+  return (
+    <>
+      <div className="flex items-center flex-wrap gap-1">
+        {displayBrands.map((tag, idx) => (
+          <span key={idx} className="text-sm text-black font-medium">
+            {tag}
+            {idx < displayBrands.length - 1 || hasMore ? ", " : ""}
+          </span>
+        ))}
+        {hasMore && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
+            className="text-xs text-black-600 font-bold hover:text-violet-800 bg-violet-50 px-2 py-0.5 rounded-lg transition-colors"
+          >
+            +{brands.length - limit} more
+          </button>
+        )}
+      </div>
+      <BrandModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        brands={brands}
+        categoryName={categoryName}
+      />
+    </>
+  );
+};
+
+const CommonTable = ({
+  columns,
+  data,
+  loading,
+  onEdit,
+  onDelete,
+  emptyIcon: EmptyIcon,
+  tableHeader,
+}) => {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "active":
@@ -19,7 +110,11 @@ const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: Empt
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-      {tableHeader && <div className="p-5 border-b border-gray-100 bg-white flex justify-between items-center">{tableHeader}</div>}
+      {tableHeader && (
+        <div className="p-5 border-b border-gray-100 bg-white flex justify-between items-center">
+          {tableHeader}
+        </div>
+      )}
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -40,10 +135,7 @@ const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: Empt
           <tbody className="divide-y divide-gray-50">
             {loading ? (
               <tr>
-                <td
-                  colSpan={columns.length + 1}
-                  className="py-16 text-center"
-                >
+                <td colSpan={columns.length + 1} className="py-16 text-center">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
                   <p className="text-sm text-gray-500 mt-2">Loading data...</p>
                 </td>
@@ -55,7 +147,9 @@ const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: Empt
                   className="py-16 text-center text-gray-500"
                 >
                   <div className="flex flex-col items-center gap-2">
-                    {EmptyIcon && <EmptyIcon className="w-8 h-8 text-gray-300" />}
+                    {EmptyIcon && (
+                      <EmptyIcon className="w-8 h-8 text-gray-300" />
+                    )}
                     <p className="text-sm font-medium">No records found</p>
                   </div>
                 </td>
@@ -69,7 +163,9 @@ const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: Empt
                   {columns.map((col) => (
                     <td key={col.key} className="px-6 py-4">
                       {col.key === "status" ? (
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(item[col.key])}`}>
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(item[col.key])}`}
+                        >
                           {item[col.key] || "Active"}
                         </span>
                       ) : col.key === "name" ? (
@@ -82,13 +178,10 @@ const CommonTable = ({ columns, data, loading, onEdit, onDelete, emptyIcon: Empt
                           </span>
                         </div>
                       ) : Array.isArray(item[col.key]) ? (
-                        <div className="flex flex-wrap gap-1">
-                          {item[col.key].map((tag, idx) => (
-                            <span key={idx} className="text-sm text-black font-medium">
-                              {tag}{idx < item[col.key].length - 1 ? ", " : ""}
-                            </span>
-                          ))}
-                        </div>
+                        <BrandList
+                          brands={item[col.key]}
+                          categoryName={item.name}
+                        />
                       ) : col.key === "categoryName" ? (
                         <span className="text-sm text-black  font-medium">
                           {item[col.key] || "N/A"}
