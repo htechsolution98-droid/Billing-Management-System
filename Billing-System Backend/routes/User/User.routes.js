@@ -16,7 +16,7 @@ import { updateProfileController } from "../../controller/User/GetUser.controlle
  * @swagger
  * /api/nuserapi/create:
  *   post:
- *     summary: Create Distributor
+ *     summary: Create Nuser (Retailer)
  *     requestBody:
  *       required: true
  *       content:
@@ -81,12 +81,12 @@ router.get(
 
 /**
  * @swagger
- * /api/userdashget/get:
+ * /api/nuserapi/userdashget:
  *   get:
- *     summary: Get all nuser dashboard
+ *     summary: Get Nuser dashboard data
  *     responses:
  *       200:
- *         description: List of  nuser dashboard fetched successfully
+ *         description: Dashboard data fetched successfully
  */
 router.get(
   "/userdashget",
@@ -95,7 +95,31 @@ router.get(
   NuserDashController,
 );
 
-// update api distibutor dashboard
+/**
+ * @swagger
+ * /api/nuserapi/nuser/update/{id}:
+ *   put:
+ *     summary: Update Nuser (Distributor Dashboard)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firmLogo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Nuser updated
+ */
+
 router.put(
   "/nuser/update/:id",
   verifyToken,
@@ -104,7 +128,22 @@ router.put(
   updateNusercontroller,
 );
 
-// delete api distibutor dashboard
+/**
+ * @swagger
+ * /api/nuserapi/nuser/delete/{id}:
+ *   delete:
+ *     summary: Delete Nuser (Distributor Dashboard)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Nuser deleted
+ */
+
 router.delete(
   "/nuser/delete/:id",
   verifyToken,
@@ -112,13 +151,32 @@ router.delete(
   deleteNusercontroller,
 );
 
-//User Get profile
+/**
+ * @swagger
+ * /api/nuserapi/profile:
+ *   get:
+ *     summary: Get Nuser Profile
+ *     responses:
+ *       200:
+ *         description: Profile data fetched
+ */
+
 router.get(
   "/profile",
   verifyToken,
   authorizeRoles("nuser"),
   getProfileController,
 );
+
+/**
+ * @swagger
+ * /api/nuserapi/update-profile:
+ *   put:
+ *     summary: Update Nuser Profile
+ *     responses:
+ *       200:
+ *         description: Profile updated
+ */
 
 router.put(
   "/update-profile",

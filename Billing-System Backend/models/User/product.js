@@ -50,10 +50,11 @@ const productSchema = new mongoose.Schema(
       ref: "Brand",
      
     },
-    // subcategory: {
-    //   type: String,
-    //   trim: true,
-    // },
+    subcategory: {
+      type: String,
+      trim: true,
+    },
+ 
 
     status: {
       type: String,

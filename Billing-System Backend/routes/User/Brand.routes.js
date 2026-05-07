@@ -47,13 +47,18 @@ router.get("/get", verifyToken, authorizeRoles("nuser"), GetBrandController);
 
 /**
  * @swagger
- * /api/categorywisebarndgetapi/get:
+ * /api/barndapi/brand/by-category/{categoryId}:
  *   get:
- *     summary: Get all brand
-
+ *     summary: Get brands by category
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: List of brand fetched successfully
+ *         description: List of brands fetched successfully
  */
 router.get(
   "/brand/by-category/:categoryId",
@@ -63,6 +68,38 @@ router.get(
 );
 
 
+/**
+ * @swagger
+ * /api/barndapi/brandedit/{id}:
+ *   put:
+ *     summary: Update Brand
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Brand updated successfully
+ */
+
 router.put("/brandedit/:id", editBrandController);
+/**
+ * @swagger
+ * /api/barndapi/branddelete/{id}:
+ *   delete:
+ *     summary: Delete Brand
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Brand deleted successfully
+ */
+
 router.delete("/branddelete/:id", deleteBrandController);
 export default router;

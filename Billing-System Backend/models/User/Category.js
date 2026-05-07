@@ -17,12 +17,17 @@ const categorySchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
-    // subcategories: [
-    //   {
-    //     type: String,
-    //     trim: true,
-    //   },
-    // ],
+    subcategories: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    isGlobal: {
+      type: Boolean,
+      default: false,
+    },
+   
   },
   {
     timestamps: true,

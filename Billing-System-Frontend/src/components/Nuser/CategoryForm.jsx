@@ -6,6 +6,7 @@ const CategoryForm = ({ isOpen, onClose, refreshData }) => {
   const [formData, setFormData] = useState({
     categoryName: "",
     status: "active",
+    subcategories: [],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,16 +26,29 @@ const CategoryForm = ({ isOpen, onClose, refreshData }) => {
       refreshData();
       onClose();
       // Reset form
-      setFormData({
-        categoryName: "",
-        status: "active",
-      });
+      setFormData({ categoryName: "", status: "active", subcategories: [] });
     } catch (err) {
       console.error("Create Error:", err);
       setError(err.response?.data?.message || "Failed to create category");
     } finally {
       setLoading(false);
     }
+  };
+
+  const [subInput, setSubInput] = useState("");
+
+  const addSubcategory = () => {
+    if (!subInput.trim()) return;
+    if (formData.subcategories.includes(subInput.trim())) {
+      setSubInput("");
+      return;
+    }
+    setFormData((prev) => ({ ...prev, subcategories: [...prev.subcategories, subInput.trim()] }));
+    setSubInput("");
+  };
+
+  const removeSubcategory = (index) => {
+    setFormData((prev) => ({ ...prev, subcategories: prev.subcategories.filter((_, i) => i !== index) }));
   };
 
   if (!isOpen) return null;
@@ -100,6 +114,40 @@ const CategoryForm = ({ isOpen, onClose, refreshData }) => {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
+              </div>
+
+              <div className="space-y-3">
+                <label className={labelClass}>Subcategories</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={subInput}
+                    onChange={(e) => setSubInput(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addSubcategory())}
+                    className={inputClass}
+                    placeholder="Add subcategory (e.g. Basmati)"
+                  />
+                  <button
+                    type="button"
+                    onClick={addSubcategory}
+                    className="px-4 py-2 bg-violet-100 text-violet-600 rounded-xl hover:bg-violet-200 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                {formData.subcategories.length > 0 && (
+                  <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    {formData.subcategories.map((sub, index) => (
+                      <span key={index} className="flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 shadow-sm">
+                        {sub}
+                        <button type="button" onClick={() => removeSubcategory(index)} className="text-gray-400 hover:text-red-500 transition-colors">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

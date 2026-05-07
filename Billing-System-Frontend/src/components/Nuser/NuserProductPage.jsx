@@ -9,6 +9,22 @@ import {
   Package,
   Loader2,
 } from "lucide-react";
+import { 
+  Card, 
+  CardMedia, 
+  CardContent, 
+  CardActions, 
+  Typography, 
+  Button, 
+  Box, 
+  Chip,
+  IconButton,
+  Collapse,
+  Tooltip
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import axiosInstance from "../../api/axiosInstance";
 import Sidebar from "./Sidebar";
 // import Header from "./Header";
@@ -54,6 +70,7 @@ const NuserProductPage = () => {
     mobile: "",
     businessName: "",
   });
+  const [expandedProducts, setExpandedProducts] = useState([]);
 
   // Fetch user data
   useEffect(() => {
@@ -417,139 +434,243 @@ const NuserProductPage = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {currentItems.map((product, index) => {
-                      const avatarColor =
-                        avatarColors[index % avatarColors.length];
+                      const isExpanded = expandedProducts.includes(product._id);
+                      const imageUrl = getProductImageUrl(product.productImage);
 
                       return (
-                        <div
-                          key={product._id}
-                          className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group"
+                        <Card 
+                          key={product._id} 
+                          sx={{ 
+                            height: '100%', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                            }
+                          }}
                         >
-                          {/* Image Section */}
-                          <div
-                            className={`relative h-48 sm:h-56 w-full ${avatarColor.split(" ")[0]} flex items-center justify-center overflow-hidden`}
-                          >
-                            {(() => {
-                              const imageUrl = getProductImageUrl(
-                                product.productImage,
-                              );
-                              return imageUrl ? (
-                                <img
-                                  src={imageUrl}
-                                  alt={product.productName}
-                                  className="w-full h-full object-contain p-4 bg-white/50 group-hover:scale-105 transition-transform duration-500"
-                                />
-                              ) : (
-                                <Package
-                                  className={`w-12 h-12 ${avatarColor.split(" ")[1].replace("text-", "text-opacity-50 text-")}`}
-                                />
-                              );
-                            })()}
+                          <Box sx={{ 
+                            position: 'relative', 
+                            width: '100%', 
+                            pt: '100%', // 1:1 Aspect Ratio
+                            bgcolor: 'grey.50',
+                            overflow: 'hidden'
+                          }}>
+                            <CardMedia
+                              component="img"
+                              image={imageUrl || "/placeholder-product.png"}
+                              alt={product.productName}
+                              sx={{ 
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain', 
+                                p: 2
+                              }}
+                            />
+                            <Box sx={{ position: 'absolute', top: 6, left: 6, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                              <Chip 
+                                label={getCategoryName(product)} 
+                                size="small" 
+                                sx={{ 
+                                  bgcolor: 'rgba(255,255,255,0.95)', 
+                                  backdropFilter: 'blur(4px)',
+                                  fontWeight: 'bold', 
+                                  fontSize: '9px',
+                                  height: '18px'
+                                }} 
+                              />
+                            </Box>
+                            <Box sx={{ position: 'absolute', top: 6, right: 6 }}>
+                              <Chip 
+                                label={getBrandName(product)} 
+                                size="small" 
+                                color="primary"
+                                sx={{ 
+                                  fontWeight: 'bold', 
+                                  fontSize: '9px',
+                                  height: '18px'
+                                }} 
+                              />
+                            </Box>
+                          </Box>
 
-                            {/* Tags overlay */}
-                            {/* <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                              <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-gray-800 rounded-lg text-[10px] font-bold tracking-wider uppercase shadow-sm">
-                                {getCategoryName(product)}
-                              </span>
-                            </div>
-                            <div className="absolute top-3 right-3 flex flex-wrap gap-2">
-                              <span className="px-2.5 py-1 bg-black/70 backdrop-blur text-white rounded-lg text-[10px] font-bold tracking-wider uppercase shadow-sm">
-                                {getBrandName(product)}
-                              </span>
-                            </div> */}
-                          </div>
-
-                          {/* Content Section */}
-                          <div className="p-5 flex flex-col flex-1">
-                            <h3 className="font-bold text-gray-900 text-lg line-clamp-1 mb-1">
+                          <CardContent sx={{ flexGrow: 1, p: 1.5, pb: '8px !important' }}>
+                            <Typography gutterBottom variant="subtitle1" component="h2" noWrap sx={{ fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>
                               {product.productName}
-                            </h3>
+                            </Typography>
+                            
+                            <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+                              {product.variants && product.variants.length > 0 ? (
+                                product.variants.slice(0, 3).map((v, i) => (
+                                  <Box key={i} sx={{ 
+                                    p: 0.75, 
+                                    borderRadius: '6px', 
+                                    bgcolor: 'white', 
+                                    border: '1px solid', 
+                                    borderColor: 'grey.200',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    minWidth: '70px',
+                                    flex: '1 1 calc(50% - 8px)'
+                                  }}>
+                                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', fontSize: '9px', lineHeight: 1 }}>
+                                      {v.sizeName}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, mt: 0.25 }}>
+                                      <Typography variant="body2" sx={{ fontWeight: 800, fontSize: '0.85rem' }}>
+                                        ₹{v.discountPrice || v.price || "0"}
+                                      </Typography>
+                                      {v.discountPrice && Number(v.discountPrice) > 0 && (
+                                        <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.disabled', fontSize: '8px' }}>
+                                          ₹{v.price}
+                                        </Typography>
+                                      )}
+                                    </Box>
+                                  </Box>
+                                ))
+                              ) : (
+                                <Box sx={{ 
+                                  p: 1, 
+                                  borderRadius: '6px', 
+                                  bgcolor: 'white', 
+                                  border: '1px solid', 
+                                  borderColor: 'grey.200',
+                                  width: '100%'
+                                }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+                                      <Typography variant="body2" sx={{ fontWeight: 800 }}>
+                                        ₹{product.discountPrice || product.productPrice || "0"}
+                                      </Typography>
+                                      {product.discountPrice && Number(product.discountPrice) > 0 && (
+                                        <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.disabled', fontSize: '10px' }}>
+                                          ₹{product.productPrice}
+                                        </Typography>
+                                      )}
+                                    </Box>
+                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '10px' }}>
+                                      Stock: {product.stock || 0}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              )}
+                              {product.variants && product.variants.length > 3 && (
+                                <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, mt: 0.5 }}>
+                                  +{product.variants.length - 3} more sizes
+                                </Typography>
+                              )}
+                            </Box>
+                          </CardContent>
 
-                            <div className="flex items-center gap-2 mb-4">
-                              <span className="px-2 py-0.5 text-gray-500 rounded text-xs font-medium uppercase tracking-wider">
-                                {product.productUnit ||
-                                  (product.variants &&
-                                    product.variants[0]?.sizeName) ||
-                                  "N/A"}
-                              </span>
-                              <span className="px-2 py-0.5 text-gray-500 rounded text-xs font-medium uppercase tracking-wider">
-                                Stock:{" "}
-                                {product.variants && product.variants.length > 0
-                                  ? product.variants.reduce(
-                                      (sum, v) => sum + (Number(v.stock) || 0),
-                                      0,
-                                    )
-                                  : Number(product.stock) || 0}
-                              </span>
-                            </div>
+                          <CardActions sx={{ justifyContent: 'space-between', px: 1.5, pb: 1.5, pt: 0 }}>
+                            <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                              <Button 
+                                variant="outlined" 
+                                size="small"
+                                onClick={() => handleEdit(product)}
+                                startIcon={<EditIcon sx={{ fontSize: 16 }} />}
+                                sx={{ 
+                                  flex: 1,
+                                  borderRadius: '8px', 
+                                  textTransform: 'none', 
+                                  fontWeight: 700, 
+                                  fontSize: '0.8rem',
+                                  py: 0.75,
+                                  bgcolor: 'white',
+                                  color: 'grey.800',
+                                  borderColor: 'grey.300',
+                                  '&:hover': { 
+                                    bgcolor: 'grey.50',
+                                    borderColor: 'grey.400'
+                                  }
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button 
+                                variant="contained" 
+                                color="error" 
+                                size="small"
+                                onClick={() => handleDelete(product._id)}
+                                startIcon={<DeleteIcon sx={{ fontSize: 16 }} />}
+                                sx={{ 
+                                  flex: 1,
+                                  borderRadius: '8px', 
+                                  textTransform: 'none', 
+                                  fontWeight: 700, 
+                                  fontSize: '0.8rem',
+                                  py: 0.75,
+                                  bgcolor: 'red.600',
+                                  '&:hover': { bgcolor: 'red.700' }
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </Box>
+                            
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                setExpandedProducts((prev) =>
+                                  prev.includes(product._id)
+                                    ? prev.filter((id) => id !== product._id)
+                                    : [...prev, product._id],
+                                );
+                              }}
+                              sx={{ 
+                                ml: 1,
+                                width: 32,
+                                height: 32,
+                                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.3s'
+                              }}
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </CardActions>
 
-                            <div className="mt-auto pt-4 border-t border-gray-50 flex flex-col gap-3">
-                              <div className="flex flex-col gap-1.5 max-h-[72px] overflow-y-auto pr-1 custom-scrollbar">
-                                {product.variants &&
-                                product.variants.length > 0 ? (
-                                  product.variants.map((v, i) => (
-                                    <div
-                                      key={i}
-                                      className="flex justify-between items-center text-sm"
-                                    >
-                                      <span className="text-xs font-semibold text-gray-500 uppercase">
-                                        {v.sizeName}
-                                      </span>
-                                      <div className="flex items-baseline gap-1.5">
-                                        <span className="font-black text-gray-900">
-                                          ₹{v.discountPrice || v.price || "0"}
-                                        </span>
-                                        {v.discountPrice &&
-                                          Number(v.discountPrice) > 0 && (
-                                            <span className="text-xs text-gray-400 line-through font-medium">
-                                              ₹{v.price}
-                                            </span>
-                                          )}
-                                      </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="flex justify-between items-center text-sm">
-                                    <span className="text-xs font-semibold text-gray-500 uppercase">
-                                      Price
-                                    </span>
-                                    <div className="flex items-baseline gap-1.5">
-                                      <span className="font-black text-gray-900">
-                                        ₹
-                                        {product.discountPrice ||
-                                          product.productPrice ||
-                                          "0"}
-                                      </span>
-                                      {product.discountPrice &&
-                                        Number(product.discountPrice) > 0 && (
-                                          <span className="text-xs text-gray-400 line-through font-medium">
-                                            ₹{product.productPrice}
-                                          </span>
-                                        )}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="flex items-center gap-2 pt-1">
-                                <button
-                                  onClick={() => handleEdit(product)}
-                                  className="flex-1 py-2 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center gap-1.5 hover:bg-amber-500 hover:text-white transition-colors text-sm font-semibold"
-                                  title="Edit Product"
-                                >
-                                  <Pencil className="w-4 h-4" /> Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(product._id)}
-                                  className="flex-1 py-2 rounded-xl bg-red-50 text-red-600 flex items-center justify-center gap-1.5 hover:bg-red-500 hover:text-white transition-colors text-sm font-semibold"
-                                  title="Delete Product"
-                                >
-                                  <Trash2 className="w-4 h-4" /> Delete
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                            <CardContent sx={{ 
+                              pt: 0, 
+                              bgcolor: 'grey.50',
+                              borderTop: '1px solid',
+                              borderColor: 'grey.100'
+                            }}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, mt: 1, color: 'grey.700', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                                Description
+                              </Typography>
+                              <Box sx={{ 
+                                maxHeight: '100px', 
+                                overflowY: 'auto',
+                                pr: 1,
+                                '&::-webkit-scrollbar': {
+                                  width: '4px',
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                  background: '#f1f1f1',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                  background: '#ddd',
+                                  borderRadius: '10px',
+                                },
+                                '&::-webkit-scrollbar-thumb:hover': {
+                                  background: '#ccc',
+                                }
+                              }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem', lineHeight: 1.5 }}>
+                                  {product.productDescription || "No description available."}
+                                </Typography>
+                              </Box>
+                            </CardContent>
+                          </Collapse>
+                        </Card>
                       );
                     })}
                   </div>

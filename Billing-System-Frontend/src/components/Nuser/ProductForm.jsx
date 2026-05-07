@@ -416,6 +416,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                         <label className={labelClass}>Price *</label>
                         <input
                           type="number"
+                           min="0"
                           name="price"
                           value={size.price}
                           onChange={(e) => handleSizeChange(index, e)}
@@ -428,6 +429,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                         <label className={labelClass}>Discounted Price</label>
                         <input
                           type="number"
+                           min="0"
                           name="discountPrice"
                           value={size.discountPrice}
                           onChange={(e) => handleSizeChange(index, e)}
@@ -445,6 +447,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
                           className={inputClass}
                           placeholder="0"
                           required
+                           min="0"
                         />
                       </div>
                     </div>

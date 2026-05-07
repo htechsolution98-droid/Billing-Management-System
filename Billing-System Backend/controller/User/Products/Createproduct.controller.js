@@ -37,6 +37,13 @@ export const createProductcontroller = async (req, res) => {
     const data = await CreateProductservice(body);
     res.status(200).json({ msg: "Nuser Added", data });
   } catch (error) {
+    // Return 400 for validation errors coming from service
+    if (
+      error.message &&
+      (error.message.includes("Invalid") || error.message.includes("cannot"))
+    ) {
+      return res.status(400).json({ error: error.message });
+    }
     res.status(500).json({ error: error.message });
   }
 };

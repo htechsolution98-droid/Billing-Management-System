@@ -14,7 +14,7 @@ const router = express.Router();
  * @swagger
  * /api/register/createregister:
  *   post:
- *     summary: Create Distributor
+ *     summary: Public Registration (Self)
  
  *     requestBody:
  *       required: true
@@ -44,7 +44,7 @@ router.post("/createregister", createregisterController);
  * @swagger
  * /api/register/dist-create:
  *   post:
- *     summary: dist-create
+ *     summary: Create Distributor (SuperAdmin)
  
  *     requestBody:
  *       required: true
@@ -79,7 +79,7 @@ router.post(
  * @swagger
  * /api/register/nuser-create:
  *   post:
- *     summary: Create Distributor
+ *     summary: Create NUser (Distributor/SuperAdmin)
  
  *     requestBody:
  *       required: true
@@ -114,7 +114,7 @@ router.post(
  * @swagger
  * /api/register/getregister:
  *   get:
- *     summary: Get all distributors
+ *     summary: Get all registered users
 
  *     responses:
 *       200:
@@ -132,9 +132,9 @@ router.get(
 
 /**
  * @swagger
- * /api/register/dashboard:
+ * /api/register/sadash:
  *   get:
- *     summary: Get all distributors
+ *     summary: Get SuperAdmin Dashboard data
 
  *     responses:
  *       200:

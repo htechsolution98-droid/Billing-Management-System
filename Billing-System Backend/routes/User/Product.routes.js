@@ -69,6 +69,33 @@ router.post(
 router.get("/get", verifyToken, authorizeRoles("nuser"), GetProductController);
 
 //******************************************update and delete api
+/**
+ * @swagger
+ * /api/productapi/product/update/{id}:
+ *   put:
+ *     summary: Update product
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productImage:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Product updated successfully
+ */
+
 router.put(
   "/product/update/:id",
   verifyToken,
@@ -91,6 +118,22 @@ router.put(
   updateNusercontroller,
 );
 
+/**
+ * @swagger
+ * /api/productapi/product/delete/{id}:
+ *   delete:
+ *     summary: Delete product
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product deleted successfully
+ */
+
 router.delete(
   "/product/delete/:id",
   verifyToken,
@@ -99,6 +142,16 @@ router.delete(
 );
 
 //Product GetBy Usercodeapi 
+/**
+ * @swagger
+ * /api/productapi/productget-usercode:
+ *   get:
+ *     summary: Get products by user code
+ *     responses:
+ *       200:
+ *         description: Products fetched successfully
+ */
+
 router.get(
   "/productget-usercode",
   verifyToken,

@@ -47,7 +47,39 @@ router.post(
  */
 router.get("/get", verifyToken, authorizeRoles("nuser"), GetCategoryController);
 
+/**
+ * @swagger
+ * /api/cetegoryapi/categoryedit/{id}:
+ *   put:
+ *     summary: Update Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Category updated successfully
+ */
+
 router.put("/categoryedit/:id", editcategoryController);
+/**
+ * @swagger
+ * /api/cetegoryapi/categorydelete/{id}:
+ *   delete:
+ *     summary: Delete Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Category deleted successfully
+ */
+
 router.delete("/categorydelete/:id", deletecategoryController);
 
 export default router;

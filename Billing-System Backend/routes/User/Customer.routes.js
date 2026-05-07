@@ -51,6 +51,16 @@ router.get(
   getcustocontroller,
 );
 
+/**
+ * @swagger
+ * /api/customer/my-customers:
+ *   get:
+ *     summary: Get customers of the logged-in nuser
+ *     responses:
+ *       200:
+ *         description: List of customers fetched
+ */
+
 router.get(
   "/my-customers",
   verifyToken,
@@ -58,7 +68,22 @@ router.get(
   getNUserCustomersController,
 );
 
-// Distributor: fetch all customers for a specific NUser*****************************
+/**
+ * @swagger
+ * /api/customer/nuser/{nuserId}:
+ *   get:
+ *     summary: Get customers by NUser ID (Distributor/SuperAdmin)
+ *     parameters:
+ *       - in: path
+ *         name: nuserId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of customers fetched
+ */
+
 router.get(
   "/nuser/:nuserId",
   verifyToken,
@@ -66,7 +91,22 @@ router.get(
   getCustomersByNuserIdController,
 );
 
-// NUser / SuperAdmin: update a customer
+/**
+ * @swagger
+ * /api/customer/update/{id}:
+ *   put:
+ *     summary: Update Customer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Customer updated
+ */
+
 router.put(
   "/update/:id",
   verifyToken,
@@ -74,7 +114,22 @@ router.put(
   updateCustomerController,
 );
 
-// NUser / SuperAdmin: delete a customer
+/**
+ * @swagger
+ * /api/customer/delete/{id}:
+ *   delete:
+ *     summary: Delete Customer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Customer deleted
+ */
+
 router.delete(
   "/delete/:id",
   verifyToken,

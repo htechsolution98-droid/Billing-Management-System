@@ -82,6 +82,16 @@ router.get(
 *         description: List of distributors Dashboard fetched successfully
 */
 
+/**
+ * @swagger
+ * /api/distributorapi/distdashget:
+ *   get:
+ *     summary: Get distributor Dashboard data
+ *     responses:
+ *       200:
+ *         description: Distributor dashboard data fetched successfully
+ */
+
 router.get(
   "/distdashget",
   verifyToken,
@@ -91,15 +101,48 @@ router.get(
 
 //********************************************************** SuperAdmin Updated/Delet API
 // update dist api superadmin dashboard
-router.put(
-  "/distributor/update/:id",
-  verifyToken,
-  authorizeRoles("superadmin"),
-  upload.single("firmLogo"),
-  updateDistcontroller,
-);
+/**
+ * @swagger
+ * /api/distributorapi/distributor/update/{id}:
+ *   put:
+ *     summary: Update Distributor (SuperAdmin)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firmLogo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Distributor updated successfully
+ */
 
-// delete dist api superadmin dashboard
+/**
+ * @swagger
+ * /api/distributorapi/distributor/delete/{id}:
+ *   delete:
+ *     summary: Delete Distributor (SuperAdmin)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Distributor deleted successfully
+ */
+
 router.delete(
   "/distributor/delete/:id",
   verifyToken,
@@ -107,7 +150,31 @@ router.delete(
   deleteDistcontroller,
 );
 //***********************************************************  */
-// update nuser api superadmin dashboard
+/**
+ * @swagger
+ * /api/distributorapi/nuser/update/{id}:
+ *   put:
+ *     summary: Update Nuser (SuperAdmin)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firmLogo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Nuser updated successfully
+ */
+
 router.put(
   "/nuser/update/:id",
   verifyToken,
@@ -116,7 +183,22 @@ router.put(
   updateNusercontroller,
 );
 
-// delete nuser api superadmin dashboard
+/**
+ * @swagger
+ * /api/distributorapi/nuser/delete/{id}:
+ *   delete:
+ *     summary: Delete Nuser (SuperAdmin)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Nuser deleted successfully
+ */
+
 router.delete(
   "/nuser/delete/:id",
   verifyToken,
@@ -126,7 +208,22 @@ router.delete(
 
 //*************************** */ Activate API USER
 
-//diactivate dist api
+/**
+ * @swagger
+ * /api/distributorapi/distributor/diactivate/{id}:
+ *   patch:
+ *     summary: Deactivate Distributor
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Distributor deactivated
+ */
+
 router.patch(
   "/distributor/diactivate/:id",
   verifyToken,
@@ -134,7 +231,22 @@ router.patch(
   diactvatedistcontroller,
 );
 
-//activate dist api
+/**
+ * @swagger
+ * /api/distributorapi/distributor/activate/{id}:
+ *   patch:
+ *     summary: Activate Distributor
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Distributor activated
+ */
+
 router.patch(
   "/distributor/activate/:id",
   verifyToken,
@@ -142,7 +254,16 @@ router.patch(
   activateDistributor,
 );
 
-//distributor serch api
+/**
+ * @swagger
+ * /api/distributorapi/distributorsearch:
+ *   get:
+ *     summary: Search Distributors
+ *     responses:
+ *       200:
+ *         description: Search results returned
+ */
+
 router.get(
   "/distributorsearch",
   verifyToken,
@@ -152,6 +273,16 @@ router.get(
 
 //Distributor Get & Updated Profile
 
+/**
+ * @swagger
+ * /api/distributorapi/distributorprofile:
+ *   get:
+ *     summary: Get Distributor Profile
+ *     responses:
+ *       200:
+ *         description: Profile data fetched
+ */
+
 router.get(
   "/distributorprofile",
   verifyToken,
@@ -159,12 +290,32 @@ router.get(
   getDistProfileController,
 );
 
+/**
+ * @swagger
+ * /api/distributorapi/distributorprofile-update:
+ *   put:
+ *     summary: Update Distributor Profile
+ *     responses:
+ *       200:
+ *         description: Profile updated
+ */
+
 router.put(
   "/distributorprofile-update",
   verifyToken,
   authorizeRoles("distributor"),
   updateDistProfileController,
 );
+
+/**
+ * @swagger
+ * /api/distributorapi/latest-users:
+ *   get:
+ *     summary: Get latest distributors
+ *     responses:
+ *       200:
+ *         description: Latest users fetched
+ */
 
 router.get("/latest-users", LatestDistributortget);
 
