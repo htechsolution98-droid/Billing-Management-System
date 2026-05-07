@@ -9,29 +9,31 @@ const productSchema = new mongoose.Schema(
     },
 
     productImage: {
-      type: String, // store image path
+      type: [String], // store image path
     },
 
     productDescription: {
       type: String,
       required: true,
     },
-
+    
     productUnit: {
       type: String,
-      enum: ["kg", "gm", "liter", "ml", "piece"],
-      required: true,
-    },
-
-    productPrice: {
-      type: Number,
-      required: true,
-    },
-
-    discountPrice: {
-      type: Number,
+      enum: ["kg", "gm", "liter", "ml", "piece","cm"],
       required: false,
     },
+  
+
+    // New variants array to support "Sizes & Pricing"
+    variants: [
+      {
+        sizeName: { type: String, required: true },
+        price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
+        discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
+        stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
+      },
+    ],
+
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -48,6 +50,11 @@ const productSchema = new mongoose.Schema(
       ref: "Brand",
      
     },
+    subcategory: {
+      type: String,
+      trim: true,
+    },
+ 
 
     status: {
       type: String,

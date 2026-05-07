@@ -21,7 +21,7 @@ const FieldRow = ({ label, value }) => (
   </div>
 );
 
-const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
+const ViewDistributorModal = ({ isOpen, distributor, onClose, mode = "info" }) => {
   const [nusers, setNusers] = useState([]);
   const [loadingNusers, setLoadingNusers] = useState(false);
   const [selectedNuser, setSelectedNuser] = useState(null);
@@ -66,10 +66,10 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
         <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
           <div>
             <h3 className="text-2xl font-bold text-gray-800">
-              Distributor Details
+              {mode === "users" ? "Distributor Users" : "Distributor Details"}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              View complete information for this distributor.
+              {mode === "users" ? `Viewing users for ${distributor.name}` : "View complete information for this distributor."}
             </p>
           </div>
           <button
@@ -83,97 +83,102 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
         {/* ── Scrollable Body ── */}
         <div className="max-h-[calc(90vh-88px)] overflow-y-auto px-6 py-6">
           {/* ── Distributor Details Grid ── */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">
-                  Contact Details
-                </h5>
+          {mode === "info" && (
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-emerald-600" />
+                  <h5 className="text-sm font-semibold text-gray-700">
+                    Contact Details
+                  </h5>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FieldRow label="Name" value={distributor.name} />
+                  <FieldRow label="Email" value={distributor.email} />
+                  <FieldRow label="Mobile" value={distributor.mobile} />
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <FieldRow label="Name" value={distributor.name} />
-                <FieldRow label="Email" value={distributor.email} />
-                <FieldRow label="Mobile" value={distributor.mobile} />
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">
-                  Business Details
-                </h5>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-emerald-600" />
+                  <h5 className="text-sm font-semibold text-gray-700">
+                    Business Details
+                  </h5>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FieldRow label="Firm Name" value={distributor.firmName} />
+                  <FieldRow
+                    label="Distributor Code"
+                    value={distributor.distributorCode}
+                  />
+                  <FieldRow label="GST Number" value={distributor.gst} />
+                  <FieldRow label="Company PAN" value={distributor.companypan} />
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <FieldRow label="Firm Name" value={distributor.firmName} />
-                <FieldRow
-                  label="Distributor Code"
-                  value={distributor.distributorCode}
-                />
-                <FieldRow label="GST Number" value={distributor.gst} />
-                <FieldRow label="Company PAN" value={distributor.companypan} />
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <IdCard className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">
-                  Identity Details
-                </h5>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <IdCard className="h-4 w-4 text-emerald-600" />
+                  <h5 className="text-sm font-semibold text-gray-700">
+                    Identity Details
+                  </h5>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FieldRow label="PAN Number" value={distributor.pan} />
+                  <FieldRow label="Aadhaar Number" value={distributor.aadhaar} />
+                  <FieldRow label="Role" value={distributor.role} />
+                  <FieldRow
+                    label="Status"
+                    value={distributor.status || "Active"}
+                  />
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <FieldRow label="PAN Number" value={distributor.pan} />
-                <FieldRow label="Aadhaar Number" value={distributor.aadhaar} />
-                <FieldRow label="Role" value={distributor.role} />
-                <FieldRow
-                  label="Status"
-                  value={distributor.status || "Active"}
-                />
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-emerald-600" />
-                <h5 className="text-sm font-semibold text-gray-700">
-                  Location Details
-                </h5>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <FieldRow label="State" value={distributor.state} />
-                <FieldRow label="District" value={distributor.district} />
-                <FieldRow label="Area" value={distributor.area} />
-                <FieldRow
-                  label="Created On"
-                  value={distributor.createdAt?.slice(0, 10)}
-                />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-emerald-600" />
+                  <h5 className="text-sm font-semibold text-gray-700">
+                    Location Details
+                  </h5>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FieldRow label="State" value={distributor.state} />
+                  <FieldRow label="District" value={distributor.district} />
+                  <FieldRow label="Area" value={distributor.area} />
+                  <FieldRow
+                    label="Created On"
+                    value={distributor.createdAt?.slice(0, 10)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* ── Additional Notes ── */}
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <FileText className="h-4 w-4 text-emerald-600" />
-              <h5 className="text-sm font-semibold text-gray-700">
-                Additional Notes
-              </h5>
+          {mode === "info" && (
+            <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <FileText className="h-4 w-4 text-emerald-600" />
+                <h5 className="text-sm font-semibold text-gray-700">
+                  Additional Notes
+                </h5>
+              </div>
+              <p className="text-sm text-gray-600">
+                Certificate:{" "}
+                {distributor.corpo_certino ||
+                  distributor.certificate ||
+                  "Not uploaded"}
+              </p>
             </div>
-            <p className="text-sm text-gray-600">
-              Certificate:{" "}
-              {distributor.corpo_certino ||
-                distributor.certificate ||
-                "Not uploaded"}
-            </p>
-          </div>
+          )}
 
           {/* ── Divider ── */}
-          <div className="my-6 border-t border-gray-200" />
+          {mode === "info" && <div className="my-6 border-t border-gray-200" />}
 
           {/* ── NUsers Section ── */}
-          <div className="space-y-4">
+          {mode === "users" && (
+            <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-emerald-600" />
@@ -203,6 +208,7 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                 <table className="min-w-full table-fixed">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-4 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 w-12">ID</th>
                       {["Full Name", "Firm Name", "Mobile", "Email","Action"].map(
                         (col) => (
                           <th
@@ -219,14 +225,14 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                     {nusers.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={4}
+                          colSpan={6}
                           className="py-8 text-center text-sm text-gray-400"
                         >
                           No NUsers Found
                         </td>
                       </tr>
                     ) : (
-                      nusers.map((nuser) => {
+                      nusers.map((nuser, index) => {
                         const initials = nuser.fullName
                           ?.split(" ")
                           .map((w) => w[0])
@@ -239,6 +245,9 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                             key={nuser._id}
                             className="transition-colors hover:bg-gray-50"
                           >
+                            <td className="px-4 py-3 text-xs font-bold text-gray-400">
+                              #{index + 1}
+                            </td>
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2.5">
                                 <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-violet-50 text-[10px] font-semibold text-violet-800">
@@ -259,13 +268,14 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
                               {nuser.email || "-"}
                             </td>
 
-                             <button
-                                onClick={() => handleViewNuser(nuser)}
-                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 transition-colors"
-                              >
-                                <Eye className="w-4 h-4 mr-2" />
-                            
-                              </button>
+                             <td className="px-4 py-3">
+                               <button
+                                 onClick={() => handleViewNuser(nuser)}
+                                 className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-blue-50 text-blue-800 hover:bg-blue-100 transition-colors"
+                               >
+                                 <Eye className="w-4 h-4" />
+                               </button>
+                             </td>
                           </tr>
                         );
                       })
@@ -275,7 +285,8 @@ const ViewDistributorModal = ({ isOpen, distributor, onClose }) => {
               )}
             </div>
           </div>
-          {/* ── End NUsers Section ── */}
+        )}
+        {/* ── End NUsers Section ── */}
         </div>
       </div>
 

@@ -6,27 +6,25 @@ const router = express.Router();
  * @swagger
  * /api/loginapi/login:
  *   post:
- *     summary: Create Distributor
- 
+ *     summary: User Login
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
  *               email:
  *                 type: string
+ *                 example: user@example.com
  *               password:
  *                 type: string
- *               corpo_certino:
- *                 type: string
- *                 format: binary
+ *                 example: password123
  *     responses:
- *       201:
- *         description: Distributor created
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
  */
 
 router.post("/login", logincontroller);

@@ -91,6 +91,7 @@ const ViewNuserCustomerModal = ({ isOpen, nuser, onClose }) => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 w-16">ID</th>
                       {[
                         "Customer Name",
                         "Contact Details",
@@ -107,11 +108,14 @@ const ViewNuserCustomerModal = ({ isOpen, nuser, onClose }) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 bg-white">
-                    {customers.map((customer) => (
+                    {customers.map((customer, index) => (
                       <tr
                         key={customer._id}
                         className="transition-colors hover:bg-gray-50/80"
                       >
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-bold text-gray-400">
+                          #{index + 1}
+                        </td>
                         <td className="whitespace-nowrap px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-sm font-bold text-indigo-700">

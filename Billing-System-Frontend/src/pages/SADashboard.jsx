@@ -8,15 +8,15 @@ import {
   Package,
   DollarSign,
   Receipt,
+  ChevronRight,
 } from "lucide-react";
 
 // Import Components
 import Sidebar from "../components/SuperAdmin/Sidebar";
 import Header from "../components/SuperAdmin/Header";
 import StatCard from "../components/SuperAdmin/StatCard";
-import SalesChart from "../components/SuperAdmin/SalesChart";
-import ActivityFeed from "../components/SuperAdmin/ActivityFeed";
-import QuickActionPanel from "../components/SuperAdmin/QuickActionPanel";
+// import SalesChart from "../components/SuperAdmin/SalesChart";
+// import ActivityFeed from "../components/SuperAdmin/ActivityFeed";
 import LogoutModal from "../components/SuperAdmin/LogoutModal";
 import ThemeToggle, { themes } from "../components/SuperAdmin/ThemeToggle";
 
@@ -24,6 +24,7 @@ const SuperAdminDashboard = () => {
   const navigate = useNavigate();
 
   const [dashboardData, setDashboardData] = useState({});
+  const [recentDistributors, setRecentDistributors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -39,6 +40,7 @@ const SuperAdminDashboard = () => {
     role: "",
     email: "",
   });
+
 
   const getStoredUser = () => {
     try {
@@ -94,12 +96,16 @@ const SuperAdminDashboard = () => {
 
   const fetchDashboard = async () => {
     try {
-      const res = await axiosInstance.get("/registerapi/sadash");
-      setDashboardData(res.data?.data || {});
+      const [dashRes, distRes] = await Promise.all([
+        axiosInstance.get("/registerapi/sadash"),
+        axiosInstance.get("/distributorapi/latest-users")
+      ]);
+      
+      setDashboardData(dashRes.data?.data || {});
+      setRecentDistributors(distRes.data.latest || []);
       setLoading(false);
     } catch (error) {
-      console.log(error);
-      // Use safe fallback data if API fails
+        console.log(error);
       setDashboardData({
         totalDistributor: 0,
         totalNuser: 0,
@@ -108,6 +114,7 @@ const SuperAdminDashboard = () => {
         totalBills: 0,
         totalRevenue: 0,
       });
+      setRecentDistributors([]);
       setLoading(false);
     }
   };
@@ -223,16 +230,72 @@ const SuperAdminDashboard = () => {
                 ))}
               </div>
 
-              {/* <div className="grid grid-cols-1 xl:grid-cols-3 gap-6"> */}
-                <div className="xl:col-span-2">
-                  {/* <SalesChart /> */}
+              <div className="space-y-6">
+                {/* Latest Distributors Table - FULL WIDTH */}
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-50 rounded-xl">
+                        <Users className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-800">Latest Distributors</h3>
+                    </div>
+                    <button 
+                      onClick={() => navigate("/distributor-table")}
+                      className={`text-sm font-bold ${themeColors.primaryText} hover:underline flex items-center gap-1`}
+                    >
+                      View All
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50/50">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-black uppercase tracking-wider w-16">ID</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-black uppercase tracking-wider">Distributor</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-black uppercase tracking-wider">Firm Name</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-black uppercase tracking-wider">Email</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-black uppercase tracking-wider">Location</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {recentDistributors.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" className="px-6 py-8 text-center text-gray-400 text-sm italic">
+                              No distributors registered yet.
+                            </td>
+                          </tr>
+                        ) : (
+                          recentDistributors.map((dist, index) => (
+                            <tr key={dist._id} className="hover:bg-gray-50/50 transition-colors">
+                              <td className="px-6 py-4 text-sm font-bold text-black">
+                                #{index + 1}
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="font-medium text-black text-sm">{dist.name}</span>
+                              </td>
+                              <td className="px-6 py-4 text-sm text-black font-medium">{dist.firmName}</td>
+                              <td className="px-6 py-4 text-sm text-black font-medium">{dist.email}</td>
+                              <td className="px-6 py-4 text-sm text-black font-medium">{dist.area}, {dist.district}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
 
-                <div className="space-y-6">
-                  <QuickActionPanel />
-                  {/* <ActivityFeed /> */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <div className="xl:col-span-2 space-y-6">
+                    {/* <SalesChart /> */}
+                  </div>
+
+                  {/* <div className="space-y-6">
+                    <ActivityFeed />
+                  </div> */}
                 </div>
-              {/* </div> */}
+              </div>
             </div>
           )}
         </main>
@@ -245,6 +308,7 @@ const SuperAdminDashboard = () => {
         onCancel={handleCancelLogout}
         onConfirm={handleConfirmLogout}
       />
+
     </div>
   );
 };

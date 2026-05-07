@@ -65,8 +65,12 @@ const ViewNuserModal = ({ isOpen, nuser, onClose }) => {
                 <InfoCard label="Email" value={nuser.email} />
                 <InfoCard label="Mobile" value={nuser.mobile} />
                 <InfoCard
-                  label="Distributor"
-                  value={nuser.distributorId?.name || nuser.distributorName}
+                  label="Created By"
+                  value={
+                    nuser.distributorId?.name ||
+                    nuser.superAdminId?.name ||
+                    nuser.distributorName
+                  }
                 />
                 <InfoCard label="GST Number" value={nuser.gst} />
               </div>

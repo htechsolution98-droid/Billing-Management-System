@@ -39,7 +39,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
     email: "",
     password: "",
     mobile: "",
-    distributorId: "",
+    superAdminId: "",
     bankName: "",
     ifsc: "",
     accountNumber: "",
@@ -55,7 +55,7 @@ const AddNUserForm = ({ onClose, refreshData }) => {
         setSuperadmin(loggedInUser);
         setFormData((prev) => ({
           ...prev,
-          distributorId: loggedInUser._id || "",
+          superAdminId: loggedInUser._id || "",
         }));
       }
     } catch (error) {
@@ -69,6 +69,10 @@ const AddNUserForm = ({ onClose, refreshData }) => {
         const rawUser = localStorage.getItem("user");
         const loggedInUser = rawUser ? JSON.parse(rawUser) : null;
         setSuperadmin(loggedInUser);
+        setFormData((prev) => ({
+          ...prev,
+          superAdminId: loggedInUser?._id || "",
+        }));
       } catch (error) {
         console.error("Error loading superadmin:", error);
       }
@@ -85,17 +89,26 @@ const AddNUserForm = ({ onClose, refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!formData.superAdminId) {
+        alert("Superadmin session not found. Please login again.");
+        return;
+      }
+
       const data = new FormData();
-      Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== null && formData[key] !== "") {
+          data.append(key, formData[key]);
+        }
+      });
       await axiosInstance.post("/nuserapi/create", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("NUser Added Successfully ✅");
+      alert("NUser Added Successfully");
       if (refreshData) refreshData();
       if (onClose) onClose();
     } catch (error) {
       console.error(error);
-      alert("Error Adding NUser ❌");
+      alert(error.response?.data?.message || "Error Adding NUser");
     }
   };
 
@@ -193,20 +206,14 @@ const AddNUserForm = ({ onClose, refreshData }) => {
                 className={inputCls}
               />
             </Field>
-            {/* <Field label="Distributor" required>
-              <select
-                name="distributorId"
-                value={formData.distributorId}
-                onChange={handleChange}
-                required
-                className={inputCls}
-              >
-                <option value="">Select distributor</option>
-                {superadmin && (
-                  <option value={superadmin._id}>{superadmin.name}</option>
-                )}
-              </select>
-            </Field> */}
+            <Field label="Super Admin" required>
+              <input
+                type="text"
+                value={superadmin?.name || "Current Super Admin"}
+                readOnly
+                className={`${inputCls} bg-gray-50 cursor-not-allowed`}
+              />
+            </Field>
             <Field label="GST number">
               <input
                 type="text"

@@ -19,6 +19,9 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const displayName = user?.name || "Nuser";
+  const firstName = displayName.trim().split(" ")[0] || "Nuser";
+  const userInitial = firstName.charAt(0).toUpperCase();
 
   const navItems = [
     {
@@ -27,17 +30,26 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
       icon: LayoutDashboard,
       path: "/nuser-dashboard",
     },
-    { id: "brands", label: "Brands", icon: Tag, path: "#brands" },
-    { id: "products", label: "Products", icon: Package, path: "#products" },
-    { id: "customers", label: "Customers", icon: Users, path: "#customers" },
     {
-      id: "categories",
-      label: "Categories",
-      icon: FolderOpen,
-      path: "#categories",
+      id: "customers",
+      label: "Customers",
+      icon: Users,
+      path: "/nuser/customers",
+    },
+    {
+      id: "products",
+      label: "Products",
+      icon: Package,
+      path: "/nuser/products",
+    },
+    {
+      id: "master",
+      label: "Brand & Category",
+      icon: Store,
+      path: "/nuser/master",
     },
     { id: "reports", label: "Reports", icon: FileText, path: "#reports" },
-    { id: "profile", label: "Profile", icon: UserCircle, path: "#profile" },
+    // { id: "profile", label: "Profile", icon: UserCircle, path: "#profile" },
   ];
 
   const isActivePath = (path) => {
@@ -85,14 +97,16 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
         {/* Logo Section */}
         <div className="p-6 bg-gradient-to-r from-violet-600 to-purple-600">
           <div className="flex items-center justify-between">
-            <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}>
+            <div
+              className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
+            >
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Store className="w-6 h-6 text-white" />
               </div>
               {!isCollapsed && (
                 <div>
-                  <h2 className="text-xl font-bold text-white">Nuser</h2>
-                  <p className="text-violet-100 text-xs">Panel</p>
+                  <h2 className="text-xl font-bold text-white">Billing Managment </h2>
+                  <p className="text-violet-100 text-xs">User Panel</p>
                 </div>
               )}
             </div>
@@ -106,7 +120,7 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
         </div>
 
         {/* User Info Card */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div className="mx-4 mt-4 p-4 bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl border border-violet-100">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center rounded-xl font-bold text-lg shadow-lg">
@@ -125,14 +139,16 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Collapse Toggle (Desktop) */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex mx-4 mt-4 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
+          className="hidden lg:flex  mt-2 p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors justify-center"
         >
-          <ChevronRight className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`} />
+          <ChevronRight
+            className={`w-5 h-5 text-gray-600 transition-transform ${isCollapsed ? "" : "rotate-180"}`}
+          />
         </button>
 
         {/* Navigation */}
@@ -183,14 +199,35 @@ const Sidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
 
         {/* Logout Section */}
         <div className="p-4 border-t border-gray-100">
-          <button
+          <div
+            className={`mb-3 flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2 ${
+              isCollapsed ? "justify-center" : ""
+            }`}
+            title={isCollapsed ? firstName : ""}
+          >
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center font-bold shadow-sm">
+              {userInitial}
+            </div>
+            {!isCollapsed && (
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">
+                  {user.name}
+                </p>
+                <p className="text-xs text-gray-400 truncate">
+                  {user?.role || "User"}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* <button
             onClick={onLogout}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors group ${isCollapsed ? "justify-center" : ""}`}
             title={isCollapsed ? "Logout" : ""}
           >
             <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
             {!isCollapsed && <span className="font-medium">Logout</span>}
-          </button>
+          </button> */}
         </div>
       </aside>
     </>
