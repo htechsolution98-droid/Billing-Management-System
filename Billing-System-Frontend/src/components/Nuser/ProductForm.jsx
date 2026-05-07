@@ -6,6 +6,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
   const [formData, setFormData] = useState({
     productName: "",
     productDescription: "",
+    productUnit: "",
     categoryId: "",
     subcategory: "",
     brandId: "",
@@ -127,6 +128,7 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
     setFormData({
       productName: "",
       productDescription: "",
+      productUnit: "",
       categoryId: "",
       subcategory: "",
       brandId: "",
@@ -254,17 +256,36 @@ const ProductForm = ({ isOpen, onClose, refreshData }) => {
               </div>
             </div>
 
-            <div>
-              <label className={labelClass}>Product Name *</label>
-              <input
-                type="text"
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="Enter product name"
-                required
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass}>Product Name *</label>
+                <input
+                  type="text"
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="Enter product name"
+                  required
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Product Unit</label>
+                <select
+                  name="productUnit"
+                  value={formData.productUnit}
+                  onChange={handleChange}
+                  className={inputClass}
+                >
+                  <option value="">Select Unit</option>
+                  <option value="kg">kg</option>
+                  <option value="gm">gm</option>
+                  <option value="liter">liter</option>
+                  <option value="ml">ml</option>
+                  <option value="piece">piece</option>
+                  <option value="cm">cm</option>
+                </select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

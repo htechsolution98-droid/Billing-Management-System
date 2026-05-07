@@ -119,7 +119,7 @@ const ProductEditModal = ({
               </div>
             )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
+              <div>
                 <label className={labelClass}>Product Name *</label>
                 <input
                   type="text"
@@ -129,6 +129,23 @@ const ProductEditModal = ({
                   className={inputClass}
                   required
                 />
+              </div>
+              <div>
+                <label className={labelClass}>Product Unit</label>
+                <select
+                  name="productUnit"
+                  value={formData.productUnit || ""}
+                  onChange={onChange}
+                  className={inputClass}
+                >
+                  <option value="">Select Unit</option>
+                  <option value="kg">kg</option>
+                  <option value="gm">gm</option>
+                  <option value="liter">liter</option>
+                  <option value="ml">ml</option>
+                  <option value="piece">piece</option>
+                  <option value="cm">cm</option>
+                </select>
               </div>
 
               <div>

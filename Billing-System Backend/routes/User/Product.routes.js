@@ -7,6 +7,7 @@ import { verifyToken } from "../../middlewares/authmiddlewares.js";
 import { authorizeRoles } from "../../middlewares/rolemiddleware.js";
 import { deleteproductcontroller } from "../../controller/User/Products/productdelete.controller.js";
 import { updateNusercontroller } from "../../controller/User/Products/productedit.controller.js";
+import { GetproductByUsercode } from "../../controller/User/Products/Getproducts.controller.js";
 import express from "express";
 const router = express.Router();
 /**
@@ -67,7 +68,6 @@ router.post(
  */
 router.get("/get", verifyToken, authorizeRoles("nuser"), GetProductController);
 
-
 //******************************************update and delete api
 router.put(
   "/product/update/:id",
@@ -96,5 +96,13 @@ router.delete(
   verifyToken,
   authorizeRoles("nuser"),
   deleteproductcontroller,
+);
+
+//Product GetBy Usercodeapi 
+router.get(
+  "/productget-usercode",
+  verifyToken,
+  authorizeRoles("nuser"),
+  GetproductByUsercode,
 );
 export default router;

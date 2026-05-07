@@ -22,17 +22,7 @@ const productSchema = new mongoose.Schema(
       enum: ["kg", "gm", "liter", "ml", "piece","cm"],
       required: false,
     },
-    // Single unit/price fields kept for backward compatibility but made optional
-
-    // productPrice: {
-    //   type: Number,
-    //   required: false,
-    // },
-
-    // discountPrice: {
-    //   type: Number,
-    //   required: false,
-    // },
+  
 
     // New variants array to support "Sizes & Pricing"
     variants: [
@@ -60,10 +50,10 @@ const productSchema = new mongoose.Schema(
       ref: "Brand",
      
     },
-    subcategory: {
-      type: String,
-      trim: true,
-    },
+    // subcategory: {
+    //   type: String,
+    //   trim: true,
+    // },
 
     status: {
       type: String,

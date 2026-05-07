@@ -4,7 +4,7 @@ import Distributor from "../../models/Distributor/Distributor.js";
 export const GetDistributorController = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = parseInt(req.query.limit) || 10;
     const data = await GetDistributorservice(page, limit);
     res.status(200).json(data);
   } catch (error) {
@@ -20,7 +20,7 @@ export const getDistProfileController = async (req, res) => {
     const distId = req.user._id;
 
     const dist = await Distributor.findById(distId).select("-password");
-    // 🔐 exclude password only
+    // exclude password only
 
     if (!dist) {
       return res.status(404).json({

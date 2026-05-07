@@ -32,10 +32,10 @@ const StatCard = ({
   const colors = getColorClasses();
 
   return (
-    <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-200">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-14 h-14 ${colors.bg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-          <Icon className={`w-7 h-7 ${colors.icon}`} />
+    <div className="group bg-white rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-200">
+      <div className="flex items-start justify-between mb-3">
+        <div className={`w-12 h-12 ${colors.bg} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className={`w-6 h-6 ${colors.icon}`} />
         </div>
         {trend && (
           <div
@@ -56,16 +56,9 @@ const StatCard = ({
           </div>
         )}
       </div>
-      <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
-      <p className="text-3xl font-bold text-gray-800 mt-1">{value}</p>
+      <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wider">{title}</h3>
+      <p className="text-2xl font-bold text-gray-800 mt-0.5">{value}</p>
       
-      {/* Progress bar */}
-      <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r ${colors.gradient} transition-all duration-1000`}
-          style={{ width: `${Math.min((value / 100) * 100, 100)}%` }}
-        ></div>
-      </div>
     </div>
   );
 };

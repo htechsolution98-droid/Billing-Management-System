@@ -32,7 +32,7 @@ const ManageDistributors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const limit = 5;
+  const limit = 10;
 
   const themeColors =
     themes.find((theme) => theme.id === currentTheme)?.colors ||
