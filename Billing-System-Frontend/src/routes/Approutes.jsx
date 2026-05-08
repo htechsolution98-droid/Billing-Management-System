@@ -16,6 +16,7 @@ import NuserProductPage from "../components/Nuser/NuserProductPage.jsx";
 import MasterPage from "../components/Nuser/MasterPage.jsx";
 import SADistributorUsersPage from "../components/SuperAdmin/SADistributorUsersPage.jsx";
 import SANuserCustomersPage from "../components/SuperAdmin/SANuserCustomersPage.jsx";
+import MasterShop from "../components/SuperAdmin/MasterShop.jsx";
 
 function AppRoutes() {
   return (
@@ -132,6 +133,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["superadmin"]}>
             <SANuserCustomersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/master-shop"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <MasterShop />
           </ProtectedRoute>
         }
       />

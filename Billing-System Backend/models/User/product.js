@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    productName: {
-      type: String,
+    masterProductId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "MasterProduct",
       required: true,
-      trim: true,
     },
 
     productImage: {
@@ -16,45 +16,48 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    
+
     productUnit: {
       type: String,
-      enum: ["kg", "gm", "liter", "ml", "piece","cm"],
+      enum: ["kg", "gm", "liter", "ml", "piece", "cm"],
       required: false,
     },
-  
 
     // New variants array to support "Sizes & Pricing"
     variants: [
       {
         sizeName: { type: String, required: true },
-        price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
-        discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
-        stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
+        price: {
+          type: Number,
+          required: true,
+          min: [0, "Price cannot be negative"],
+        },
+        discountPrice: { type: Number, min: [0, "Price cannot be negative"] },
+        stock: {
+          type: Number,
+          default: 0,
+          min: [0, "Price cannot be negative"],
+        },
       },
     ],
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      
     },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      
     },
 
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
-     
     },
     subcategory: {
       type: String,
       trim: true,
     },
- 
 
     status: {
       type: String,

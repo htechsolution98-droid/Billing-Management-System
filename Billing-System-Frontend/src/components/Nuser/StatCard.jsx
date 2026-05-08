@@ -42,12 +42,12 @@ const StatCard = ({
       <p className="text-3xl font-bold text-gray-800 mt-1">{value}</p>
       
       {/* Progress bar */}
-      <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+      {/* <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${gradientFrom} ${gradientTo} transition-all duration-1000`}
           style={{ width: `${Math.min((value / 10) * 100, 100)}%` }}
         ></div>
-      </div>
+      </div> */}
     </div>
   );
 };

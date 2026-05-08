@@ -52,6 +52,12 @@ const Sidebar = ({
       icon: UserCog,
       path: "/customer-table",
     },
+    {
+      id: "mastershop",
+      label: "Manage Master Shops",
+      icon: Crown,
+      path: "/master-shop",
+    },
     // { id: "users", label: "User Management", icon: UserCog, path: "#users" },
     { id: "settings", label: "Settings", icon: Settings, path: "#settings" },
   ];
