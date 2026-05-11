@@ -21,15 +21,20 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
+    mobile: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     role: {
       type: String,
       enum: [
         "SUPER_ADMIN",
         "STATE_DISTRIBUTOR",
         "DISTRICT_DISTRIBUTOR",
-        "SHOP",
+        "User",
       ],
-      default: "SHOP",
+      default: "User",
       required: true,
     },
   },
@@ -40,13 +45,11 @@ const userSchema = new mongoose.Schema(
 
 // HASH PASSWORD
 userSchema.pre("save", async function () {
-
   if (!this.isModified("password")) return;
 
   const salt = await bcrypt.genSalt(10);
 
   this.password = await bcrypt.hash(this.password, salt);
-
 });
 
 // COMPARE PASSWORD

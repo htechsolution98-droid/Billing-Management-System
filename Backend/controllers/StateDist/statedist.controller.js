@@ -1,16 +1,20 @@
 import { CreateDist } from "../../services/StateDistibutor/StateDist.service.js";
 import User from "../../models/User.js";
+import {Getstatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
+import {Updatestatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
+import {Deletestatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
 
 export const CreateDistController = async (req, res) => {
   try {
     // 1. extract body here
-    const { name, email, password } = req.body;
+    const { name, email, password,mobile } = req.body;
 
     // 2. create user
     const user = await User.create({
       name,
       email,
       password,
+      mobile,
       role: "STATE_DISTRIBUTOR",
       createdBy: req.user._id,
     });
@@ -34,50 +38,66 @@ export const CreateDistController = async (req, res) => {
   }
 };
 
-// export const CreateDistController = async (req, res) => {
-//   try {
-//     const dist = await CreateDist(req.body);
-//     res.status(200).json({
-//       sucsess: false,
-//       msg: "State Distibutor Create Sucsesfully ",
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       sucsess: false,
-//       msg: "State Distibutor Can't Be Create Sucsesfully ",
-//     });
-//     console.error(error);
-//   }
-// };
+export const GetstatedistController = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
 
-// export const CreateDistController = async (req, res) => {
-//   try {
-//     const dist = await CreateDist(req.body);
-//     res.status(200).json({
-//       sucsess: false,
-//       msg: "State Distibutor Create Sucsesfully ",
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       sucsess: false,
-//       msg: "State Distibutor Can't Be Create Sucsesfully ",
-//     });
-//     console.error(error);
-//   }
-// };
+    const data = await Getstatedistservice(req.user._id, page, limit, search);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-// export const CreateDistController = async (req, res) => {
-//   try {
-//     const dist = await CreateDist(req.body);
-//     res.status(200).json({
-//       sucsess: false,
-//       msg: "State Distibutor Create Sucsesfully ",
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       sucsess: false,
-//       msg: "State Distibutor Can't Be Create Sucsesfully ",
-//     });
-//     console.error(error);
-//   }
-// };
+
+
+export const updatestatedistcontroller = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const body = { ...req.body };
+
+    const updateddist = await Updatestatedistservice(id, body);
+
+    res.status(200).json({
+      message: "StateDist updated successfully",
+      data: updateddist,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const Deletestatedistcontroller = async (req, res,next) => {
+try {
+    const { id } = req.params;
+
+    // console.log("Delete ID:", id);
+
+    const deletedist = await Deletestatedistservice(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Distibutor deleted successfully",
+      data: deletedist,
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.message === "Distibutor not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error deleting Distibutor",
+      error: error.message,
+    });
+  }
+};

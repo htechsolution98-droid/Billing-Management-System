@@ -6,23 +6,26 @@ const stateDistributorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
 
     firmName: {
       type: String,
       required: true,
+      trim: true,
     },
 
-    ownerName: String,
-
-    mobile: String,
-    email: String,
-
     gstNumber: String,
+
     panNumber: String,
+
     aadharNumber: String,
 
-    state: String,
+    state: {
+      type: String,
+      required: true,
+    },
+
     area: String,
 
     address: String,
@@ -31,6 +34,11 @@ const stateDistributorSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+
+    // commissionPercent: {
+    //   type: Number,
+    //   default: 0,
+    // },
 
     isActive: {
       type: Boolean,

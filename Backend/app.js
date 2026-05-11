@@ -10,9 +10,13 @@ app.use(cors());
 //Routes
 import authRoutes from "./routes/Auth/auth.routes.js";
 import StateDistibutor from "./routes/StateDist/statedist.routes.js";
+import DistrictDistibutor from "./routes/DistrictDist/districtdist.route.js";
+import Shopuser from "./routes/Shopuser/shop.routes.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/StateDist", StateDistibutor);
+app.use("/api/DitrictDist", DistrictDistibutor);
+app.use("/api/Shopuser", Shopuser);
 
 
 // Test Route
