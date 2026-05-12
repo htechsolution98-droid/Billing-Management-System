@@ -1,5 +1,5 @@
 import StateDistributor from "../../models/StateDist.js";
-
+import User from "../../models/User.js";
 export const CreateDist = async (data) => {
   return await StateDistributor.create(data);
 };
@@ -10,28 +10,32 @@ export const Getstatedistservice = async (
   limit = 5,
   search = "",
 ) => {
-  const skip = (page - 1) * limit;
-  const cleanSearch = (search || "").toString().trim();
+  try {
+    const skip = (page - 1) * limit;
+    const cleanSearch = (search || "").toString().trim();
 
-  const query = {
-    userId: userId,
-    ...(cleanSearch && {
-      productName: { $regex: cleanSearch, $options: "i" },
-    }),
-  };
-  const total = await StateDistributor.countDocuments(query);
-  const stateusers = await StateDistributor.find(query)
-    .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+    const query = {
+      userId: userId,
+      ...(cleanSearch && {
+        name: { $regex: cleanSearch, $options: "i" },
+      }),
+    };
+    const total = await StateDistributor.countDocuments(query);
+    const stateusers = await StateDistributor.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
-  return {
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-    data: stateusers,
-  };
+    return {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      data: stateusers,
+    };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const Updatestatedistservice = async (stateId, body) => {
@@ -40,7 +44,21 @@ export const Updatestatedistservice = async (stateId, body) => {
     // if (body.password) {
     //   body.password = await bcrypt.hash(body.password, 10);
     // }
+    // find distributor first
+    const distributor = await StateDistributor.findById(stateId);
 
+    if (!distributor) {
+      throw new Error("State Dist not found");
+    }
+
+    // update user table
+    await User.findByIdAndUpdate(distributor.userId, {
+      name: body.name,
+      email: body.email,
+      mobile: body.mobile,
+    });
+
+    // update distributor table
     const updatestatedist = await StateDistributor.findByIdAndUpdate(
       stateId,
       body,
@@ -49,11 +67,6 @@ export const Updatestatedistservice = async (stateId, body) => {
         runValidators: true,
       },
     );
-
-    if (!updatestatedist) {
-      throw new Error("State Dist not found");
-    }
-
     return updatestatedist;
   } catch (error) {
     throw error;
@@ -62,13 +75,19 @@ export const Updatestatedistservice = async (stateId, body) => {
 
 export const Deletestatedistservice = async (stateId) => {
   try {
-    const deletestatedist = await StateDistributor.findByIdAndDelete(stateId);
+    const distributor = await StateDistributor.findById(stateId);
 
-    if (!deletestatedist) {
-      throw new Error("State Dist not found");
+    if (!distributor) {
+      throw new Error("District Dist not found");
     }
 
-    return deletestatedist;
+    // delete user
+    await User.findByIdAndDelete(distributor.userId);
+
+    // delete distributor
+    await StateDistributor.findByIdAndDelete(stateId);
+
+    return distributor;
   } catch (error) {
     throw error;
   }

@@ -25,14 +25,14 @@ const productSchema = new mongoose.Schema(
   
 
     // New variants array to support "Sizes & Pricing"
-    variants: [
-      {
-        sizeName: { type: String, required: true },
-        price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
-        discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
-        stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
-      },
-    ],
+    // variants: [
+    //   {
+    //     sizeName: { type: String, required: true },
+    //     price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
+    //     discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
+    //     stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
+    //   },
+    // ],
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,10 +50,10 @@ const productSchema = new mongoose.Schema(
       ref: "Brand",
      
     },
-    subcategory: {
-      type: String,
-      trim: true,
-    },
+    // subcategory: {
+    //   type: String,
+    //   trim: true,
+    // },
  
 
     status: {

@@ -23,15 +23,9 @@ const shopSchema = new mongoose.Schema(
       ref: "StateDistributor",
     },
 
-    // Shop Details
-    shopName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     firmName: {
       type: String,
+      required: true,
       trim: true,
     },
 
@@ -68,10 +62,10 @@ const shopSchema = new mongoose.Schema(
     pincode: String,
 
     // Shop Code
-    // shopCode: {
-    //   type: String,
-    //   unique: true,
-    // },
+    shopCode: {
+      type: String,
+      unique: true,
+    },
 
     isActive: {
       type: Boolean,
@@ -83,7 +77,14 @@ const shopSchema = new mongoose.Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+// Auto user Code
+shopSchema.pre("save", async function () {
+  if (!this.shopCode) {
+    const count = await mongoose.model("Shopuser").countDocuments();
 
+    this.shopCode = "SHOPUSER" + String(count + 1).padStart(4, "0");
+  }
+});
 export default mongoose.model("Shopuser", shopSchema);

@@ -1,13 +1,13 @@
 import { CreateDist } from "../../services/StateDistibutor/StateDist.service.js";
 import User from "../../models/User.js";
-import {Getstatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
-import {Updatestatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
-import {Deletestatedistservice} from "../../services/StateDistibutor/StateDist.service.js"
+import { Getstatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
+import { Updatestatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
+import { Deletestatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
 
 export const CreateDistController = async (req, res) => {
   try {
     // 1. extract body here
-    const { name, email, password,mobile } = req.body;
+    const { name, email, password, mobile } = req.body;
 
     // 2. create user
     const user = await User.create({
@@ -51,10 +51,14 @@ export const GetstatedistController = async (req, res) => {
   }
 };
 
-
-
 export const updatestatedistcontroller = async (req, res, next) => {
   try {
+    if (req.user.role !== "SUPER_ADMIN") {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
+
     const { id } = req.params;
 
     const body = { ...req.body };
@@ -71,8 +75,13 @@ export const updatestatedistcontroller = async (req, res, next) => {
   }
 };
 
-export const Deletestatedistcontroller = async (req, res,next) => {
-try {
+export const Deletestatedistcontroller = async (req, res, next) => {
+  try {
+    if (req.user.role !== "SUPER_ADMIN") {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
     const { id } = req.params;
 
     // console.log("Delete ID:", id);
@@ -81,23 +90,10 @@ try {
 
     res.status(200).json({
       success: true,
-      message: "Distibutor deleted successfully",
+      message: "StateDistibutor deleted successfully",
       data: deletedist,
     });
   } catch (error) {
-    console.error(error);
-
-    if (error.message === "Distibutor not found") {
-      return res.status(404).json({
-        success: false,
-        message: error.message,
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Error deleting Distibutor",
-      error: error.message,
-    });
+    next(error);
   }
 };

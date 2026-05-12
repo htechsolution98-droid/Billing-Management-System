@@ -52,5 +52,12 @@ const stateDistributorSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+// Auto user Code
+// shopSchema.pre("save", async function () {
+//   if (!this.shopCode) {
+//     const count = await mongoose.model("StateDistributor").countDocuments();
 
+//     this.shopCode = "STATE" + String(count + 1).padStart(4, "0");
+//   }
+// });
 export default mongoose.model("StateDistributor", stateDistributorSchema);

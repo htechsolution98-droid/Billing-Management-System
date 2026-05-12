@@ -21,19 +21,19 @@ router.post(
 router.get(
   "/get",
   protect,
-  authorizeRoles("SUPER_ADMIN","STATE_DISTRIBUTOR"),
+  authorizeRoles("SUPER_ADMIN"),
   GetstatedistController,
 );
 router.put(
-  "update/:id",
+  "/update/:id",
   protect,
-  authorizeRoles("SUPER_ADMIN","STATE_DISTRIBUTOR"),
+  authorizeRoles("SUPER_ADMIN"),
   updatestatedistcontroller,
 );
 router.delete(
-  "delete/:id",
+  "/delete/:id",
   protect,
-  authorizeRoles("SUPER_ADMIN","STATE_DISTRIBUTOR"),
+  authorizeRoles("SUPER_ADMIN"),
   Deletestatedistcontroller,
 );
 
