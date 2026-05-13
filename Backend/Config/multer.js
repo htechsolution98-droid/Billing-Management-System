@@ -2,49 +2,40 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const productImagePath = "uploads/ProductImg";
+export const createUploader = (folderName) => {
+  const uploadPath = `uploads/${folderName}`;
 
-if (!fs.existsSync(productImagePath)) {
-  fs.mkdirSync(productImagePath, { recursive: true });
-}
-
-// Storage setup
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, productImagePath);
-  },
-
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + file.originalname;
-
-    cb(null, uniqueName);
-  },
-});
-
-// File filter (only images + pdf allowed)
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|pdf/;
-
-  const extname = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-
-  if (extname) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPG, PNG, JPEG, PDF allowed"));
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
   }
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+      const unique = Date.now() + "-" + file.originalname;
+      cb(null, unique);
+    },
+  });
+
+  const fileFilter = (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|webp/;
+
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+
+    const mime = allowed.test(file.mimetype);
+
+    if (mime && ext) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only images allowed"));
+    }
+  };
+
+  return multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 2 * 1024 * 1024 },
+  });
 };
-
-// Multer setup with LIMIT
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-
-  limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB limit
-  },
-});
-
-export default upload;

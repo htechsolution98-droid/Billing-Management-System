@@ -7,55 +7,58 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
     productImage: {
       type: [String], // store image path
     },
-
     productDescription: {
       type: String,
       required: true,
     },
-    
     productUnit: {
       type: String,
-      enum: ["kg", "gm", "liter", "ml", "piece","cm"],
+      enum: ["kg", "gm", "liter", "ml", "piece", "cm"],
       required: false,
     },
-  
-
-    // New variants array to support "Sizes & Pricing"
-    // variants: [
-    //   {
-    //     sizeName: { type: String, required: true },
-    //     price: { type: Number, required: true, min: [0, "Price cannot be negative"], },
-    //     discountPrice: { type: Number , min: [0, "Price cannot be negative"],},
-    //     stock: { type: Number, default: 0, min: [0, "Price cannot be negative"], },
-    //   },
-    // ],
-
-    userId: {
+    shopUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shopuser",
+      required: true,
+    },
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      
+      required: true,
+    },
+    subCategoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
     },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      
     },
-
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
-     
     },
-    // subcategory: {
-    //   type: String,
-    //   trim: true,
-    // },
- 
 
+    // New variants array to support "Sizes & Pricing"
+    variants: [
+      {
+        sizeName: { type: String, required: true },
+        price: {
+          type: Number,
+          required: true,
+          min: [0, "Price cannot be negative"],
+        },
+        discountPrice: { type: Number, min: [0, "Price cannot be negative"] },
+        stock: {
+          type: Number,
+          default: 0,
+          min: [0, "Price cannot be negative"],
+        },
+      },
+    ],
     status: {
       type: String,
       enum: ["active", "inactive"],

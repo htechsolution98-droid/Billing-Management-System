@@ -1,32 +1,38 @@
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createproductcontroller } from "../../controllers/Product/product.controller.js";
-import { createproductcontroller } from "../../controllers/Product/product.controller.js";
-import { createproductcontroller } from "../../controllers/Product/product.controller.js";
+import { getproductcontroller } from "../../controllers/Product/product.controller.js";
+import { updateproductcontroller } from "../../controllers/Product/product.controller.js";
 import { deleteproductcontroller } from "../../controllers/Product/product.controller.js";
 import express from "express";
+import upload from "../../Config/multer.js";
+import { createUploader } from "../../Config/multer.js";
+
+const uploadProducts = createUploader("Products");
+
 const router = express.Router();
 
-//SatatDist Crud API
-
+// CREATE PRODUCT
 router.post(
   "/create",
   protect,
   authorizeRoles("ShopUser"),
+  uploadProducts.array("productImage", 8),
   createproductcontroller,
 );
-router.get(
-  "/get",
-  protect,
-  authorizeRoles("ShopUser"),
-  GetCategorycontroller,
-);
+// GET PRODUCT
+router.get("/get", protect, authorizeRoles("ShopUser"), getproductcontroller);
+
+// UPDATE PRODUCT
 router.put(
   "/update/:id",
   protect,
   authorizeRoles("ShopUser"),
-  editCategoryController,
+  uploadProducts.array("productImage", 8),
+  updateproductcontroller,
 );
+
+// DELETE PRODUCT
 router.delete(
   "/delete/:id",
   protect,

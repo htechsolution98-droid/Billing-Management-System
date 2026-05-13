@@ -1,9 +1,9 @@
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
-import { CreateCategorycontroller } from "../../controllers/Category/category.controller.js";
-import { GetCategorycontroller } from "../../controllers/Category/category.controller.js";
-import { editCategoryController } from "../../controllers/Category/category.controller.js";
-import { deleteCategoryController } from "../../controllers/Category/category.controller.js";
+import { Createsubcategorycontroller } from "../../controllers/Subcategory/subcategory.controller.js";
+import { Getsubcategorycontroller } from "../../controllers/Subcategory/subcategory.controller.js";
+import { Updatesubcategorycontroller } from "../../controllers/Subcategory/subcategory.controller.js";
+import { Deletesubcategorycontroller } from "../../controllers/Subcategory/subcategory.controller.js";
 import express from "express";
 const router = express.Router();
 
@@ -13,25 +13,25 @@ router.post(
   "/create",
   protect,
   authorizeRoles("ShopUser"),
-  CreateCategorycontroller,
+  Createsubcategorycontroller,
 );
 router.get(
   "/get",
   protect,
   authorizeRoles("ShopUser"),
-  GetCategorycontroller,
+  Getsubcategorycontroller,
 );
 router.put(
   "/update/:id",
   protect,
   authorizeRoles("ShopUser"),
-  editCategoryController,
+  Updatesubcategorycontroller,
 );
 router.delete(
   "/delete/:id",
   protect,
   authorizeRoles("ShopUser"),
-  deleteCategoryController,
+  Deletesubcategorycontroller,
 );
 
 export default router;

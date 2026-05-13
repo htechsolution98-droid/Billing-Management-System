@@ -64,12 +64,12 @@ export const Updatesubcategoryservice = async (subcategoryId, body) => {
 
 export const Deletesubcategoryservice = async (subcategoryId) => {
   try {
-    const subcategory = await SubCategory.findById(categoryId);
+    const subcategory = await SubCategory.findByIdAndDelete(subcategoryId);
     if (!subcategory) {
-      throw new Error("Category not found");
+      throw new Error("subcategory not found");
     }
     // delete Category
-    await SubCategory.findByIdAndDelete(subcategory);
+    // await SubCategory.findByIdAndDelete(subcategory);
     return subcategory;
   } catch (error) {
     throw error;
