@@ -4,13 +4,8 @@ import User from "../../models/User.js";
 export const Shopcreateservice = async (data) => {
   return await Shopuser.create(data);
 };
-export const GetShopservice = async (
-  role,
-  userId,
-  page = 1,
-  limit = 5,
-  search = "",
-) => {
+
+export const GetShopservice = async (role,userId,page = 1,limit = 5,search = "",) => {
   try {
     const skip = (page - 1) * limit;
     const cleanSearch = (search || "").toString().trim();

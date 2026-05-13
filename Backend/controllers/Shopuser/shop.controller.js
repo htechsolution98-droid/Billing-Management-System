@@ -15,7 +15,7 @@ export const ShopuserController = async (req, res) => {
       email,
       mobile,
       password,
-      role: "User",
+      role: "ShopUser",
       createdBy: req.user._id,
     });
     // 3. create distributor

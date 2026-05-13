@@ -5,37 +5,40 @@ const categorySchema = new mongoose.Schema(
     categoryName: {
       type: String,
       required: true,
-
       trim: true,
     },
-    userId: {
+
+    // Category owner shop
+    shopUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shopuser",
+      required: true,
+    },
+
+    // Who created category
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
+
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
     },
-    subcategories: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+
     isGlobal: {
       type: Boolean,
       default: false,
     },
-   
   },
   {
     timestamps: true,
   },
 );
 
-// 🔑 UNIQUE PER USER
-categorySchema.index({ categoryName: 1, userId: 1 }, { unique: true });
+categorySchema.index({ categoryName: 1, shopUserId: 1 }, { unique: true });
 
 const Category = mongoose.model("Category", categorySchema);
 
