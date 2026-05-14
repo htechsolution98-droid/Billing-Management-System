@@ -37,7 +37,13 @@ const userSchema = new mongoose.Schema(
       default: "ShopUser",
       required: true,
     },
+
+    profileImage: {
+      type: String,
+      default: "",
+    },
   },
+
   {
     timestamps: true,
   },

@@ -3,19 +3,20 @@ import path from "path";
 import fs from "fs";
 
 export const createUploader = (folderName) => {
-  const uploadPath = `uploads/${folderName}`;
+  const uploadPath = `upload/${folderName}`;
 
-  if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-  }
+  fs.mkdirSync(uploadPath, { recursive: true });
 
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, uploadPath);
     },
+
     filename: (req, file, cb) => {
-      const unique = Date.now() + "-" + file.originalname;
-      cb(null, unique);
+      const uniqueName =
+        Date.now() + "-" + file.originalname.replace(/\s+/g, "-");
+
+      cb(null, uniqueName);
     },
   });
 
@@ -29,13 +30,15 @@ export const createUploader = (folderName) => {
     if (mime && ext) {
       cb(null, true);
     } else {
-      cb(new Error("Only images allowed"));
+      cb(new Error("Only jpeg, jpg, png and webp images are allowed"));
     }
   };
 
   return multer({
     storage,
     fileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 },
+    limits: {
+      fileSize: 2 * 1024 * 1024,
+    },
   });
 };

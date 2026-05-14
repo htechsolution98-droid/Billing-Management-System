@@ -5,11 +5,8 @@ import { getproductcontroller } from "../../controllers/Product/product.controll
 import { updateproductcontroller } from "../../controllers/Product/product.controller.js";
 import { deleteproductcontroller } from "../../controllers/Product/product.controller.js";
 import express from "express";
-import upload from "../../Config/multer.js";
 import { createUploader } from "../../Config/multer.js";
-
-const uploadProducts = createUploader("Products");
-
+const uploadProducts = createUploader("products");
 const router = express.Router();
 
 // CREATE PRODUCT
