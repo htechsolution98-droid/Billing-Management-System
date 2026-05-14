@@ -1,5 +1,6 @@
 import StateDistributor from "../../models/StateDist.js";
 import User from "../../models/User.js";
+import { getSuperAdminDashboardService } from "../../services/SuperAdmin/superadmin.service.js";
 export const activatestateDistributor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -130,6 +131,25 @@ export const updateSuperadminProfileController = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to update profile",
+    });
+  }
+};
+
+//Superadmin dashboard panel card
+export const getSuperAdminDashboardController = async (req, res) => {
+  try {
+    const dashboardData = await getSuperAdminDashboardService();
+
+    return res.status(200).json({
+      success: true,
+      dashboard: dashboardData,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch dashboard",
     });
   }
 };

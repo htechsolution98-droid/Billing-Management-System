@@ -5,6 +5,7 @@ import { diactvatestatedistcontroller } from "../../controllers/SuperAdmin/super
 import { LateststateDistributortget } from "../../controllers/SuperAdmin/superadmin.controller.js";
 import { getSuperadminProfileController } from "../../controllers/SuperAdmin/superadmin.controller.js";
 import { updateSuperadminProfileController } from "../../controllers/SuperAdmin/superadmin.controller.js";
+import { getSuperAdminDashboardController } from "../../controllers/SuperAdmin/superadmin.controller.js";
 import express from "express";
 import { createUploader } from "../../Config/multer.js";
 const uploadProducts = createUploader("users");
@@ -45,5 +46,15 @@ router.put(
   uploadProducts.single("profileImage"),
   updateSuperadminProfileController,
 );
+
+
+router.get(
+  "/superadmin-dashboard",
+  protect,
+  authorizeRoles("SUPER_ADMIN"),
+  getSuperAdminDashboardController
+);
+
+export default router;
 
 export default router;

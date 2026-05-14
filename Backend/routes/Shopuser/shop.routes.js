@@ -8,10 +8,10 @@ import { Latestcustomerget } from "../../controllers/Shopuser/shopuserprofile.co
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createUploader } from "../../Config/multer.js";
+import { getShopDashboardController } from "../../controllers/Shopuser/shopuserDash.controller.js";
 const uploadProducts = createUploader("users");
 import express from "express";
 const router = express.Router();
-
 //SatatDist Crud API
 
 router.post(
@@ -62,4 +62,10 @@ router.get(
   Latestcustomerget,
 );
 
+router.get(
+  "/shopuser-dashboard",
+  protect,
+  authorizeRoles("SHOP_USER"),
+  getShopDashboardController,
+);
 export default router;

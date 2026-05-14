@@ -10,6 +10,7 @@ import { LatestDistdistributortget } from "../../controllers/StateDist/stateprof
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createUploader } from "../../Config/multer.js";
+import { getStateDashboardController } from "../../controllers/StateDist/statedash.controller.js";
 const uploadProducts = createUploader("users");
 import express from "express";
 const router = express.Router();
@@ -63,6 +64,14 @@ router.get(
   protect,
   authorizeRoles("STATE_DISTRIBUTOR"),
   LatestDistdistributortget,
+);
+
+
+router.get(
+  "/statedist-dashboard",
+  protect,
+  authorizeRoles("STATE_DISTRIBUTOR"),
+  getStateDashboardController
 );
 
 export default router;

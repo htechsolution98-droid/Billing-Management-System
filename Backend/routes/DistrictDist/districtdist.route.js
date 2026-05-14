@@ -8,6 +8,7 @@ import { LatestShopuserget } from "../../controllers/DistrictDist/districtprofil
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createUploader } from "../../Config/multer.js";
+import { getDistrictDashboardController } from "../../controllers/DistrictDist/Districtdash.controller.js";
 const uploadProducts = createUploader("users");
 import express from "express";
 const router = express.Router();
@@ -60,6 +61,14 @@ router.get(
   protect,
   authorizeRoles("DISTRICT_DISTRIBUTOR"),
   LatestShopuserget,
+);
+
+
+router.get(
+  "/District-dashboard",
+  protect,
+  authorizeRoles("DISTRICT_DISTRIBUTOR"),
+  getDistrictDashboardController
 );
 
 export default router;
