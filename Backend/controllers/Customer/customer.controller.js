@@ -12,8 +12,13 @@ export const customerRegisterController = async (req, res) => {
       district,
       area,
       pincode,
+      profileImage,
     } = req.body;
+    // 2. uploaded file path
 
+    if (req.file) {
+      profileImage = req.file.path;
+    }
     const existingCustomer = await Customer.findOne({
       $or: [{ email }, { mobile }],
     });

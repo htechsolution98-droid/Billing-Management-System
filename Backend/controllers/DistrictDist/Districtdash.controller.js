@@ -1,4 +1,4 @@
-import { getDistrictDashboardService } from "../../services/DistrictDistibutor/districtdash.service";
+import { getDistrictDashboardService } from "../../services/DistrictDistibutor/districtdash.service.js";
 
 
 export const getDistrictDashboardController = async (

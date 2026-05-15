@@ -1,20 +1,21 @@
-
-import User from "../../models/User.js";
+import StateDistibutor from "../../models/StateDist.js";
+import DistrictDist from "../../models/DistrictDist.js";
+import Shop from "../../models/Shop.js";
 import Product from "../../models/Product.js";
 import Customer from "../../models/Customer.js";
 
 export const getSuperAdminDashboardService = async () => {
   // USER COUNTS
-  const totalStateDistributor = await User.countDocuments({
-    role: "STATE_DIST",
+  const totalStateDistributor = await StateDistibutor.countDocuments({
+    role: "STATE_DISTRIBUTOR",
   });
 
-  const totalDistrictDistributor = await User.countDocuments({
-    role: "DIST_DIST",
+  const totalDistrictDistributor = await DistrictDist.countDocuments({
+    role: "DISTRICT_DISTRIBUTOR",
   });
 
-  const totalShopUsers = await User.countDocuments({
-    role: "SHOP_USER",
+  const totalShopUsers = await Shop.countDocuments({
+    role: "ShopUser",
   });
 
   // CUSTOMER COUNT
@@ -24,33 +25,14 @@ export const getSuperAdminDashboardService = async () => {
   const totalProducts = await Product.countDocuments();
 
   // ACTIVE USERS
-  const activeUsers = await User.countDocuments({
+  const activeUsers = await StateDistibutor.countDocuments({
     isActive: true,
   });
 
   // INACTIVE USERS
-  const inactiveUsers = await User.countDocuments({
+  const inactiveUsers = await StateDistibutor.countDocuments({
     isActive: false,
   });
-
-  // LATEST SHOP USERS
-  const latestShopUsers = await User.find({
-    role: "SHOP_USER",
-  })
-    .sort({ createdAt: -1 })
-    .limit(5)
-    .select("-password");
-
-  // LATEST CUSTOMERS
-  const latestCustomers = await Customer.find()
-    .sort({ createdAt: -1 })
-    .limit(5)
-    .select("-password");
-
-  // LATEST PRODUCTS
-  const latestProducts = await Product.find()
-    .sort({ createdAt: -1 })
-    .limit(5);
 
   return {
     totalStateDistributor,
@@ -60,8 +42,5 @@ export const getSuperAdminDashboardService = async () => {
     totalProducts,
     activeUsers,
     inactiveUsers,
-    latestShopUsers,
-    latestCustomers,
-    latestProducts,
   };
 };

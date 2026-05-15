@@ -41,16 +41,6 @@ const districtDistributorSchema = new mongoose.Schema(
 
     address: String,
 
-    distributorCode: {
-      type: String,
-      unique: true,
-    },
-
-    // commissionPercent: {
-    //   type: Number,
-    //   default: 0,
-    // },
-
     isActive: {
       type: Boolean,
       default: true,
@@ -60,63 +50,30 @@ const districtDistributorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    //multer use file upload
+    corpo_certificatno: {
+      type: String, // file path stored here
+    },
+
+    // commissionPercent: {
+    //   type: Number,
+    //   default: 0,
+    // },
+    // distributorCode: {
+    //   type: String,
+    //   unique: true,
+    // },
   },
   { timestamps: true },
 );
 
+// Auto user Code
+// districtDistributorSchema.pre("save", async function () {
+//   if (!this.distributorCode) {
+//     const count = await mongoose.model("DistrictDistributor").countDocuments();
+
+//     this.distributorCode = "DISTTRICT" + String(count + 1).padStart(4, "0");
+//   }
+// });
+
 export default mongoose.model("DistrictDistributor", districtDistributorSchema);
-
-// const districtDistributorSchema = new mongoose.Schema(
-//   {
-//     userId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//       required: true,
-//     },
-
-//     stateDistributorId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "StateDistributor",
-//       required: true,
-//     },
-
-//     firmName: {
-//       type: String,
-//       required: true,
-//     },
-
-//     ownerName: String,
-
-//     mobile: String,
-//     email: String,
-
-//     gstNumber: String,
-//     panNumber: String,
-//     aadharNumber: String,
-
-//     state: String,
-//     district: String,
-//     area: String,
-
-//     address: String,
-
-//     distributorCode: {
-//       type: String,
-//       unique: true,
-//     },
-
-//     isActive: {
-//       type: Boolean,
-//       default: true,
-//     },
-
-//     createdBy: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//     },
-//   },
-//   { timestamps: true },
-// );
-
-// export default mongoose.model("DistrictDistributor", districtDistributorSchema);
-

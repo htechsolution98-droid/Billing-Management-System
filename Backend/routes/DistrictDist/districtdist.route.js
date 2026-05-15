@@ -9,7 +9,7 @@ import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createUploader } from "../../Config/multer.js";
 import { getDistrictDashboardController } from "../../controllers/DistrictDist/Districtdash.controller.js";
-const uploadProducts = createUploader("users");
+const uploadProducts = createUploader("forms");
 import express from "express";
 const router = express.Router();
 
@@ -19,6 +19,7 @@ router.post(
   "/create",
   protect,
   authorizeRoles("SUPER_ADMIN", "STATE_DISTRIBUTOR"),
+  uploadProducts.single("corpo_certificatno"),
   CreateDistrictDistController,
 );
 router.get(
@@ -31,6 +32,7 @@ router.put(
   "/update/:id",
   protect,
   authorizeRoles("SUPER_ADMIN", "STATE_DISTRIBUTOR"),
+  uploadProducts.single("corpo_certificatno"),
   updateDistdistcontroller,
 );
 router.delete(
@@ -63,12 +65,11 @@ router.get(
   LatestShopuserget,
 );
 
-
 router.get(
   "/District-dashboard",
   protect,
   authorizeRoles("DISTRICT_DISTRIBUTOR"),
-  getDistrictDashboardController
+  getDistrictDashboardController,
 );
 
 export default router;

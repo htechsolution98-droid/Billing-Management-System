@@ -3,7 +3,8 @@ import User from "../../models/User.js";
 import { Getstatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
 import { Updatestatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
 import { Deletestatedistservice } from "../../services/StateDistibutor/StateDist.service.js";
-
+import DistrictDistributor from "../../models/DistrictDist.js";
+import Shopuser from "../../models/Shop.js";
 export const CreateDistController = async (req, res) => {
   try {
     // 1. extract body here
@@ -95,5 +96,52 @@ export const Deletestatedistcontroller = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+//============================================================
+export const getDistrictByStateController = async (req, res) => {
+  try {
+    const { stateDistributorId } = req.params;
+
+    const districts = await DistrictDistributor.find({
+      stateDistributorId,
+    })
+      .populate("userId")
+      .populate("stateDistributorId");
+
+    res.status(200).json({
+      success: true,
+      count: districts.length,
+      data: districts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getShopsByDistrictController = async (req, res) => {
+  try {
+    const { districtDistributorId } = req.params;
+
+    const shops = await Shopuser.find({
+      districtDistributorId,
+    })
+      .populate("userId")
+      .populate("districtDistributorId");
+
+    res.status(200).json({
+      success: true,
+      count: shops.length,
+      data: shops,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

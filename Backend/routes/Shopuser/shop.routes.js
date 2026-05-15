@@ -7,8 +7,8 @@ import { updateshopuserProfileController } from "../../controllers/Shopuser/shop
 import { Latestcustomerget } from "../../controllers/Shopuser/shopuserprofile.controller.js";
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
-import { createUploader } from "../../Config/multer.js";
 import { getShopDashboardController } from "../../controllers/Shopuser/shopuserDash.controller.js";
+import { createUploader } from "../../Config/multer.js";
 const uploadProducts = createUploader("users");
 import express from "express";
 const router = express.Router();
@@ -18,6 +18,7 @@ router.post(
   "/create",
   protect,
   authorizeRoles("SUPER_ADMIN", "STATE_DISTRIBUTOR", "DISTRICT_DISTRIBUTOR"),
+  uploadProducts.single("firmLogo"),
   ShopuserController,
 );
 router.get(
@@ -30,6 +31,7 @@ router.put(
   "/update/:id",
   protect,
   authorizeRoles("SUPER_ADMIN", "STATE_DISTRIBUTOR", "DISTRICT_DISTRIBUTOR"),
+  uploadProducts.single("firmLogo"),
   updateShopcontroller,
 );
 router.delete(

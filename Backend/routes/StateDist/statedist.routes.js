@@ -11,6 +11,8 @@ import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
 import { createUploader } from "../../Config/multer.js";
 import { getStateDashboardController } from "../../controllers/StateDist/statedash.controller.js";
+import { getShopsByDistrictController } from "../../controllers/StateDist/statedist.controller.js";
+import { getDistrictByStateController } from "../../controllers/StateDist/statedist.controller.js";
 const uploadProducts = createUploader("users");
 import express from "express";
 const router = express.Router();
@@ -74,4 +76,18 @@ router.get(
   getStateDashboardController
 );
 
+//=============
+router.get(
+  "/by-district/:districtDistributorId",
+  protect,
+  authorizeRoles("SUPER_ADMIN"),
+  getDistrictByStateController
+);
+
+router.get(
+  "/by-district/:districtDistributorId",
+  protect,
+  authorizeRoles("SUPER_ADMIN"),
+  getShopsByDistrictController
+);
 export default router;

@@ -1,6 +1,8 @@
-// services/dashboard/shop.dashboard.service.js
-
 import Product from "../../models/Product.js";
+import Customer from "../../models/Customer.js";
+import Brand from "../../models/brand.js";
+import subcategory from "../../models/subcategory.js";
+import category from "../../models/category.js";
 
 export const getShopDashboardService = async (shopUserId) => {
   const totalProducts = await Product.countDocuments({
@@ -13,8 +15,24 @@ export const getShopDashboardService = async (shopUserId) => {
     .sort({ createdAt: -1 })
     .limit(5);
 
+  const totalcategory = await category.countDocuments({
+    // createdBy: shopUserId,
+  });
+  const totalsubcategory = await subcategory.countDocuments({
+    // createdBy: shopUserId,
+  });
+  const totalbrand = await Brand.countDocuments({
+    // createdBy: shopUserId,
+  });
+  const totalcustomer = await Customer.countDocuments({
+    // createdBy: shopUserId,
+  });
   return {
     totalProducts,
-    latestProducts,
+    // latestProducts,
+    totalcustomer,
+    totalbrand,
+    totalsubcategory,
+    totalcategory,
   };
 };

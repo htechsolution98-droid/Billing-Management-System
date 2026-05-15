@@ -30,16 +30,6 @@ const stateDistributorSchema = new mongoose.Schema(
 
     address: String,
 
-    distributorCode: {
-      type: String,
-      unique: true,
-    },
-
-    // commissionPercent: {
-    //   type: Number,
-    //   default: 0,
-    // },
-
     isActive: {
       type: Boolean,
       default: true,
@@ -49,15 +39,23 @@ const stateDistributorSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // commissionPercent: {
+    //   type: Number,
+    //   default: 0,
+    // },
+    // stateCode: {
+    //   type: String,
+    //   unique: true,
+    // },
   },
   { timestamps: true },
 );
 // Auto user Code
-// shopSchema.pre("save", async function () {
-//   if (!this.shopCode) {
+// stateDistributorSchema.pre("save", async function () {
+//   if (!this.stateCode) {
 //     const count = await mongoose.model("StateDistributor").countDocuments();
 
-//     this.shopCode = "STATE" + String(count + 1).padStart(4, "0");
+//     this.stateCode = "STATE" + String(count + 1).padStart(4, "0");
 //   }
 // });
 export default mongoose.model("StateDistributor", stateDistributorSchema);

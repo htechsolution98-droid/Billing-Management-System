@@ -8,7 +8,12 @@ export const ShopuserController = async (req, res) => {
   try {
     // 1. extract body here
     const { name, email, mobile, password } = req.body;
+    // 2. uploaded file path
+    let firmLogo = "";
 
+    if (req.file) {
+      firmLogo = req.file.path;
+    }
     // 2. create user
     const user = await User.create({
       name,

@@ -86,5 +86,5 @@ shopSchema.pre("save", async function () {
 
     this.shopCode = "SHOPUSER" + String(count + 1).padStart(4, "0");
   }
-});
+}); 
 export default mongoose.model("Shopuser", shopSchema);

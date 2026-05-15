@@ -9,6 +9,13 @@ export const CreateDistrictDistController = async (req, res) => {
     // 1. extract body here
     const { name, email, mobile, password } = req.body;
 
+    // 2. uploaded file path
+    let corpo_certificatno = "";
+
+    if (req.file) {
+      corpo_certificatno = req.file.path;
+    }
+
     // 2. create user
     const user = await User.create({
       name,
