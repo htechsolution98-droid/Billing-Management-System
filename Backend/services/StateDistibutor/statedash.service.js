@@ -1,5 +1,5 @@
 import User from "../../models/User.js";
-import Product from "../../models/Product.js";
+import Product from "../../models/product.js";
 import DistrictDist from "../../models/DistrictDist.js";
 
 export const getStateDashboardService = async (stateDistId) => {
