@@ -1,3 +1,5 @@
+import Customer from "../../models/Customer.js";
+import bcrypt from "bcryptjs";
 import { createCustomerservice } from "../../services/Customer/customer.service.js";
 import { getProductsByShopCodeService } from "../../services/Customer/customer.service.js";
 export const customerRegisterController = async (req, res) => {
@@ -76,7 +78,7 @@ export const getProductsByShopCode = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      shopName: data.shopUser.name,
+      shopName: data.shopUser.firmName,
       products: data.products,
     });
   } catch (error) {

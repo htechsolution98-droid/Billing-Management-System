@@ -22,11 +22,10 @@ export const createproductcontroller = async (req, res) => {
     // multiple image upload
     const images = req.files ? req.files.map((file) => file.path) : [];
 
-    // variants parse
     let variants = [];
 
     if (req.body.variants) {
-      variants = JSON.parse(req.body.variants);
+      variants = req.body.variants;
     }
 
     const body = {

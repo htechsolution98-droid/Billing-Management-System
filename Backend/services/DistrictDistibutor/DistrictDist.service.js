@@ -7,39 +7,87 @@ export const CreateDistrictDistService = async (data) => {
 export const GetDistrictdistservice = async (
   userId,
   role,
-  page = 1,
-  limit = 5,
-  search = "",
+  page,
+  limit,
+  search,
 ) => {
-  const skip = (page - 1) * limit;
-  const cleanSearch = (search || "").toString().trim();
-  let query = {};
+  try {
+    const skip = (page - 1) * limit;
+    const cleanSearch = (search || "").trim();
 
-  if (role === "STATE_DISTRIBUTOR") {
-    query.stateDistributorId = userId;
-  }
+    let query = {};
 
-  if (cleanSearch) {
-    query.firmName = {
-      $regex: cleanSearch,
-      $options: "i",
+    // SUPER ADMIN
+    if (role === "SUPER_ADMIN") {
+      query = {};
+    }
+
+    // STATE DISTRIBUTOR
+    else if (role === "STATE_DISTRIBUTOR") {
+      query.createdBy = userId;
+    }
+    // SEARCH
+    if (cleanSearch) {
+      query.firmName = {
+        $regex: cleanSearch,
+        $options: "i",
+      };
+    }
+
+    const districts = await DistrictDistributor.find(query)
+      .populate("userId")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const total = await DistrictDistributor.countDocuments(query);
+
+    return {
+      success: true,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      data: districts,
     };
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  const total = await DistrictDistributor.countDocuments(query);
-  const users = await DistrictDistributor.find(query)
-    .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
-
-  return {
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-    data: users,
-  };
 };
+//   userId,
+//   role,
+//   page = 1,
+//   limit = 5,
+//   search = "",
+// ) => {
+//   const skip = (page - 1) * limit;
+//   const cleanSearch = (search || "").toString().trim();
+//   let query = {};
+
+//   if (role === "STATE_DISTRIBUTOR") {
+//     query.stateDistributorId = userId;
+//   }
+
+//   if (cleanSearch) {
+//     query.firmName = {
+//       $regex: cleanSearch,
+//       $options: "i",
+//     };
+//   }
+
+//   const total = await DistrictDistributor.countDocuments(query);
+//   const users = await DistrictDistributor.find(query)
+//     .skip(skip)
+//     .limit(limit)
+//     .sort({ createdAt: -1 });
+
+//   return {
+//     total,
+//     page,
+//     limit,
+//     totalPages: Math.ceil(total / limit),
+//     data: users,
+//   };
+// };
 
 export const UpdateDistrictdistservice = async (distId, body) => {
   try {

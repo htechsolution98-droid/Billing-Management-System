@@ -12,16 +12,17 @@ export const Getstatedistservice = async (
 ) => {
   try {
     const skip = (page - 1) * limit;
-    const cleanSearch = (search || "").toString().trim();
-
-    const query = {
-      userId: userId,
-      ...(cleanSearch && {
-        name: { $regex: cleanSearch, $options: "i" },
-      }),
-    };
+    const cleanSearch = (search || "").trim();
+    const query= {}
+    if (cleanSearch.length > 0) {
+      query.firmName = {
+        $regex: cleanSearch,
+        $options: "i",
+      };
+    }
     const total = await StateDistributor.countDocuments(query);
     const stateusers = await StateDistributor.find(query)
+    .populate("userId", "name email mobile password role")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });

@@ -1,15 +1,16 @@
 import Customer from "../../models/Customer.js";
-import Product from "../../models/Product.js";
-import User from "../../models/User.js";
+import Product from "../../models/product.js";
+import Shopuser from "../../models/Shop.js";
 
 export const createCustomerservice = async (body) => {
   return await Customer.create(body);
 };
 
 export const getProductsByShopCodeService = async (shopCode) => {
-  const shopUser = await User.findOne({
-    shopCode,
-    role: "SHOP_USER",
+  const normalizedShopCode = shopCode?.trim().toUpperCase();
+
+  const shopUser = await Shopuser.findOne({
+    shopCode: normalizedShopCode,
   });
 
   if (!shopUser) {
@@ -17,8 +18,13 @@ export const getProductsByShopCodeService = async (shopCode) => {
   }
 
   const products = await Product.find({
-    createdBy: shopUser._id,
-  });
+    shopUserId: shopUser._id,
+    status: "active",
+  })
+    .populate("categoryId", "categoryName")
+    .populate("subCategoryId", "subCategoryName")
+    .populate("brandId", "brandName")
+    .sort({ createdAt: -1 });
 
   return {
     shopUser,

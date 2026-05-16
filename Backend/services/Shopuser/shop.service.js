@@ -5,50 +5,106 @@ export const Shopcreateservice = async (data) => {
   return await Shopuser.create(data);
 };
 
-export const GetShopservice = async (role,userId,page = 1,limit = 5,search = "",) => {
+export const GetShopservice = async (role, userId, page, limit, search) => {
   try {
     const skip = (page - 1) * limit;
-    const cleanSearch = (search || "").toString().trim();
+
     let query = {};
+
     // SUPER ADMIN
     if (role === "SUPER_ADMIN") {
       query = {};
     }
-    // STATE DISTRIBUTOR
-    else if (role === "STATE_DISTRIBUTOR") {
-      query.stateDistributorId = userId;
-    }
+
     // DISTRICT DISTRIBUTOR
     else if (role === "DISTRICT_DISTRIBUTOR") {
-      query.districtDistributorId = userId;
+      query.createdBy = userId;
     }
-    // SHOP USER
-    else if (role === "SHOP") {
-      query.userId = userId;
+
+    // STATE DISTRIBUTOR
+    else if (role === "STATE_DISTRIBUTOR") {
+      // find districts created by this state user
+      const districts = await DistrictDistributor.find({
+        createdBy: userId,
+      });
+
+      const districtIds = districts.map((d) => d.userId);
+
+      query.createdBy = { $in: districtIds };
     }
-    // Search
-    if (cleanSearch) {
-      query.firmName = {
-        $regex: cleanSearch,
-        $options: "i",
-      };
+
+    // SEARCH
+    if (search) {
+      query.$or = [
+        { firmName: { $regex: search, $options: "i" } },
+        // { area: { $regex: search, $options: "i" } },
+      ];
     }
-    const total = await Shopuser.countDocuments(query);
+
     const shops = await Shopuser.find(query)
+      .populate("userId")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
+
+    const total = await Shopuser.countDocuments(query);
+
     return {
+      success: true,
       total,
-      page,
-      limit,
+      currentPage: page,
       totalPages: Math.ceil(total / limit),
       data: shops,
     };
   } catch (error) {
-    throw error;
+    throw new Error(error.message);
   }
 };
+
+//   role,userId,page = 1,limit = 5,search = "",) => {
+//   try {
+//     const skip = (page - 1) * limit;
+//     const cleanSearch = (search || "").toString().trim();
+//     let query = {};
+//     // SUPER ADMIN
+//     if (role === "SUPER_ADMIN") {
+//       query = {};
+//     }
+//     // STATE DISTRIBUTOR
+//     else if (role === "STATE_DISTRIBUTOR") {
+//       query.stateDistributorId = userId;
+//     }
+//     // DISTRICT DISTRIBUTOR
+//     else if (role === "DISTRICT_DISTRIBUTOR") {
+//       query.districtDistributorId = userId;
+//     }
+//     // SHOP USER
+//     else if (role === "SHOP") {
+//       query.userId = userId;
+//     }
+//     // Search
+//     if (cleanSearch) {
+//       query.firmName = {
+//         $regex: cleanSearch,
+//         $options: "i",
+//       };
+//     }
+//     const total = await Shopuser.countDocuments(query);
+//     const shops = await Shopuser.find(query)
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ createdAt: -1 });
+//     return {
+//       total,
+//       page,
+//       limit,
+//       totalPages: Math.ceil(total / limit),
+//       data: shops,
+//     };
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 export const UpdateShopservice = async (shopId, body) => {
   try {
