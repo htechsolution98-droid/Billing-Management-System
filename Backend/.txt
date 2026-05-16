@@ -1,0 +1,17 @@
+Token:- ===============
+
+admin:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmVlOGQzOGNhOWRiZmFkMzE2NTRhYSIsImlhdCI6MTc3ODgzMDQyNiwiZXhwIjoxNzc5NDM1MjI2fQ.X11Yqb0LF7tuG0OI60DEWaGYeshuMfKafYyih3YgYvY
+
+state:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDZjY2NlNDA3YmRlNzdmM2Q2YWI4NCIsImlhdCI6MTc3ODgzMTMwOSwiZXhwIjoxNzc5NDM2MTA5fQ.xorXz51e7alNXKLo_auBVbICtw5EZP2q1zQ1bosVLeM 
+
+district:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDZjZWQxODEyNzE2NWFkNGUzYjRmNyIsImlhdCI6MTc3ODgzNTk1MCwiZXhwIjoxNzc5NDQwNzUwfQ.IRx13cN73WHkj-mL-IMqeUBrfdPjiz-hIhMqQ1AtWaQ
+
+shpuser:- 
+
+json data :- =========
+
+state:
+
+district:
+
+shop
