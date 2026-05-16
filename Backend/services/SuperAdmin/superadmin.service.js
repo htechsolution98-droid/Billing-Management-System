@@ -1,7 +1,7 @@
 import StateDistibutor from "../../models/StateDist.js";
 import DistrictDist from "../../models/DistrictDist.js";
 import Shop from "../../models/Shop.js";
-import Product from "../../models/Product.js";
+import Product from "../../models/product.js";
 import Customer from "../../models/Customer.js";
 
 export const getSuperAdminDashboardService = async () => {
