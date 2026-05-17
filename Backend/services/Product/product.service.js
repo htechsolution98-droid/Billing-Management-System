@@ -20,7 +20,7 @@ export const GetProductService = async (
     };
     const total = await Product.countDocuments(query);
     const product = await Product.find(query)
-    .populate("shopUserId", "firmName")
+      .populate("shopUserId", "firmName")
       .populate("createdBy", "name")
       .populate("categoryId", "categoryName")
       .populate("subCategoryId", "subCategoryName")
@@ -41,7 +41,7 @@ export const GetProductService = async (
   }
 };
 
-export const UpdatedProductService = async (productId,body) => {
+export const UpdatedProductService = async (productId, body) => {
   try {
     const product = await Product.findById(productId);
     if (!product) {
