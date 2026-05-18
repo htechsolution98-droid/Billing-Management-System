@@ -4,6 +4,8 @@ import { UpdatedProductService } from "../../services/Product/product.service.js
 import { DeleteProductService } from "../../services/Product/product.service.js";
 import Shopuser from "../../models/Shop.js";
 import slugify from "slugify";
+import Product from "../../models/product.js";
+import ProductCatalog from "../../models/productcatalog.js";
 
 // ================= CREATE PRODUCT =================
 export const createproductcontroller = async (req, res) => {
