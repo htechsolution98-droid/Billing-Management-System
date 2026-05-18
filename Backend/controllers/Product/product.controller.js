@@ -171,8 +171,7 @@ export const updateproductcontroller = async (req, res) => {
       req.body.productName &&
       req.body.productName.toLowerCase() !==
         product.productCatalogId?.productName?.toLowerCase()
-    )  
-    {
+    ) {
       let productCatalog = await ProductCatalog.findOne({
         productName: req.body.productName.toLowerCase(),
         shopTypeId: req.body.shopTypeId || product.shopTypeId,

@@ -15,10 +15,7 @@ const productCatalogSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    // slug: {
-    //   type: String,
-    //   unique: true,
-    // },
+  
   },
   { timestamps: true },
 );
