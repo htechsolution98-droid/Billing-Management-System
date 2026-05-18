@@ -20,7 +20,7 @@ import Category from "./routes/Category/category.routes.js"
 import Subcategory from "./routes/Subcategory/subcategory.routes.js"
 import Product from "./routes/Product/product.routes.js"
 import Customer from "./routes/Customer/customer.routes.js";
-import Masteritem from "./routes/MasterType/mastertype.routes.js"
+import shoptype from "./routes/ShopType/shoptype.routes.js"
 import SuperAdmin from "./routes/SuperAdmin/superadmin.routes.js";
 
 app.use("/api/auth", authRoutes);
@@ -32,7 +32,7 @@ app.use("/api/category", Category);
 app.use("/api/subcategory", Subcategory);
 app.use("/api/product", Product);
 app.use("/api/customer", Customer);
-app.use("/api/masteritem", Masteritem);
+app.use("/api/shoptype", shoptype);
 app.use("/api/superadmin", SuperAdmin);
 
 

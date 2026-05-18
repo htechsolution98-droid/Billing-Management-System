@@ -1,9 +1,9 @@
 import protect from "../../middleware/auth.middleware.js";
 import { authorizeRoles } from "../../middleware/role.middleware.js";
-import { CreatemasterController } from "../../controllers/MasterType/mastertype.controller.js";
-import { GetmasterController } from "../../controllers/MasterType/mastertype.controller.js";
-import { updatemastercontroller } from "../../controllers/MasterType/mastertype.controller.js";
-import { Deletemastercontroller } from "../../controllers/MasterType/mastertype.controller.js";
+import { CreateshoptypeController } from "../../controllers/shopType/shoptype.controller.js";
+import { GetshoptypeController } from "../../controllers/shopType/shoptype.controller.js";
+import { updateshoptypecontroller } from "../../controllers/shopType/shoptype.controller.js";
+import { Deleteshoptypecontroller } from "../../controllers/shopType/shoptype.controller.js";
 import express from "express";
 const router = express.Router();
 
@@ -11,12 +11,12 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/masteritem/create:
+ * /api/shoptype/create:
  *   post:
- *     summary: Create master item
- *     description: Creates a new master item/type. Accessible to super admin users only.
+ *     summary: Create shoptype item
+ *     description: Creates a new shoptype item/type. Accessible to super admin users only.
  *     tags:
- *       - Master Type
+ *       - shoptype Type
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -39,7 +39,7 @@ const router = express.Router();
  *                 example: active
  *     responses:
  *       200:
- *         description: Master item created successfully.
+ *         description: shoptype item created successfully.
  *       400:
  *         description: Invalid request data.
  *       401:
@@ -53,16 +53,16 @@ router.post(
   "/create",
   protect,
   authorizeRoles("SUPER_ADMIN"),
-  CreatemasterController,
+  CreateshoptypeController,
 );
 /**
  * @swagger
- * /api/masteritem/get:
+ * /api/shoptype/get:
  *   get:
- *     summary: Get master items
- *     description: Returns master items/types for super admin users.
+ *     summary: Get shoptype items
+ *     description: Returns shoptype items/types for super admin users.
  *     tags:
- *       - Master Type
+ *       - shoptype Type
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -80,25 +80,25 @@ router.post(
  *         description: Number of records per page.
  *     responses:
  *       200:
- *         description: Master items fetched successfully.
+ *         description: shoptype items fetched successfully.
  *       400:
  *         description: Invalid request.
  *       401:
  *         description: Missing, invalid, or expired bearer token.
  *       404:
- *         description: Master items not found.
+ *         description: shoptype items not found.
  *       500:
  *         description: Internal server error.
  */
-router.get("/get", protect, authorizeRoles("SUPER_ADMIN"), GetmasterController);
+router.get("/get", protect, authorizeRoles("SUPER_ADMIN"), GetshoptypeController);
 /**
  * @swagger
- * /api/masteritem/update/{id}:
+ * /api/shoptype/update/{id}:
  *   put:
- *     summary: Update master item
- *     description: Updates an existing master item/type by ID.
+ *     summary: Update shoptype item
+ *     description: Updates an existing shoptype item/type by ID.
  *     tags:
- *       - Master Type
+ *       - shoptype Type
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -107,7 +107,7 @@ router.get("/get", protect, authorizeRoles("SUPER_ADMIN"), GetmasterController);
  *         required: true
  *         schema:
  *           type: string
- *         description: Master item ID.
+ *         description: shoptype item ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -126,13 +126,13 @@ router.get("/get", protect, authorizeRoles("SUPER_ADMIN"), GetmasterController);
  *                 example: active
  *     responses:
  *       200:
- *         description: Master item updated successfully.
+ *         description: shoptype item updated successfully.
  *       400:
  *         description: Invalid request data.
  *       401:
  *         description: Missing, invalid, or expired bearer token.
  *       404:
- *         description: Master item not found.
+ *         description: shoptype item not found.
  *       500:
  *         description: Internal server error.
  */
@@ -140,16 +140,16 @@ router.put(
   "/update/:id",
   protect,
   authorizeRoles("SUPER_ADMIN"),
-  updatemastercontroller,
+  updateshoptypecontroller,
 );
 /**
  * @swagger
- * /api/masteritem/delete/{id}:
+ * /api/shoptype/delete/{id}:
  *   delete:
- *     summary: Delete master item
- *     description: Deletes an existing master item/type by ID.
+ *     summary: Delete shoptype item
+ *     description: Deletes an existing shoptype item/type by ID.
  *     tags:
- *       - Master Type
+ *       - shoptype Type
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -158,16 +158,16 @@ router.put(
  *         required: true
  *         schema:
  *           type: string
- *         description: Master item ID.
+ *         description: shoptype item ID.
  *     responses:
  *       200:
- *         description: Master item deleted successfully.
+ *         description: shoptype item deleted successfully.
  *       400:
  *         description: Invalid request.
  *       401:
  *         description: Missing, invalid, or expired bearer token.
  *       404:
- *         description: Master item not found.
+ *         description: shoptype item not found.
  *       500:
  *         description: Internal server error.
  */
@@ -175,7 +175,7 @@ router.delete(
   "/delete/:id",
   protect,
   authorizeRoles("SUPER_ADMIN"),
-  Deletemastercontroller,
+  Deleteshoptypecontroller,
 );
 
 export default router;

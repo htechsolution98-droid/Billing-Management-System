@@ -4,7 +4,7 @@ const options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "My API",
+      title: "Billing-Managment-System",
       version: "1.0.0",
       description: "API Documentation with JWT auth",
     },

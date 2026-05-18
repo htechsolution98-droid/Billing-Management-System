@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    productName: {
-      type: String,
+    // productName: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
+    productCatalogId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProductCatalog",
       required: true,
-      trim: true,
     },
     productImage: {
       type: [String], // store image path
@@ -18,6 +23,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ["kg", "gm", "liter", "ml", "piece", "cm"],
       required: false,
+    },
+    shopTypeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ShopType",
+      required: true,
     },
     shopUserId: {
       type: mongoose.Schema.Types.ObjectId,

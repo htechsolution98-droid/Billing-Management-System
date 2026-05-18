@@ -3,11 +3,15 @@ import { GetProductService } from "../../services/Product/product.service.js";
 import { UpdatedProductService } from "../../services/Product/product.service.js";
 import { DeleteProductService } from "../../services/Product/product.service.js";
 import Shopuser from "../../models/Shop.js";
+import slugify from "slugify";
 
 // ================= CREATE PRODUCT =================
 export const createproductcontroller = async (req, res) => {
   try {
-    // find logged-in shop
+    // =========================
+    // FIND LOGGED-IN SHOP
+    // =========================
+
     const shop = await Shopuser.findOne({
       userId: req.user._id,
     });
@@ -19,14 +23,28 @@ export const createproductcontroller = async (req, res) => {
       });
     }
 
-    // multiple image upload
+    // =========================
+    // MULTIPLE IMAGE UPLOAD
+    // =========================
+
     const images = req.files ? req.files.map((file) => file.path) : [];
+
+    // =========================
+    // VARIANTS
+    // =========================
 
     let variants = [];
 
     if (req.body.variants) {
-      variants = req.body.variants;
+      variants =
+        typeof req.body.variants === "string"
+          ? JSON.parse(req.body.variants)
+          : req.body.variants;
     }
+
+    // =========================
+    // BODY
+    // =========================
 
     const body = {
       ...req.body,
@@ -40,6 +58,10 @@ export const createproductcontroller = async (req, res) => {
       createdBy: req.user._id,
     };
 
+    // =========================
+    // CREATE PRODUCT
+    // =========================
+
     const data = await CreateProductService(body);
 
     return res.status(201).json({
@@ -48,6 +70,8 @@ export const createproductcontroller = async (req, res) => {
       data,
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -96,7 +120,7 @@ export const updateproductcontroller = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // find shop
+    // FIND SHOP
     const shop = await Shopuser.findOne({
       userId: req.user._id,
     });
@@ -108,11 +132,11 @@ export const updateproductcontroller = async (req, res) => {
       });
     }
 
-    // verify ownership
+    // VERIFY OWNERSHIP
     const product = await Product.findOne({
       _id: id,
       shopUserId: shop._id,
-    });
+    }).populate("productCatalogId");
 
     if (!product) {
       return res.status(404).json({
@@ -121,20 +145,61 @@ export const updateproductcontroller = async (req, res) => {
       });
     }
 
-    // new uploaded images
+    // NEW UPLOADED IMAGES
     const images = req.files
       ? req.files.map((file) => file.path)
       : product.productImage;
 
-    // variants parse
+    // VARIANTS PARSE
     let variants = product.variants || [];
 
     if (req.body.variants) {
-      variants = JSON.parse(req.body.variants);
+      variants =
+        typeof req.body.variants === "string"
+          ? JSON.parse(req.body.variants)
+          : req.body.variants;
     }
 
+    // =========================
+    // PRODUCT CATALOG LOGIC
+    // =========================
+
+    let productCatalogId = product.productCatalogId;
+
+    // ONLY IF PRODUCT NAME CHANGED
+    if (
+      req.body.productName &&
+      req.body.productName.toLowerCase() !==
+        product.productCatalogId?.productName?.toLowerCase()
+    )  
+    {
+      let productCatalog = await ProductCatalog.findOne({
+        productName: req.body.productName.toLowerCase(),
+        shopTypeId: req.body.shopTypeId || product.shopTypeId,
+      });
+
+      // CREATE IF NOT EXIST
+      if (!productCatalog) {
+        productCatalog = await ProductCatalog.create({
+          productName: req.body.productName.toLowerCase(),
+
+          shopTypeId: req.body.shopTypeId || product.shopTypeId,
+
+          slug: slugify(req.body.productName, {
+            lower: true,
+            strict: true,
+          }),
+        });
+      }
+
+      productCatalogId = productCatalog._id;
+    }
+
+    // FINAL BODY
     const body = {
       ...req.body,
+
+      productCatalogId,
 
       productImage: images,
 
@@ -155,7 +220,6 @@ export const updateproductcontroller = async (req, res) => {
     });
   }
 };
-
 // ================= DELETE PRODUCT =================
 export const deleteproductcontroller = async (req, res) => {
   try {
