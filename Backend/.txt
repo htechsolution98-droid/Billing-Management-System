@@ -15,3 +15,8 @@ state:
 district:
 
 shop
+
+
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMGJmYzJmZGUyOGEyNTdmNzE4NjJjYyIsImlhdCI6MTc3OTE3MDgxOSwiZXhwIjoxNzc5Nzc1NjE5fQ.pjr9lQIhEeduhTDN2IkCplwUzjGxu0IgtaQRjN2lsV4

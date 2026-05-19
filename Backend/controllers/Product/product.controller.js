@@ -56,7 +56,7 @@ export const createproductcontroller = async (req, res) => {
       variants,
 
       shopUserId: shop._id,
-
+      // shopTypeId: shop.shopTypeId, 
       createdBy: req.user._id,
     };
 

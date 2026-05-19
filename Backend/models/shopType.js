@@ -6,15 +6,15 @@ const shopTypeSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      lowercase: true,
     },
-    // userId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    // },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    isApproved: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true },

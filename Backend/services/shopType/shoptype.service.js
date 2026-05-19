@@ -5,12 +5,22 @@ export const Createshoptypeservice = async (data) => {
   return await shopType.create(data);
 };
 
-export const Getshoptypeservice = async (page = 1, limit = 10, search = "") => {
+export const Getshoptypeservice = async (
+  page = 1,
+  limit = 10,
+  search = "",
+  role,
+) => {
   try {
     const skip = (page - 1) * limit;
     const cleanSearch = (search || "").toString().trim();
 
     const query = {
+      // ONLY SHOPUSER
+      ...(role === "ShopUser" && {
+        isApproved: true,
+      }),
+
       ...(cleanSearch && {
         shopTypeName: {
           $regex: cleanSearch,
@@ -18,6 +28,7 @@ export const Getshoptypeservice = async (page = 1, limit = 10, search = "") => {
         },
       }),
     };
+
     const total = await shopType.countDocuments(query);
     const Master = await shopType
       .find(query)
@@ -40,14 +51,10 @@ export const Getshoptypeservice = async (page = 1, limit = 10, search = "") => {
 
 export const Updateshoptypeservice = async (MasterId, body) => {
   try {
-    const updateMaster = await shopType.findByIdAndUpdate(
-      MasterId,
-      updateData,
-      {
-        returnDocument: "after",
-        runValidators: true,
-      },
-    );
+    const updateMaster = await shopType.findByIdAndUpdate(MasterId, body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updateMaster) {
       throw new Error("ShopType not found");

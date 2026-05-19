@@ -5,19 +5,14 @@ import { Deleteshoptypeservice } from "../../services/shopType/shoptype.service.
 
 export const CreateshoptypeController = async (req, res) => {
   try {
-    // ONLY SUPER ADMIN
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Access denied",
-      });
-    }
-
     const master = await Createshoptypeservice({
       ...req.body,
 
-      userId: req.user._id,
       createdBy: req.user._id,
+
+      // SUPER_ADMIN → true
+      // ShopUser → false
+      isApproved: req.user.role === "SUPER_ADMIN",
     });
 
     res.status(201).json({
@@ -42,8 +37,8 @@ export const GetshoptypeController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
     const search = req.query.search || "";
-
-    const data = await Getshoptypeservice( page, limit, search);
+    const role = req.user.role;
+    const data = await Getshoptypeservice(page, limit, search, role);
 
     res.status(200).json(data);
   } catch (error) {

@@ -8,7 +8,7 @@ import express from "express";
 const router = express.Router();
 
 // Crud API
-
+  
 /**
  * @swagger
  * /api/shoptype/create:
@@ -52,7 +52,7 @@ const router = express.Router();
 router.post(
   "/create",
   protect,
-  authorizeRoles("SUPER_ADMIN"),
+  authorizeRoles("SUPER_ADMIN","ShopUser"),
   CreateshoptypeController,
 );
 /**
@@ -90,7 +90,7 @@ router.post(
  *       500:
  *         description: Internal server error.
  */
-router.get("/get", protect, authorizeRoles("SUPER_ADMIN"), GetshoptypeController);
+router.get("/get", protect, authorizeRoles("SUPER_ADMIN","ShopUser"), GetshoptypeController);
 /**
  * @swagger
  * /api/shoptype/update/{id}:
