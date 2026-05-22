@@ -35,8 +35,6 @@ app.use("/api/customer", Customer);
 app.use("/api/shoptype", shoptype);
 app.use("/api/superadmin", SuperAdmin);
 
-
-
 // Test Route
 app.get("/", (req, res) => {
   res.send("Billing Management API Running...");
